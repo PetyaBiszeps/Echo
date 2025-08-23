@@ -3,7 +3,15 @@
   "version": "1.0.0",
   "main": "dist/server.ts",
   "scripts": {
-    "dev": "Echo messenger 'server dev'",
-    "build": "Echo messenger 'server build'"
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.2"
   }
 }
