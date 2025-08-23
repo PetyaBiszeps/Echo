@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "build": "Echo messenger 'shared build'"
+    "build": "tsc"
   },
   "dependencies": {
     "zod": "^4.1.0"
