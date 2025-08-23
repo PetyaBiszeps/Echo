@@ -6,6 +6,7 @@
     "packages/*"
   ],
   "scripts": {
+    "dev": "yarn workspace @echo/server dev & yarn workspace @echo/client dev",
     "dev:client": "yarn workspace @echo/client dev",
     "dev:server": "yarn workspace @echo/server dev",
     "build": "Echo messenger 'yarn workspaces run build...'"
