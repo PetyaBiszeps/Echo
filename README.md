@@ -1,2 +1,2 @@
 # Echo messenger
-### a full-stack JavaScript application.
+### a full-stack TypeScript application.
