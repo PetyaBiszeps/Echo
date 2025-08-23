@@ -6,7 +6,9 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev:client": "yarn workspace @echo/client dev",
+    "dev:server": "yarn workspace @echo/server dev",
+    "build": "Echo messenger 'yarn workspaces run build...'"
   },
   "devDependencies": {}
 }
