@@ -2,8 +2,8 @@
   "name": "@echo/server",
   "version": "1.0.0",
   "scripts": {
-    "dev": "Echo messenger 'server dev'",
-    "build": "Echo messenger 'client build'",
+    "dev": "vite-node src/index.ts",
+    "build": "tsc",
     "clean": "rm -rf dist"
   },
   "dependencies": {
