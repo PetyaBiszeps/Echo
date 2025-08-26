@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "Echo messenger 'server dev'",
-    "build": "Echo messenger 'client build'"
+    "build": "Echo messenger 'client build'",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
     "express": "^5.1.0"

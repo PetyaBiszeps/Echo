@@ -2,8 +2,8 @@
   "name": "@echo/shared",
   "version": "1.0.0",
   "scripts": {
-    "dev": "Echo messenger 'shared dev'",
-    "build": "Echo messenger 'shared build'"
+    "build": "Echo messenger 'shared build'",
+    "clean": "Echo messenger 'shared clean'"
   },
   "dependencies": {
     "zod": "^4.1.0"

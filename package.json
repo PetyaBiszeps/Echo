@@ -6,10 +6,11 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "yarn workspace @echo/server dev & yarn workspace @echo/client dev",
+    "dev": "yarn workspaces run dev",
+    "build": "yarn workspaces run build",
+    "clean": "yarn workspaces run clean",
     "dev:client": "yarn workspace @echo/client dev",
-    "dev:server": "yarn workspace @echo/server dev",
-    "build": "Echo messenger 'yarn workspaces run build...'"
+    "dev:server": "yarn workspace @echo/server dev"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",

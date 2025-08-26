@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "Echo messenger 'client dev'",
-    "build": "Echo messenger 'client build'"
+    "build": "Echo messenger 'client build'",
+    "clean": "rm -rf dist"
   }
 }
