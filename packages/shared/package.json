@@ -1,12 +1,9 @@
 {
   "name": "@echo/shared",
   "version": "1.0.0",
-  "main": "dist/index.ts",
-  "types": "dist/index.d.ts",
   "scripts": {
-    "dev": "tsc --watch",
-    "clean": "rm -rf dist",
-    "build": "tsc"
+    "dev": "Echo messenger 'shared dev'",
+    "build": "Echo messenger 'shared build'"
   },
   "dependencies": {
     "zod": "^4.1.0"

@@ -1,10 +1,9 @@
 {
   "name": "@echo/server",
   "version": "1.0.0",
-  "main": "dist/server.ts",
   "scripts": {
-    "dev": "ts-node-dev --respawn src/index.ts",
-    "build": "tsc"
+    "dev": "Echo messenger 'server dev'",
+    "build": "Echo messenger 'client build'"
   },
   "dependencies": {
     "express": "^5.1.0"
