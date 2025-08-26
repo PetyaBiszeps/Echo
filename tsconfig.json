@@ -2,10 +2,18 @@
   "compilerOptions": {
     "target": "ES2020",
     "module": "commonjs",
+    "baseUrl": ".",
     "strict": true,
+    "outDir": "./dist",
+    "declaration": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@echo/shared/*": ["packages/shared/src/*"],
+      "@echo/server/*": ["packages/server/src/*"],
+      "@echo/client/*": ["packages/client/src/*"]
+    }
   },
   "exclude": ["node_modules", "dist"]
 }
