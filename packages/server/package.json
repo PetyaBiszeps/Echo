@@ -1,6 +1,7 @@
 {
   "name": "@echo/server",
   "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
     "dev": "vite-node src/index.ts",
     "build": "tsc",

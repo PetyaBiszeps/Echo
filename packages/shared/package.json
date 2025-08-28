@@ -1,6 +1,7 @@
 {
   "name": "@echo/shared",
   "version": "1.0.0",
+  "license": "MIT",
   "scripts": {
     "build": "Echo messenger 'shared build'",
     "clean": "Echo messenger 'shared clean'"
