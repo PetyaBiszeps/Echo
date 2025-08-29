@@ -3,6 +3,8 @@
 </template>
 
 <style lang="scss">
+@use "@/styles/main.scss" as theme;
+
 * {
   margin: 0;
   padding: 0;
