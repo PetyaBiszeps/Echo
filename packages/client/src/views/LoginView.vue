@@ -1,7 +1,7 @@
 <template>
   <div class="loginView">
     <header>
-      <img src="@/assets/icons/logo.svg" alt="logo">
+      <h1>ECHO</h1>
     </header>
 
     <main>
@@ -15,3 +15,17 @@
     </main>
   </div>
 </template>
+
+<style scoped lang="scss">
+.loginView {
+  display: flex;
+  place-items: center;
+  flex-direction: column;
+
+  main {
+    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+}
+</style>
