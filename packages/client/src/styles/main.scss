@@ -1,2 +1,6 @@
 @forward "@/styles/root.scss";
 @forward "@/styles/theme.scss";
+
+  // Global defaults
+@use "@/styles/base/reset.scss";
+@use "@/styles/base/defaults.scss";

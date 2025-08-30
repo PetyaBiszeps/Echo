@@ -1,9 +1,9 @@
 import type { App, Plugin } from 'vue'
 
-const plugins: Plugin[] = []
+const plugin: Plugin[] = []
 
 export default {
     install (app: App): void {
-        plugins.forEach((plugin: Plugin) => app.use(plugin))
+        plugin.forEach((plugin: Plugin) => app.use(plugin))
     }
 } satisfies Plugin

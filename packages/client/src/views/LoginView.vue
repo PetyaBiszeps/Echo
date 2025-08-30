@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <div class="loginView">
     <header>
@@ -19,19 +15,3 @@
     </main>
   </div>
 </template>
-
-<style scoped lang="scss">
-@use "@/styles/main.scss" as theme;
-
-.loginView {
-  header {
-
-  }
-
-  main {
-    gap: 1rem;
-    display: flex;
-    flex-direction: column;
-  }
-}
-</style>
