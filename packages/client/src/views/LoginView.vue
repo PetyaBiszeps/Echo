@@ -4,9 +4,7 @@
       <h1>ECHO</h1>
     </header>
 
-    <main>
-      
-    </main>
+    <main />
   </div>
 </template>
 

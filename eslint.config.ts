@@ -11,11 +11,11 @@ export default [
         files: ['packages/server/**/*.{ts,js}'],
         rules: {
             'n/no-missing-import': 'off'
-        }
+        },
     },
 
         // Vue
-    vue.configs['flat/recommended'], {
+    ...vue.configs['flat/recommended'], {
         files: ['packages/client/**/*.{ts,js,vue}'],
         rules: {
             'object-curly-spacing': ['error', 'always'],
@@ -23,14 +23,6 @@ export default [
             'semi': ['error', 'never'],
             'no-extra-semi': 'error',
             'no-console': 'warn'
-        },
-        languageOptions: {
-            sourceType: 'module',
-            extraFileExtensions: ['.vue'],
-            parserOptions: {
-                parser: tseslint.parser,
-                ecmaVersion: 'latest'
-            }
         }
     }
 ]
