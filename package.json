@@ -11,7 +11,8 @@
     "build": "yarn workspaces run build",
     "clean": "yarn workspaces run clean",
     "dev:client": "yarn workspace @echo/client dev",
-    "dev:server": "yarn workspace @echo/server dev"
+    "dev:server": "yarn workspace @echo/server dev",
+    "lint": "yarn eslint packages --ext .ts,.js,.vue --fix"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
