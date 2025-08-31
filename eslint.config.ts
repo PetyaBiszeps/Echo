@@ -9,9 +9,7 @@ export default [
         // Node.js
     n.configs['flat/recommended'], {
         files: ['packages/server/**/*.{ts,js}'],
-        rules: {
-            'n/no-missing-import': 'off'
-        },
+        rules: {},
     },
 
         // Vue
