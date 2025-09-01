@@ -1,10 +1,16 @@
+<script setup lang="ts">
+import BaseInput from "@/components/ui/base/BaseInput.vue"
+</script>
+
 <template>
   <div class="loginView">
     <header>
       <h1>ECHO</h1>
     </header>
 
-    <main />
+    <main>
+      <BaseInput />
+    </main>
   </div>
 </template>
 
