@@ -1,37 +1,31 @@
 <script setup lang="ts">
-// const props = defineProps({
-//   type: {
-//     type: String,
-//     required: true
-//   },
-//   placeholder: {
-//     type: String,
-//     required: true
-//   },
-//   disabled: {
-//     type: Boolean,
-//     default: false
-//   },
-//   readonly: {
-//     type: Boolean,
-//     default: false
-//   }
-// })
-// const emit = defineEmits(['focus', 'blur'])
-//
-// const model = defineModel<string | number>({
-//   required: true
-// })
+const { id, name, type, placeholder, disabled, readonly, autocomplete } = defineProps<{
+  id: string
+  name: string
+  type: string
+  placeholder: string
+  disabled: boolean
+  readonly: boolean,
+  autocomplete: string
+}>()
+const emit = defineEmits(['focus', 'blur'])
+
+const model = defineModel<string | number>({
+  required: true
+})
 </script>
 
 <template>
-  <label>
+  <label :for="id">
     <input
       v-model="model"
+      :id="id"
+      :name="name"
       :type="type"
       :placeholder="placeholder"
       :disabled="disabled"
       :readonly="readonly"
+      :autocomplete="autocomplete"
 
       @focus="emit('focus')"
       @blur="emit('blur')"

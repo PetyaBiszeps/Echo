@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import BaseInput from "@/components/ui/base/BaseInput.vue"
+import { ref } from "vue";
+
+const input = ref({
+  username: '',
+  password: ''
+})
 </script>
 
 <template>
@@ -9,7 +15,17 @@ import BaseInput from "@/components/ui/base/BaseInput.vue"
     </header>
 
     <main>
-      <BaseInput />
+      <BaseInput
+          v-model="input.username"
+
+          :id="'username'"
+          :name="'username'"
+          :type="'text'"
+          :placeholder="'testing'"
+          :disabled="false"
+          :readonly="false"
+          :autocomplete="'username'"
+      />
     </main>
   </div>
 </template>

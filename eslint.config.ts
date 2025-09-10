@@ -22,5 +22,15 @@ export default [
             'no-extra-semi': 'error',
             'no-console': 'warn'
         }
+    }, {
+        files: ['packages/client/**/*.vue'],
+        languageOptions: {
+            parser: 'vue-eslint-parser',
+            parserOptions: {
+                parser: tseslint.parser,
+                ecmaVersion: 'latest',
+                sourceType: 'module'
+            }
+        }
     }
 ]
