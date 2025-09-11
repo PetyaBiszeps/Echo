@@ -5,11 +5,12 @@ const { id, name, type, placeholder, disabled, readonly, autocomplete } = define
   type: string
   placeholder: string
   disabled: boolean
-  readonly: boolean,
+  readonly: boolean
   autocomplete: string
 }>()
 const emit = defineEmits(['focus', 'blur'])
 
+  // Constants
 const model = defineModel<string | number>({
   required: true
 })
