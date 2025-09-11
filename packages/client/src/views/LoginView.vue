@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import BaseInput from "@/components/ui/base/BaseInput.vue"
+import BaseButton from '@/components/ui/base/BaseButton.vue'
+import BaseInput from '@/components/ui/base/BaseInput.vue'
 import { ref } from "vue"
 
   // Constants
@@ -46,9 +47,10 @@ function onSubmit() {
           :autocomplete="'current-password'"
         />
 
-        <button type="submit">
-          <span>Login</span>
-        </button>
+        <BaseButton
+          :name="'Login'"
+          :type="'submit'"
+        />
       </form>
     </main>
   </div>
