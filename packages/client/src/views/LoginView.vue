@@ -30,8 +30,6 @@ function onSubmit() {
           :name="'username'"
           :type="'text'"
           :placeholder="'enter username...'"
-          :disabled="false"
-          :readonly="false"
           :autocomplete="'username'"
         />
 
@@ -42,8 +40,6 @@ function onSubmit() {
           :name="'password'"
           :type="'password'"
           :placeholder="'enter password...'"
-          :disabled="false"
-          :readonly="false"
           :autocomplete="'current-password'"
         />
 
