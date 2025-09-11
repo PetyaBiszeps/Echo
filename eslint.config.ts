@@ -25,6 +25,23 @@ export default [
         }
     }, {
         files: ['packages/client/**/*.vue'],
+        rules: {
+            'vue/attributes-order': ['error', {
+                order: [
+                    'TWO_WAY_BINDING',
+                    'DEFINITION',
+                    'LIST_RENDERING',
+                    'CONDITIONALS',
+                    'RENDER_MODIFIERS',
+                    'GLOBAL',
+                    'UNIQUE',
+                    'OTHER_DIRECTIVES',
+                    'OTHER_ATTR',
+                    'EVENTS',
+                    'CONTENT'
+                ]
+            }]
+        },
         languageOptions: {
             parser: vueParser,
             parserOptions: {

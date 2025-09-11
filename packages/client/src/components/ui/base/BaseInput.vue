@@ -19,8 +19,9 @@ const model = defineModel<string | number>({
 <template>
   <label :for="id">
     <input
-      :id="id"
       v-model="model"
+
+      :id="id"
       :name="name"
       :type="type"
       :placeholder="placeholder"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import BaseButton from '@/components/ui/base/BaseButton.vue'
 import BaseInput from '@/components/ui/base/BaseInput.vue'
-import { ref } from "vue"
+import { ref } from 'vue'
 
   // Constants
 const input = ref({
@@ -11,7 +11,7 @@ const input = ref({
 
   // Methods
 function onSubmit() {
-  return console.log('Login!!!')
+  return null
 }
 </script>
 
@@ -24,9 +24,9 @@ function onSubmit() {
     <main>
       <form @submit.prevent="onSubmit">
         <BaseInput
-          :id="'username'"
-
           v-model="input.username"
+
+          :id="'username'"
           :name="'username'"
           :type="'text'"
           :placeholder="'enter username...'"
@@ -36,9 +36,9 @@ function onSubmit() {
         />
 
         <BaseInput
-          :id="'password'"
-
           v-model="input.password"
+
+          :id="'password'"
           :name="'password'"
           :type="'password'"
           :placeholder="'enter password...'"
@@ -50,6 +50,7 @@ function onSubmit() {
         <BaseButton
           :name="'Login'"
           :type="'submit'"
+          :disabled="false"
         />
       </form>
     </main>
