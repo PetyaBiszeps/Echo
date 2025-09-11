@@ -1,11 +1,11 @@
 export interface IBaseInput {
     id: string
     name: string
-    type: 'text' | 'number' | 'submit' | 'button'
+    type?: 'text' | 'number' | 'submit' | 'button'
     placeholder: string
-    disabled: boolean
-    readonly: boolean
-    autocomplete: string
+    disabled?: boolean
+    readonly?: boolean
+    autocomplete?: string
 }
 
 export interface IBaseButton {
