@@ -1,9 +1,12 @@
 <script setup lang="ts">
-const { name, type, disabled } = defineProps<{
+const { name, type, disabled } = withDefaults(defineProps<{
   name: string
-  type: 'button' | 'submit' | 'reset'
-  disabled: boolean
-}>()
+  type?: 'button' | 'submit' | 'reset'
+  disabled?: boolean
+}>(), {
+  type: 'button',
+  disabled: false
+})
 </script>
 
 <template>
