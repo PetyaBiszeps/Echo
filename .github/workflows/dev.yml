@@ -24,6 +24,7 @@ jobs:
       group: dev-ci-backend-${{ github.ref }}
       cancel-in-progress: true
 
+    container: node:22
     services:
       postgres:
         image: postgres:17
