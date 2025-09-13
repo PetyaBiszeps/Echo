@@ -1,14 +1,18 @@
 <script setup lang="ts">
-const { id, name, type, placeholder, disabled, readonly, autocomplete } = withDefaults(defineProps<{
+const { id, name, type, placeholder, size, variant, disabled, readonly, autocomplete } = withDefaults(defineProps<{
   id: string
   name: string
   type?: string
   placeholder: string
+  size?: 'sm' | 'md' | 'lg'
+  variant?: 'default'
   disabled?: boolean
   readonly?: boolean
   autocomplete?: string
 }>(), {
   type: 'text',
+  size: 'sm',
+  variant: 'default',
   disabled: false,
   readonly: false,
   autocomplete: 'off'
@@ -30,6 +34,8 @@ const model = defineModel<string | number>({
       :name="name"
       :type="type"
       :placeholder="placeholder"
+      :data-size="size"
+      :data-variant="variant"
       :disabled="disabled"
       :readonly="readonly"
       :autocomplete="autocomplete"
