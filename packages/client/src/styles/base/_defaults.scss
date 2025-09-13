@@ -9,9 +9,37 @@ body {
     line-height: 1.5;
     font-family: 'JetBrains Mono', monospace;
 
+    input {
+      border: 1px solid transparent;
+      transition: all 0.25s ease;
+      padding-inline: unset;
+    }
+
     button {
       cursor: pointer;
       transition: all 0.25s ease;
+
+      span {
+        font-weight: bold;
+      }
+
+      &[data-size='sm'] {
+        padding: 0.3rem;
+      }
+
+      &[data-size='md'] {
+        padding: 0.5rem;
+      }
+
+      &[data-size='lg'] {
+        padding: 0.8rem;
+      }
+
+      &[data-variant='default'] {
+        border: 1px solid theme.$buttonBorder;
+        background: theme.$buttonBG;
+        border-radius: 0.5rem;
+      }
 
       &:hover:not(:disabled) {
         border: 1px solid theme.$buttonHoverBorder;
