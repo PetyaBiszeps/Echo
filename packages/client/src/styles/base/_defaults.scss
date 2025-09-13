@@ -11,9 +11,10 @@ body {
 
     button {
       cursor: pointer;
-      transition: background-color 0.25s ease;
+      transition: all 0.25s ease;
 
       &:hover:not(:disabled) {
+        border: 1px solid theme.$buttonHoverBorder;
         background: theme.$buttonHover;
       }
 

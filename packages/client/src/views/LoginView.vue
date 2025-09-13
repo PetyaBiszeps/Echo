@@ -46,7 +46,6 @@ function onSubmit() {
         <BaseButton
           :name="'Login'"
           :type="'submit'"
-          :disabled="true"
         />
       </form>
     </main>
