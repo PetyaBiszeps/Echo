@@ -15,7 +15,6 @@ on:
       - 'packages/server/**'
       - 'packages/shared/**'
       - '.github/workflows/dev.yml'
-  workflow_dispatch: {}
 
 jobs:
   server:
