@@ -7,6 +7,8 @@ node_modules
 dist
 
 # Local files
+*.lock
+
 .env
 .env.*
 !.env.example

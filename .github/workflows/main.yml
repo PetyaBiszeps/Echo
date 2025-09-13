@@ -50,7 +50,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          cache: 'yarn'
 
       - name: Debug Node.js & Yarn
         run: |
@@ -58,7 +57,7 @@ jobs:
           echo "Yarn: $(yarn -v)"
 
       - name: Install monorepo dependencies
-        run: yarn install --immutable
+        run: yarn install --no-lockfile
 
       - name: Build shared
         run: yarn workspace @echo/shared build
@@ -86,7 +85,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
-          cache: 'yarn'
 
       - name: Debug Node.js & Yarn
         run: |
@@ -94,7 +92,7 @@ jobs:
           echo "Yarn: $(yarn -v)"
 
       - name: Install monorepo dependencies
-        run: yarn install --immutable
+        run: yarn install --no-lockfile
 
       - name: Build shared
         run: yarn workspace @echo/shared build
