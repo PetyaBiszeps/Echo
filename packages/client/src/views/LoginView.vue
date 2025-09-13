@@ -17,12 +17,12 @@ function onSubmit() {
 
 <template>
   <div class="loginView">
-    <header>
-      <h1>ECHO</h1>
-    </header>
+    <form @submit.prevent="onSubmit">
+      <header>
+        <h1>ECHO</h1>
+      </header>
 
-    <main>
-      <form @submit.prevent="onSubmit">
+      <main>
         <BaseInput
           v-model="input.username"
 
@@ -47,27 +47,29 @@ function onSubmit() {
           :name="'Login'"
           :type="'submit'"
         />
-      </form>
-    </main>
+      </main>
+    </form>
   </div>
 </template>
 
 <style scoped lang="scss">
 .loginView {
-  height: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  place-content: center;
-  flex-direction: column;
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
 
-  header {
-    h1 {
-      text-align: center;
+  form {
+    width: fit-content;
+    padding: 2.5rem;
+    transform: rotate(-8deg);
+
+    header {
+      h1 {
+        text-align: center;
+      }
     }
-  }
 
-  main {
-    form {
+    main {
       gap: 1rem;
       display: flex;
       flex-direction: column;

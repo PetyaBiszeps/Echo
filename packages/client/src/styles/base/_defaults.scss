@@ -1,11 +1,17 @@
 @use "@/styles/theme.scss" as theme;
 
 body {
+  min-height: 100dvh;
   background: theme.$globalBG;
+  //background-image:
+  //        repeating-linear-gradient(0deg,  rgba(0,0,0,.08) 0 1px, transparent 1px 2px),
+  //        repeating-linear-gradient(90deg, rgba(0,0,0,.08) 0 1px, transparent 1px 2px);
+  //background-blend-mode: multiply;
+  //background-attachment: local, local;
 
   #app {
-    height: 100dvh;
     font-size: 1rem;
+    min-height: 100dvh;
     line-height: 1.5;
     font-family: 'JetBrains Mono', monospace;
 
