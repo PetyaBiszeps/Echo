@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "Echo messenger 'shared build'",
-    "clean": "Echo messenger 'shared clean'"
+    "build": "echo 'Echo messenger - shared build'",
+    "clean": "echo 'Echo messenger - shared clean'"
   },
   "dependencies": {
     "zod": "^4.1.0"
