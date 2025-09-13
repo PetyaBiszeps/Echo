@@ -1,2 +1,3 @@
 # Echo messenger
-### a full-stack TypeScript application.
+### Full-stack messenger
+![LoginShowcase](public/LoginShowcase.png)
