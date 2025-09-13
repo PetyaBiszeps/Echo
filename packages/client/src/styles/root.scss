@@ -5,6 +5,7 @@
   --surface-3: #DDE2E8;
   --surface-4: #F6F7F9;
   --surface-5: #9B9EA2;
+  --surface-6: linear-gradient(135deg, #F6F6F8, #F4F4F6);
 
   &.dark, &[data-theme="dark"] {
     --accent: #12D6DF;
@@ -13,5 +14,6 @@
     --surface-3: #DDE2E8;
     --surface-4: #F6F7F9;
     --surface-5: #9B9EA2;
+    --surface-6: linear-gradient(135deg, #F6F6F8, #F4F4F6);
   }
 }
