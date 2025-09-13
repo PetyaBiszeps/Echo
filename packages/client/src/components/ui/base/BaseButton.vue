@@ -25,6 +25,8 @@ const { name, type, size, variant, disabled } = withDefaults(defineProps<{
 </template>
 
 <style scoped lang="scss">
+@use "@/styles/theme.scss" as theme;
+
 button {
   border: 1px solid transparent;
 
@@ -45,7 +47,8 @@ button {
   }
 
   &[data-variant='default'] {
-    // background
+    border: 1px solid theme.$buttonBorder;
+    background: theme.$buttonBG;
     border-radius: 0.5rem;
   }
 }
