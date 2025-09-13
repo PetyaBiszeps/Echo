@@ -8,5 +8,14 @@ body {
     font-size: 1rem;
     line-height: 1.5;
     font-family: 'JetBrains Mono', monospace;
+
+    button {
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+
+      &:hover {
+        background: theme.$accent;
+      }
+    }
   }
 }

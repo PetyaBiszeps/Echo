@@ -1,7 +1,9 @@
 :root {
+  --accent: #12D6DF;
   --surface-1: #F2F3F5;
 
   &.dark, &[data-theme="dark"] {
+    --accent: #12D6DF;
     --surface-1: #36393F;
   }
 }
