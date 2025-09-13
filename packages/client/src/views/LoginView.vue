@@ -51,36 +51,3 @@ function onSubmit() {
     </form>
   </div>
 </template>
-
-<style scoped lang="scss">
-@use "@/styles/theme.scss" as theme;
-
-.loginView {
-  display: grid;
-  min-height: 100dvh;
-  place-items: center;
-
-  form {
-    width: fit-content;
-    border: 0.15rem solid white;
-    padding: 2.5rem;
-    transform: rotate(-8deg);
-    background: theme.$loginBG;
-    box-shadow: 0 14px 36px #00000026, inset 0 1px 0 #FFFFFF59;
-    border-radius: 1rem;
-    backdrop-filter: blur(16px) saturate(140%);
-
-    header {
-      h1 {
-        text-align: center;
-      }
-    }
-
-    main {
-      gap: 1rem;
-      display: flex;
-      flex-direction: column;
-    }
-  }
-}
-</style>
