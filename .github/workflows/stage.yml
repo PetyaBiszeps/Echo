@@ -1,0 +1,106 @@
+name: Stage CI
+
+on:
+  push:
+    branches: [stage]
+    paths:
+      - 'packages/client/**'
+      - 'packages/server/**'
+      - 'packages/shared/**'
+      - '.github/workflows/stage.yml'
+  pull_request:
+    branches: [stage]
+    paths:
+      - 'packages/client/**'
+      - 'packages/server/**'
+      - 'packages/shared/**'
+      - '.github/workflows/stage.yml'
+
+jobs:
+  server:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    concurrency:
+      group: stage-ci-backend-${{ github.ref }}
+      cancel-in-progress: true
+
+    container: node:22
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: echo
+          POSTGRES_PASSWORD: echo
+          POSTGRES_DB: echo
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd="pg_isready -U echo"
+          --health-interval=5s --health-timeout=5s --health-retries=10
+
+    env:
+      DATABASE_URL: postgresql://echo:echo@postgres:5432/echo?schema=public
+      JWT_ACCESS_SECRET: test_secret_for_ci
+      CORS_ORIGIN: http://localhost:5173
+      PORT: 3001
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Debug Node.js & Yarn
+        run: |
+          echo "Node: $(node -v)"
+          echo "Yarn: $(yarn -v)"
+
+      - name: Install monorepo dependencies
+        run: yarn install --no-lockfile
+
+      - name: Build shared
+        run: yarn workspace @echo/shared build
+
+      - name: Generate Prisma client
+        run: yarn workspace @echo/server prisma generate
+
+      - name: Apply DB migrations
+        run: yarn workspace @echo/server prisma migrate deploy
+
+      - name: Build server
+        run: yarn workspace @echo/server build
+
+  client:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+    concurrency:
+      group: stage-ci-frontend-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Debug Node.js & Yarn
+        run: |
+          echo "Node: $(node -v)"
+          echo "Yarn: $(yarn -v)"
+
+      - name: Install monorepo dependencies
+        run: yarn install --no-lockfile
+
+      - name: Build shared
+        run: yarn workspace @echo/shared build
+
+      - name: Build client
+        run: |
+          if yarn --silent workspaces list | grep -q "@echo/client"; then 
+            yarn workspace @echo/client build
+          else
+            echo "No @echo/client workspace found - skipping..."
+          fi
