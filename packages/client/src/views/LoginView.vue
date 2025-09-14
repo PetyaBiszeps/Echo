@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import InputComponent from '@/components/ui/InputComponent.vue'
 import BaseButton from '@/components/ui/base/BaseButton.vue'
-import BaseInput from '@/components/ui/base/BaseInput.vue'
 import { ref } from 'vue'
 
   // Constants
@@ -23,7 +23,7 @@ function onSubmit() {
       </header>
 
       <main>
-        <BaseInput
+        <InputComponent
           v-model="input.username"
 
           :id="'username'"
@@ -33,7 +33,7 @@ function onSubmit() {
           :autocomplete="'username'"
         />
 
-        <BaseInput
+        <InputComponent
           v-model="input.password"
 
           :id="'password'"
