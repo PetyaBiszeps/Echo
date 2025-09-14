@@ -4,6 +4,8 @@
 
 <template>
   <div :class="['messageWrapper']">
-    <h1>Toaster Initialized!</h1>
+    <div :class="['message']">
+      <strong>✗ | Toaster Initialized! Some message...</strong>
+    </div>
   </div>
 </template>

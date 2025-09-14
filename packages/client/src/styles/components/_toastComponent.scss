@@ -1,3 +1,24 @@
-.messageWrapper {
+@use "sass:color";
+@use "@/styles/theme.scss" as theme;
 
+.messageWrapper {
+  top: 10%;
+  gap: 0.5rem;
+  display: flex;
+  position: fixed;
+  max-width: 55rem;
+  align-items: center;
+  inset-inline: 0;
+  margin-inline: auto;
+  flex-direction: column-reverse;
+
+  .message {
+    margin: 0 0.5rem;
+    border: 1px solid theme.$toastBorder;
+    padding: 0 0.5rem;
+    box-sizing: border-box;
+    background: color-mix(in srgb, theme.$toastBG 15%, transparent);
+    border-radius: 0.5rem;
+    backdrop-filter: blur(1px);
+  }
 }

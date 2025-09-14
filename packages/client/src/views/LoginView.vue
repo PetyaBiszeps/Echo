@@ -2,6 +2,7 @@
 import InputComponent from '@/components/ui/InputComponent.vue'
 import BaseButton from '@/components/ui/base/BaseButton.vue'
 import { ref } from 'vue'
+import ToastComponent from "@/components/ui/ToastComponent.vue"
 
   // Constants
 const input = ref({
