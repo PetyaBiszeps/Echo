@@ -26,22 +26,20 @@ const model = defineModel<string | number>({
 </script>
 
 <template>
-  <label :for="id">
-    <input
-      v-model="model"
+  <input
+    v-model="model"
 
-      :id="id"
-      :name="name"
-      :type="type"
-      :placeholder="placeholder"
-      :data-size="size"
-      :data-variant="variant"
-      :disabled="disabled"
-      :readonly="readonly"
-      :autocomplete="autocomplete"
+    :id="id"
+    :name="name"
+    :type="type"
+    :placeholder="placeholder"
+    :data-size="size"
+    :data-variant="variant"
+    :disabled="disabled"
+    :readonly="readonly"
+    :autocomplete="autocomplete"
 
-      @focus="emit('focus')"
-      @blur="emit('blur')"
-    >
-  </label>
+    @focus="emit('focus')"
+    @blur="emit('blur')"
+  >
 </template>
