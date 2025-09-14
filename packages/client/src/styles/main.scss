@@ -7,3 +7,8 @@
 
   // Views
 @use "@/styles/views/loginView.scss";
+@use "@/styles/views/indexView.scss";
+
+  // Components
+@use "@/styles/components/toastComponent.scss";
+@use "@/styles/components/inputComponent.scss";

@@ -3,8 +3,7 @@
 </script>
 
 <template>
+  <div :class="['messageWrapper']">
+    <h1>Toaster Initialized!</h1>
+  </div>
 </template>
-
-<style scoped lang="scss">
-
-</style>
