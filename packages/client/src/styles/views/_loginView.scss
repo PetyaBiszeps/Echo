@@ -26,5 +26,42 @@
       display: flex;
       flex-direction: column;
     }
+
+    &::before,
+    &::after {
+      inset: -0.15rem;
+      border: 2px solid theme.$accent;
+      content: "";
+      z-index: -1;
+      opacity: 0.45;
+      position: absolute;
+      transform: scale(1);
+      animation: echo 3.6s ease-out infinite;
+      border-radius: 1rem;
+      pointer-events: none;
+      transform-origin: center;
+    }
+
+    &::after {
+      opacity: 0.35;
+      animation-delay: 1.8s;
+    }
+  }
+}
+
+  // Echo effect
+@keyframes echo {
+  0% {
+    opacity: 0.45;
+    transform: scale(1) rotate(0.0001deg);
+  }
+
+  60% {
+    opacity: 0.10;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.75) rotate(0.0001deg);
   }
 }
