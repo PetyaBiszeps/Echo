@@ -1,2 +1,2 @@
 # Echo messenger
-![LoginShowcase](public/LoginShowcase.png)
+![LoginShowcase.webp](public/LoginShowcase.webp)
