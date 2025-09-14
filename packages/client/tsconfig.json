@@ -3,10 +3,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
+    "types": ["node", "vite/client"],
     "paths": {
       "@/*": ["src/*"],
       "@echo/shared": ["../shared/src/index.ts"]
     }
   },
-  "include": ["src", "env.d.ts"]
+  "include": ["src", "env.d.ts", "vite.config.ts", "vitest.config.ts"]
 }
