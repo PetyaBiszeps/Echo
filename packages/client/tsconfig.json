@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "outDir": "dist",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@echo/shared": ["../shared/src/index.ts"]
     }
   },
   "include": ["src", "env.d.ts"]
