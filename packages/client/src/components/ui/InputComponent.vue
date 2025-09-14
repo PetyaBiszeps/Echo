@@ -82,7 +82,3 @@ const chooseComponent = computed(() => {
     </label>
   </main>
 </template>
-
-<style scoped lang="scss">
-
-</style>
