@@ -2,7 +2,6 @@
 import InputComponent from '@/components/ui/InputComponent.vue'
 import BaseButton from '@/components/ui/base/BaseButton.vue'
 import { ref } from 'vue'
-import ToastComponent from "@/components/ui/ToastComponent.vue"
 
   // Constants
 const input = ref({
@@ -43,12 +42,21 @@ function onSubmit() {
           :placeholder="'enter password...'"
           :autocomplete="'current-password'"
         />
+      </main>
 
+      <footer>
         <BaseButton
           :name="'Login'"
           :type="'submit'"
         />
-      </main>
+
+        <p>OR</p>
+
+        <BaseButton
+          :name="'Register'"
+          :type="'submit'"
+        />
+      </footer>
     </form>
   </div>
 </template>
