@@ -1,6 +1,11 @@
-// import type { AuthStatus, IAuthTokens, IAuthUser } from '@/stores/auth/types'
-// import { computed, ref } from 'vue'
+// import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+// import type {
+//     IAuthUser,
+//     IAuthLogin,
+//     IAuthTokens,
+//     IAuthRegister
+// } from '@/stores/auth/types'
 
 const useAuthStore = defineStore('auth', () => {
     return {}
