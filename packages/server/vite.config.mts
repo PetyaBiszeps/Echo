@@ -10,5 +10,3 @@ export default defineConfig({
         }
     }
 })
-
-// We are testing CI
