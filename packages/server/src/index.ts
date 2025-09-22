@@ -4,7 +4,7 @@ import express from 'express'
 import routes from '@/routes'
 
 const app = express()
-const port = process.env.PORT ?? ''
+const port = process.env.PORT
 
 app.use(express.json({
     limit: '1mb',
