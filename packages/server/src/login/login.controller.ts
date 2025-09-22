@@ -7,7 +7,7 @@ import type {
 
 const service: AuthService = new AuthService()
 
-export async function registerController(req: Request, res: Response, next: NextFunction) {
+export async function RegisterController(req: Request, res: Response, next: NextFunction) {
     try {
         const data: Register = req.body as Register
         const auth: AuthResponse = await service.register(data)
@@ -18,7 +18,7 @@ export async function registerController(req: Request, res: Response, next: Next
     }
 }
 
-export async function loginController(req: Request, res: Response, next: NextFunction) {
+export async function LoginController(req: Request, res: Response, next: NextFunction) {
     try {
         const data: Login = req.body as Login
         const auth: AuthResponse = await service.login(data)
