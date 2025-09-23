@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import BaseButton from '@/components/ui/base/BaseButton.vue'
 import { useRouter } from 'vue-router'
 
   // Constants
@@ -13,9 +14,30 @@ async function backToHome() {
 <template>
   <div class="errorView">
     <nav>
-      <button @click="backToHome">
-        <span>Back to Home</span>
-      </button>
+      <header>
+        <div :class="['icon']">
+          <div :class="['bar']" />
+          <div :class="['bar']" />
+          <div :class="['bar']" />
+          <div :class="['bar']" />
+        </div>
+      </header>
+
+      <main>
+        <h1>
+          <i />
+          <span>404</span>
+        </h1>
+
+        <p>Page you were looking for does not exists.</p>
+      </main>
+
+      <footer>
+        <BaseButton
+          :name="'Back to Home'"
+          @click="backToHome"
+        />
+      </footer>
     </nav>
   </div>
 </template>

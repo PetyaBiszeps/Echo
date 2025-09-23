@@ -9,5 +9,34 @@
 
   nav {
     @include mixins.echoCard;
+
+    header {
+      .icon {
+        gap: 0.5em;
+        display: flex;
+        margin-bottom: 1.5rem;
+        justify-content: center;
+
+        .bar {
+          @include mixins.echoBar;
+        }
+      }
+    }
+
+    main {
+      h1 {
+        gap: 0.5rem;
+        display: flex;
+        place-items: center;
+
+        i {
+          @include mixins.echoDot;
+        }
+      }
+    }
+
+    footer {
+      margin-top: 1.5rem;
+    }
   }
 }
