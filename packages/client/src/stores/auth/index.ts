@@ -7,8 +7,8 @@ const useAuthStore = defineStore('auth', () => {
     const user = ref<IAuthUser | null>(null)
     const token = ref<IAuthTokens | null>(null)
 
-    const isLoggedIn = computed(() => {
-        return !!user.value
+    const isAuthenticated = computed(() => {
+        return !!token.value && !!user.value
     })
 
     async function register(data: IAuthLogin) {
@@ -71,7 +71,7 @@ const useAuthStore = defineStore('auth', () => {
     }
 
     return {
-        user, token, isLoggedIn,
+        user, token, isAuthenticated,
         register, login, logout
     }
 })
