@@ -11,6 +11,33 @@ const useAuthStore = defineStore('auth', () => {
         return !!user.value
     })
 
+    async function register(data: IAuthLogin) {
+        try {
+            const response = await axios.post<{
+                user: IAuthUser,
+                access_token: string
+            }>(`${import.meta.env.VITE_APP_API_URL}/auth/register`, {
+                username: data.username,
+                password: data.password
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            user.value = response.data.user
+            token.value = {
+                accessToken: response.data.access_token
+            }
+        } catch (err) {
+            const error = err as AxiosError<{
+                message?: string
+            }>
+
+            throw error.response?.data?.message || error.message
+        }
+    }
+
     async function login(data: IAuthLogin) {
         try {
             const response = await axios.post<{
@@ -45,7 +72,7 @@ const useAuthStore = defineStore('auth', () => {
 
     return {
         user, token, isLoggedIn,
-        login, logout
+        register, login, logout
     }
 })
 

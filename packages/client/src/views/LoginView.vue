@@ -15,7 +15,22 @@ const input = ref({
 })
 
   // Methods
-async function onSubmit() {
+async function handleRegister() {
+  errors.value = {}
+
+  try {
+    await auth.register(input.value)
+    window.location.href = '/'
+  } catch (err) {
+    if (typeof err === 'string') {
+      errors.value.general = [err]
+    } else {
+      errors.value.general = ['unknown error']
+    }
+  }
+}
+
+async function handleLogin() {
   errors.value = {}
 
   try {
@@ -33,7 +48,7 @@ async function onSubmit() {
 
 <template>
   <div class="loginView">
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent>
       <header>
         <h1>ECHO</h1>
       </header>
@@ -64,6 +79,8 @@ async function onSubmit() {
         <BaseButton
           :name="'Login'"
           :type="'submit'"
+
+          @click="handleLogin"
         />
 
         <p>OR</p>
@@ -71,6 +88,8 @@ async function onSubmit() {
         <BaseButton
           :name="'Register'"
           :type="'submit'"
+
+          @click="handleRegister"
         />
       </footer>
     </form>

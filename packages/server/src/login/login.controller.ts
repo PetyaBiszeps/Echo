@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
 import { AuthService } from '@/login/login.service'
 import type {
+    Login,
     Register,
-    Login, AuthResponse
+    AuthResponse
 } from '@echo/shared'
 
 const service: AuthService = new AuthService()
