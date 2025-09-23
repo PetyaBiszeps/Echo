@@ -7,9 +7,9 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "yarn workspaces run dev",
-    "build": "yarn workspaces run build",
-    "clean": "yarn workspaces run clean",
+    "dev": "yarn workspace @echo/server dev & yarn workspace @echo/server prisma studio & yarn workspace @echo/client dev & wait",
+    "build": "yarn workspace @echo/server build & yarn workspace @echo/client build & yarn workspace @echo/shared build",
+    "clean": "yarn workspace @echo/server clean & yarn workspace @echo/client clean & yarn workspace @echo/shared clean",
     "dev:client": "yarn workspace @echo/client dev",
     "dev:server": "yarn workspace @echo/server dev",
     "lint": "yarn eslint packages --ext .ts,.js,.vue --fix"
