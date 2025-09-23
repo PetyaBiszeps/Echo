@@ -1,0 +1,5 @@
+export const ErrorCodes = {
+    CONFLICT: 'CONFLICT',
+    UNAUTHORIZED: 'UNAUTHORIZED',
+    VALIDATION_ERROR: 'VALIDATION_ERROR'
+} as const
