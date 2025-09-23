@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import InputComponent from '@/components/ui/InputComponent.vue'
 import BaseButton from '@/components/ui/base/BaseButton.vue'
+import useAuthStore from '@/stores/auth'
 import { ref } from 'vue'
+
+  // Init
+const auth = useAuthStore()
+const errors = ref<Record<string, string[]>>({})
 
   // Constants
 const input = ref({
@@ -10,8 +15,19 @@ const input = ref({
 })
 
   // Methods
-function onSubmit() {
-  return null
+async function onSubmit() {
+  errors.value = {}
+
+  try {
+    await auth.login(input.value)
+    window.location.href = '/'
+  } catch (err) {
+    if (typeof err === 'string') {
+      errors.value.general = [err]
+    } else {
+      errors.value.general = ['unknown error']
+    }
+  }
 }
 </script>
 
