@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "dev": "yarn workspace @echo/server dev & yarn workspace @echo/server prisma studio & yarn workspace @echo/client dev & wait",
+    "dev": "node scripts/dev.js",
     "build": "yarn workspace @echo/server build & yarn workspace @echo/client build & yarn workspace @echo/shared build",
     "clean": "yarn workspace @echo/server clean & yarn workspace @echo/client clean & yarn workspace @echo/shared clean",
     "dev:client": "yarn workspace @echo/client dev",
