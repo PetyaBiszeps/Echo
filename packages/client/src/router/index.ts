@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '@/views/LoginView.vue'
 import InboxView from '@/views/InboxView.vue'
+import ErrorView from '@/views/ErrorView.vue'
 import useAuthStore from '@/stores/auth'
 
 const router = createRouter({
@@ -16,14 +17,23 @@ const router = createRouter({
         component: InboxView,
         meta: { requiresAuth: true }
     }, {
+        path: '/err',
+        name: 'err',
+        component: ErrorView,
+        meta: { public: true }
+    }, {
         path: '/:pathMatch(.*)*',
-        redirect: '/'
+        redirect: '/err'
     }]
 })
 
     // Guard
 router.beforeEach((to, from, next) => {
     const auth = useAuthStore()
+
+    if (to.meta.public) {
+        return next()
+    }
 
     if (to.meta.requiresAuth && !auth.isAuthenticated) {
         return next({
