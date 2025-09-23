@@ -1,5 +1,6 @@
 @forward "@/styles/root.scss";
 @forward "@/styles/theme.scss";
+@forward "@/styles/mixins.scss";
 
   // Global defaults
 @use "@/styles/base/reset.scss";
@@ -8,6 +9,7 @@
   // Views
 @use "@/styles/views/loginView.scss";
 @use "@/styles/views/indexView.scss";
+@use "@/styles/views/errorView.scss";
 
   // Components
 @use "@/styles/components/toastComponent.scss";

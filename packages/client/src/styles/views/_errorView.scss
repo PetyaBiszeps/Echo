@@ -1,0 +1,13 @@
+@use "@/styles/theme.scss" as theme;
+@use "@/styles/mixins.scss" as mixins;
+
+.errorView {
+  display: grid;
+  overflow: hidden;
+  min-height: 100dvh;
+  place-items: center;
+
+  nav {
+    @include mixins.echoCard;
+  }
+}
