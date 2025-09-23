@@ -2,9 +2,11 @@
 import InputComponent from '@/components/ui/InputComponent.vue'
 import BaseButton from '@/components/ui/base/BaseButton.vue'
 import useAuthStore from '@/stores/auth'
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 
   // Init
+const router = useRouter()
 const auth = useAuthStore()
 const errors = ref<Record<string, string[]>>({})
 
@@ -20,7 +22,10 @@ async function handleRegister() {
 
   try {
     await auth.register(input.value)
-    window.location.href = '/'
+
+    await router.push({
+      name: 'inbox'
+    })
   } catch (err) {
     if (typeof err === 'string') {
       errors.value.general = [err]
@@ -35,7 +40,10 @@ async function handleLogin() {
 
   try {
     await auth.login(input.value)
-    window.location.href = '/'
+
+    await router.push({
+      name: 'inbox'
+    })
   } catch (err) {
     if (typeof err === 'string') {
       errors.value.general = [err]
