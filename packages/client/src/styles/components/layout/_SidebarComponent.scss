@@ -1,4 +1,6 @@
+@use "@/styles/theme.scss" as theme;
+
 .sidebar {
   height: 100%;
-  background: brown;
+  background: theme.$sidebarBG;
 }
