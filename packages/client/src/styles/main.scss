@@ -6,6 +6,10 @@
 @use "@/styles/base/reset.scss";
 @use "@/styles/base/defaults.scss";
 
+  // Layouts
+@use "@/styles/layouts/authLayout.scss";
+@use "@/styles/layouts/defaultLayout.scss";
+
   // Views
 @use "@/styles/views/loginView.scss";
 @use "@/styles/views/indexView.scss";
