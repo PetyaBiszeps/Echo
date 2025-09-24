@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import notFoundHandler from '@/middleware/notFoundHandler'
 import errorHandler from '@/middleware/errorHandler'
 import express from 'express'
 import routes from '@/routes'
@@ -22,6 +23,7 @@ app.use(cors({
 app.use('/api', routes)
 
     // Middleware
+app.use(notFoundHandler)
 app.use(errorHandler)
 
     // Starting server
