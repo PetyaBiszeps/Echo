@@ -1,42 +1,35 @@
 @use "@/styles/theme.scss" as theme;
 @use "@/styles/mixins.scss" as mixins;
 
-.errorView {
-  display: grid;
-  overflow: hidden;
-  min-height: 100dvh;
-  place-items: center;
+nav {
+  @include mixins.echoCard;
 
-  nav {
-    @include mixins.echoCard;
+  header {
+    .icon {
+      gap: 0.5em;
+      display: flex;
+      margin-bottom: 1.5rem;
+      justify-content: center;
 
-    header {
-      .icon {
-        gap: 0.5em;
-        display: flex;
-        margin-bottom: 1.5rem;
-        justify-content: center;
-
-        .bar {
-          @include mixins.echoBar;
-        }
+      .bar {
+        @include mixins.echoBar;
       }
     }
+  }
 
-    main {
-      h1 {
-        gap: 0.5rem;
-        display: flex;
-        place-items: center;
+  main {
+    h1 {
+      gap: 0.5rem;
+      display: flex;
+      place-items: center;
 
-        i {
-          @include mixins.echoDot;
-        }
+      i {
+        @include mixins.echoDot;
       }
     }
+  }
 
-    footer {
-      margin-top: 1.5rem;
-    }
+  footer {
+    margin-top: 1.5rem;
   }
 }

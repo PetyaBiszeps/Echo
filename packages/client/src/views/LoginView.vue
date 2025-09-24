@@ -55,51 +55,49 @@ async function handleLogin() {
 </script>
 
 <template>
-  <div class="loginView">
-    <form @submit.prevent>
-      <header>
-        <h1>ECHO</h1>
-      </header>
+  <form @submit.prevent>
+    <header>
+      <h1>ECHO</h1>
+    </header>
 
-      <main>
-        <InputComponent
-          v-model="input.username"
+    <main>
+      <InputComponent
+        v-model="input.username"
 
-          :id="'username'"
-          :name="'username'"
-          :type="'text'"
-          :placeholder="'enter username...'"
-          :autocomplete="'username'"
-        />
+        :id="'username'"
+        :name="'username'"
+        :type="'text'"
+        :placeholder="'enter username...'"
+        :autocomplete="'username'"
+      />
 
-        <InputComponent
-          v-model="input.password"
+      <InputComponent
+        v-model="input.password"
 
-          :id="'password'"
-          :name="'password'"
-          :type="'password'"
-          :placeholder="'enter password...'"
-          :autocomplete="'current-password'"
-        />
-      </main>
+        :id="'password'"
+        :name="'password'"
+        :type="'password'"
+        :placeholder="'enter password...'"
+        :autocomplete="'current-password'"
+      />
+    </main>
 
-      <footer>
-        <BaseButton
-          :name="'Login'"
-          :type="'submit'"
+    <footer>
+      <BaseButton
+        :name="'Login'"
+        :type="'submit'"
 
-          @click="handleLogin"
-        />
+        @click="handleLogin"
+      />
 
-        <p>OR</p>
+      <p>OR</p>
 
-        <BaseButton
-          :name="'Register'"
-          :type="'submit'"
+      <BaseButton
+        :name="'Register'"
+        :type="'submit'"
 
-          @click="handleRegister"
-        />
-      </footer>
-    </form>
-  </div>
+        @click="handleRegister"
+      />
+    </footer>
+  </form>
 </template>

@@ -12,32 +12,30 @@ async function backToHome() {
 </script>
 
 <template>
-  <div class="errorView">
-    <nav>
-      <header>
-        <div :class="['icon']">
-          <div :class="['bar']" />
-          <div :class="['bar']" />
-          <div :class="['bar']" />
-          <div :class="['bar']" />
-        </div>
-      </header>
+  <nav>
+    <header>
+      <div :class="['icon']">
+        <div :class="['bar']" />
+        <div :class="['bar']" />
+        <div :class="['bar']" />
+        <div :class="['bar']" />
+      </div>
+    </header>
 
-      <main>
-        <h1>
-          <i />
-          <span>404</span>
-        </h1>
+    <main>
+      <h1>
+        <i />
+        <span>404</span>
+      </h1>
 
-        <p>Page you were looking for does not exists.</p>
-      </main>
+      <p>Page you were looking for does not exists.</p>
+    </main>
 
-      <footer>
-        <BaseButton
-          :name="'Back to Home'"
-          @click="backToHome"
-        />
-      </footer>
-    </nav>
-  </div>
+    <footer>
+      <BaseButton
+        :name="'Back to Home'"
+        @click="backToHome"
+      />
+    </footer>
+  </nav>
 </template>

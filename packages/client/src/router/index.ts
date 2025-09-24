@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import AuthLayout from '@/layouts/AuthLayout.vue'
 import LoginView from '@/views/LoginView.vue'
 import InboxView from '@/views/InboxView.vue'
 import ErrorView from '@/views/ErrorView.vue'
@@ -7,10 +8,14 @@ import useAuthStore from '@/stores/auth'
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [{
-        path: '/login',
-        name: 'login',
-        component: LoginView,
-        meta: { guest: true }
+        path: '/',
+        component: AuthLayout,
+        meta: { guest: true },
+        children: [{
+            path: '/login',
+            name: 'login',
+            component: LoginView
+        }]
     }, {
         path: '/',
         name: 'inbox',

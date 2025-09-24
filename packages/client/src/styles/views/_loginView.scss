@@ -1,37 +1,30 @@
 @use "@/styles/theme.scss" as theme;
 @use "@/styles/mixins.scss" as mixins;
 
-.loginView {
-  display: grid;
-  overflow: hidden;
-  min-height: 100dvh;
-  place-items: center;
+form {
+  @include mixins.echoCard;
 
-  form {
-    @include mixins.echoCard;
+  gap: 2.5rem;
+  width: fit-content;
+  display: flex;
+  transform: rotate(-8deg);
+  flex-direction: column;
 
-    gap: 2.5rem;
-    width: fit-content;
+  header {
+    h1 {
+      text-align: center;
+    }
+  }
+
+  main {
+    gap: 1.5rem;
     display: flex;
-    transform: rotate(-8deg);
     flex-direction: column;
+  }
 
-    header {
-      h1 {
-        text-align: center;
-      }
-    }
-
-    main {
-      gap: 1.5rem;
-      display: flex;
-      flex-direction: column;
-    }
-
-    footer {
-      p {
-        text-align: center;
-      }
+  footer {
+    p {
+      text-align: center;
     }
   }
 }
