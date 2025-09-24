@@ -12,5 +12,9 @@
 @use "@/styles/views/errorView.scss";
 
   // Components
-@use "@/styles/components/toastComponent.scss";
-@use "@/styles/components/inputComponent.scss";
+    // Layout
+@use "@/styles/components/layout/SidebarComponent.scss";
+
+    // UI
+@use "@/styles/components/ui/toastComponent.scss";
+@use "@/styles/components/ui/inputComponent.scss";
