@@ -12,7 +12,7 @@ async function backToHome() {
 </script>
 
 <template>
-  <nav>
+  <nav :class="['errorView']">
     <header>
       <div :class="['icon']">
         <div :class="['bar']" />

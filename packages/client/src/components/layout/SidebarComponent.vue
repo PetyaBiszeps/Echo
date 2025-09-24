@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <aside>
+  <aside :class="['sidebar']">
     <nav />
   </aside>
 </template>

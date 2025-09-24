@@ -55,7 +55,10 @@ async function handleLogin() {
 </script>
 
 <template>
-  <form @submit.prevent>
+  <form
+    :class="['loginView']"
+    @submit.prevent
+  >
     <header>
       <h1>ECHO</h1>
     </header>

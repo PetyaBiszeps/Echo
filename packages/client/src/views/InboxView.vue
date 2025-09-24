@@ -1,9 +1,5 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  <div>
+  <main :class="['inboxView']">
     <h1>Inbox Page</h1>
-  </div>
+  </main>
 </template>
