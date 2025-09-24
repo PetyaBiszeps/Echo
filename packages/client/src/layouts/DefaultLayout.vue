@@ -1,7 +1,5 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  <div />
+  <div :class="['defaultLayout']">
+    <RouterView />
+  </div>
 </template>

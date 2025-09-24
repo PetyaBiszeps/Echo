@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import LoginView from '@/views/LoginView.vue'
 import InboxView from '@/views/InboxView.vue'
 import ErrorView from '@/views/ErrorView.vue'
 import useAuthStore from '@/stores/auth'
-import DefaultLayout from "@/layouts/DefaultLayout.vue"
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
