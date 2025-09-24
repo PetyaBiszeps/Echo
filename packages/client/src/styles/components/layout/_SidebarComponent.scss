@@ -17,13 +17,24 @@
 
   main {
     height: 100%;
+    padding: 0.5rem;
+    overflow: hidden;
 
     ul {
       gap: 1rem;
       display: flex;
       flex-direction: column;
 
-      li {}
+      li {
+        cursor: pointer;
+        padding: 1rem;
+        box-sizing: border-box;
+        border-radius: 0.5rem;
+
+        &:hover {
+          background: theme.$sidebarChatHover;
+        }
+      }
     }
   }
 }
