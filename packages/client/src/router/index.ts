@@ -17,13 +17,13 @@ const router = createRouter({
         component: InboxView,
         meta: { requiresAuth: true }
     }, {
-        path: '/err',
-        name: 'err',
-        component: ErrorView,
-        meta: { public: true }
-    }, {
         path: '/:pathMatch(.*)*',
-        redirect: '/err'
+        name: '404',
+        component: ErrorView,
+        meta: {
+            public: true,
+            status: 404
+        }
     }]
 })
 
