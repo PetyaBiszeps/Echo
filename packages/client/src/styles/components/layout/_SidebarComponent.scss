@@ -1,12 +1,11 @@
 @use "@/styles/theme.scss" as theme;
 
 .sidebar {
-  height: 100%;
   background: theme.$sidebarBG;
 
   header {
     width: 100%;
-    padding: 0.4rem 0.8rem 0.5rem;
+    padding: 0.5rem 0.8rem;
     position: relative;
     box-sizing: border-box;
 

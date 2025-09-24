@@ -6,7 +6,8 @@ import { ref } from 'vue'
 const search = ref<string | number>('')
 
 const members = ref<string[]>([
-    'Ya', 'Mykyta', 'Danya', 'Vlad', 'Egor', 'Dima', 'Danya'
+  'Ya', 'Mykyta', 'Danya', 'Vlad', 'Egor', 'Dima', 'Danya',
+  'Ya', 'Mykyta', 'Danya', 'Vlad', 'Egor', 'Dima', 'Danya'
 ])
 </script>
 
