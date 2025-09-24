@@ -4,31 +4,44 @@ import LoginView from '@/views/LoginView.vue'
 import InboxView from '@/views/InboxView.vue'
 import ErrorView from '@/views/ErrorView.vue'
 import useAuthStore from '@/stores/auth'
+import DefaultLayout from "@/layouts/DefaultLayout.vue"
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [{
-        path: '/',
+        path: '/login',
         component: AuthLayout,
-        meta: { guest: true },
+        meta: {
+            guest: true
+        },
         children: [{
-            path: '/login',
+            path: '',
             name: 'login',
             component: LoginView
         }]
     }, {
         path: '/',
-        name: 'inbox',
-        component: InboxView,
-        meta: { requiresAuth: true }
+        component: DefaultLayout,
+        meta: {
+            requiresAuth: true
+        },
+        children: [{
+            path: '',
+            name: 'inbox',
+            component: InboxView
+        }]
     }, {
         path: '/:pathMatch(.*)*',
-        name: '404',
-        component: ErrorView,
+        component: AuthLayout,
         meta: {
             public: true,
             status: 404
-        }
+        },
+        children: [{
+            path: '',
+            name: '404',
+            component: ErrorView
+        }]
     }]
 })
 
