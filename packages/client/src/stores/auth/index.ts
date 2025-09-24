@@ -74,6 +74,8 @@ const useAuthStore = defineStore('auth', () => {
         user, token, isAuthenticated,
         register, login, logout
     }
+}, {
+    persist: true
 })
 
 export default useAuthStore
