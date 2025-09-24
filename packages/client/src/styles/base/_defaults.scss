@@ -1,7 +1,8 @@
 @use "@/styles/theme.scss" as theme;
 
 body {
-  min-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
   background: theme.$globalBG;
 
   #app {
