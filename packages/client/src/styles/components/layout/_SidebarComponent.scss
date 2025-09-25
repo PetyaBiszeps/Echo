@@ -21,24 +21,5 @@
     flex: 1 1 auto;
     padding: 0.5rem;
     overflow: hidden;
-
-    ul {
-      gap: 1rem;
-      height: 100%;
-      display: flex;
-      overflow: scroll;
-      padding: 0 0.3rem;
-      flex-direction: column;
-
-      li {
-        cursor: pointer;
-        padding: 1rem 0.5rem;
-        border-radius: 0.5rem;
-
-        &:hover {
-          background: theme.$sidebarChatHover;
-        }
-      }
-    }
   }
 }

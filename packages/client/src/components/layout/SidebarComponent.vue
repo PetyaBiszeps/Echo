@@ -1,14 +1,10 @@
 <script setup lang="ts">
+import SidebarList from '@/components/widgets/sidebar/SidebarList.vue'
 import BaseInput from '@/components/ui/base/BaseInput.vue'
 import { ref } from 'vue'
 
   // Constants
 const search = ref<string | number>('')
-
-const members = ref<string[]>([
-  'Ya', 'Mykyta', 'Danya', 'Vlad', 'Egor', 'Dima', 'Danya',
-  'Ya', 'Mykyta', 'Danya', 'Vlad', 'Egor', 'Dima', 'Danya'
-])
 </script>
 
 <template>
@@ -33,14 +29,7 @@ const members = ref<string[]>([
     </header>
 
     <main>
-      <ul>
-        <li
-          v-for="member in members"
-          :key="member"
-        >
-          {{ member }}
-        </li>
-      </ul>
+      <SidebarList />
     </main>
   </aside>
 </template>

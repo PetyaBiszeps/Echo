@@ -19,6 +19,11 @@
     // Layout
 @use "@/styles/components/layout/SidebarComponent.scss";
 
+    // Widgets
+      // Sidebar
+@use "@/styles/components/widgets/sidebar/sidebarUser.scss";
+@use "@/styles/components/widgets/sidebar/sidebarList.scss";
+
     // UI
 @use "@/styles/components/ui/toastComponent.scss";
 @use "@/styles/components/ui/inputComponent.scss";

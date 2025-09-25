@@ -1,0 +1,11 @@
+@use "@/styles/theme.scss" as theme;
+
+.sidebarUser {
+  cursor: pointer;
+  padding: 1rem 0.5rem;
+  border-radius: 0.5rem;
+
+  &:hover {
+    background: theme.$sidebarChatHover;
+  }
+}
