@@ -8,10 +8,19 @@ const { user } = defineProps<{
 
 <template>
   <li :class="['sidebarUser']">
-    {{ user.name }}
-    {{ user.avatar }}
-    {{ user.lastMessage }}
-    {{ user.isRead }}
-    {{ user.timestamp }}
+    <img
+      src="@/assets/icons/avatar.svg"
+      :alt="user.name"
+    >
+
+    <section>
+      <h4>{{ user.name }}</h4>
+
+      <p>
+        <span :class="['message']">{{ user.lastMessage }}</span>
+
+        <span>{{ user.isRead ? '✔✔' : '✔' }}</span>
+      </p>
+    </section>
   </li>
 </template>
