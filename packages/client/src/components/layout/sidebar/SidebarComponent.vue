@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import SidebarSearch from '@/components/widgets/sidebar/SidebarSearch.vue'
 import SidebarList from '@/components/widgets/sidebar/SidebarList.vue'
-import BaseInput from '@/components/ui/base/BaseInput.vue'
 import { ref } from 'vue'
 
   // Constants
@@ -10,16 +10,14 @@ const search = ref<string | number>('')
 <template>
   <aside :class="['sidebar']">
     <header>
-      <div :class="['search']">
-        <BaseInput
-          v-model="search"
+      <SidebarSearch
+        v-model="search"
 
-          :id="'search'"
-          :name="'search'"
-          :type="'search'"
-          :placeholder="'Search'"
-        />
-      </div>
+        :id="'search'"
+        :name="'search'"
+        :type="'search'"
+        :placeholder="'Search'"
+      />
 
       <nav>
         <ul>
