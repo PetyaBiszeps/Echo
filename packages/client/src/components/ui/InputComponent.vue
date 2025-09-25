@@ -4,7 +4,18 @@ import BaseSelect from '@/components/ui/base/BaseSelect.vue'
 import BaseInput from '@/components/ui/base/BaseInput.vue'
 import { computed } from 'vue'
 
-const { id, name, mode, type, placeholder, size, variant, disabled, readonly, autocomplete } = withDefaults(defineProps<{
+const {
+  id,
+  name,
+  mode = 'input',
+  type = 'text',
+  placeholder,
+  size = 'sm',
+  variant = 'default',
+  disabled = false,
+  readonly = false,
+  autocomplete = 'off'
+} = defineProps<{
   id: string
   name: string
   mode?: 'input' | 'select' | 'multiselect'
@@ -15,15 +26,7 @@ const { id, name, mode, type, placeholder, size, variant, disabled, readonly, au
   disabled?: boolean
   readonly?: boolean
   autocomplete?: string
-}>(), {
-  mode: 'input',
-  type: 'text',
-  size: 'sm',
-  variant: 'default',
-  disabled: false,
-  readonly: false,
-  autocomplete: 'off'
-})
+}>()
 const emit = defineEmits(['focus', 'blur'])
 
   // Constants

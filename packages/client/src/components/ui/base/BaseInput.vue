@@ -1,5 +1,15 @@
 <script setup lang="ts">
-const { id, name, type, placeholder, size, variant, disabled, readonly, autocomplete } = withDefaults(defineProps<{
+const {
+  id,
+  name,
+  type = 'text',
+  placeholder,
+  size = 'sm',
+  variant = 'default',
+  disabled = false,
+  readonly = false,
+  autocomplete = 'off'
+} = defineProps<{
   id: string
   name: string
   type?: string
@@ -9,14 +19,7 @@ const { id, name, type, placeholder, size, variant, disabled, readonly, autocomp
   disabled?: boolean
   readonly?: boolean
   autocomplete?: string
-}>(), {
-  type: 'text',
-  size: 'sm',
-  variant: 'default',
-  disabled: false,
-  readonly: false,
-  autocomplete: 'off'
-})
+}>()
 const emit = defineEmits(['focus', 'blur'])
 
   // Constants
