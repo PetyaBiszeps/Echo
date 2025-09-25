@@ -1,11 +1,17 @@
 <script setup lang="ts">
-const { name } = defineProps<{
-  name: string
+import type { IUser } from '@/components/layout/sidebar/Sidebar.types'
+
+const { user } = defineProps<{
+  user: IUser
 }>()
 </script>
 
 <template>
   <li :class="['sidebarUser']">
-    {{ name }}
+    {{ user.name }}
+    {{ user.avatar }}
+    {{ user.lastMessage }}
+    {{ user.isRead }}
+    {{ user.timestamp }}
   </li>
 </template>
