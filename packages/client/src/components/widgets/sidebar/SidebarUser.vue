@@ -19,7 +19,7 @@ const { user } = defineProps<{
       <p>
         <span :class="['message']">{{ user.lastMessage }}</span>
 
-        <span>{{ user.isRead ? '✔✔' : '✔' }}</span>
+        <span :class="['status']">{{ user.isRead ? '✔✔' : '✔' }}</span>
       </p>
     </section>
   </li>
