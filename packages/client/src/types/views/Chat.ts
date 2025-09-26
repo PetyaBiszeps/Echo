@@ -1,3 +1,3 @@
 export interface IChat {
-    chatId?: string
+    chatId?: string | null
 }
