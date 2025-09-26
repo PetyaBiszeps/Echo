@@ -1,5 +1,9 @@
 import jwt from 'jsonwebtoken'
-import type { NextFunction, Request, Response } from 'express'
+import type {
+    Request,
+    Response,
+    NextFunction
+} from 'express'
 
 interface jwtPayload {
     id: string
@@ -27,13 +31,13 @@ export function AuthGuard(req: Request, res: Response, next: NextFunction) {
 
         const token = authHeader.replace('Bearer ', '')
 
-        if (!process.env.JWT_SECRET) {
+        if (!process.env.JWT_ACCESS_SECRET) {
             return res.status(500).json({
                 success: false,
                 error: 'Server configuration error'
             })
         }
-        req.user = jwt.verify(token, process.env.JWT_SECRET) as jwtPayload
+        req.user = jwt.verify(token, process.env.JWT_ACCESS_SECRET) as jwtPayload
 
         next()
     } catch (error) {

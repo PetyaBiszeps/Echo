@@ -46,7 +46,7 @@ export class AuthService {
         })
 
         const token: string = this.signToken({
-            sub: user.id
+            id: user.id
         })
 
         return {
@@ -76,7 +76,7 @@ export class AuthService {
             throw new Error('Invalid credentials. Please enter valid username and password')
         }
         const token: string = this.signToken({
-            sub: user.id
+            id: user.id
         })
 
         return {
