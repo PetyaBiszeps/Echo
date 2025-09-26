@@ -27,7 +27,7 @@ const search = ref<string | number>('')
     </header>
 
     <main>
-      <SidebarList />
+      <SidebarList :search="search" />
     </main>
   </aside>
 </template>

@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import type { IUser } from '@/components/layout/sidebar/Sidebar.types'
 import SidebarUser from '@/components/widgets/sidebar/SidebarUser.vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+
+const { search } = defineProps<{
+  search: string | number
+}>()
 
 const members = ref<IUser[]>([
   { id: 0, name: 'Ya', avatar: undefined, lastMessage: 'Hello :)', isRead: false, timestamp: undefined },
@@ -25,12 +29,38 @@ const members = ref<IUser[]>([
   { id: 18, name: 'Egor', avatar: undefined, lastMessage: 'Makes sense', isRead: false, timestamp: undefined },
   { id: 19, name: 'Egor', avatar: undefined, lastMessage: 'Will you make any changes soon? I have to know', isRead: false, timestamp: undefined }
 ])
+
+const filteredMembers = computed(() => {
+  const query = search.toString().toLowerCase().trim()
+
+  const matched = members.value.filter((member) => {
+    if (!query) {
+      return true
+    } else {
+      return member.name.toLowerCase().includes(query)
+    }
+  })
+
+  matched.sort((a, b) => {
+    const compare = a.name.localeCompare(b.name, undefined, {
+      sensitivity: 'base'
+    })
+
+    if (compare !== 0) {
+      return compare
+    } else {
+      return a.id - b.id
+    }
+  })
+
+  return matched
+})
 </script>
 
 <template>
   <ul :class="['sidebarList']">
     <SidebarUser
-      v-for="member in members"
+      v-for="member in filteredMembers"
       :key="member.id"
       :user="member"
     />
