@@ -41,17 +41,19 @@ const filteredMembers = computed(() => {
     }
   })
 
-  matched.sort((a, b) => {
-    const compare = a.name.localeCompare(b.name, undefined, {
-      sensitivity: 'base'
-    })
+  if (query) {
+    matched.sort((a, b) => {
+      const compare = a.name.localeCompare(b.name, undefined, {
+        sensitivity: 'base'
+      })
 
-    if (compare !== 0) {
-      return compare
-    } else {
-      return a.id - b.id
-    }
-  })
+      if (compare !== 0) {
+        return compare
+      } else {
+        return a.id - b.id
+      }
+    })
+  }
 
   return matched
 })
