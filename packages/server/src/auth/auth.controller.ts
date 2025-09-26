@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { AuthService } from '@/login/auth.service'
+import { AuthService } from '@/auth/auth.service'
 import type {
     Login,
     Register
