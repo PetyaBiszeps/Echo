@@ -1,4 +1,4 @@
-import type { IUser } from '@/models/chat'
+import type { IUser } from '../chat'
 
 export interface IRegister {
     username: string
