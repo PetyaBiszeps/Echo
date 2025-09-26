@@ -2,9 +2,9 @@ import jwt from 'jsonwebtoken'
 import prisma from '@/prisma'
 import argon2 from 'argon2'
 import type {
-    Register,
-    Login,
-    AuthResponse
+    IRegister,
+    ILogin,
+    IAuthResponse
 } from '@echo/shared'
 
 export class AuthService {
@@ -23,7 +23,7 @@ export class AuthService {
         this.jwtSecret = opts?.jwtSecret ?? process.env.JWT_ACCESS_SECRET ?? 'FA2JF3SA4JI14358VD0TQ1EET0 '
     }
 
-    async register(data: Register): Promise<AuthResponse> {
+    async register(data: IRegister): Promise<IAuthResponse> {
         if (!data.username || !data.password) {
             throw new Error('Invalid data. Please enter a username and password')
         }
@@ -57,7 +57,7 @@ export class AuthService {
         }
     }
 
-    async login(data: Login): Promise<AuthResponse> {
+    async login(data: ILogin): Promise<IAuthResponse> {
         if (!data.username || !data.password) {
             throw new Error('Invalid data. Please enter a username and password')
         }
