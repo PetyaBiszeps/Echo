@@ -11,8 +11,8 @@
 @use "@/styles/layouts/defaultLayout.scss";
 
   // Views
+@use "@/styles/views/chatView.scss";
 @use "@/styles/views/loginView.scss";
-@use "@/styles/views/inboxView.scss";
 @use "@/styles/views/errorView.scss";
 
   // Components

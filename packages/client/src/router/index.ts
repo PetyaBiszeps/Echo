@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import LoginView from '@/views/LoginView.vue'
-import InboxView from '@/views/InboxView.vue'
 import ErrorView from '@/views/ErrorView.vue'
+import ChatView from '@/views/ChatView.vue'
 import useAuthStore from '@/stores/auth'
 
 const router = createRouter({
@@ -28,7 +28,7 @@ const router = createRouter({
         children: [{
             path: '',
             name: 'inbox',
-            component: InboxView
+            component: ChatView
         }]
     }, {
         path: '/:pathMatch(.*)*',

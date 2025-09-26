@@ -1,7 +1,7 @@
 @use "@/styles/theme.scss" as theme;
 @use "@/styles/mixins.scss" as mixins;
 
-.inboxView {
+.chatView {
   display: grid;
   position: relative;
   background: theme.$chatBG;
