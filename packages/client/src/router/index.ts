@@ -1,23 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
-import LoginView from '@/views/LoginView.vue'
 import ErrorView from '@/views/ErrorView.vue'
 import ChatView from '@/views/ChatView.vue'
+import AuthView from '@/views/AuthView.vue'
 import useAuthStore from '@/stores/auth'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [{
-        path: '/login',
+        path: '/auth',
         component: AuthLayout,
         meta: {
             guest: true
         },
         children: [{
             path: '',
-            name: 'login',
-            component: LoginView
+            name: 'auth',
+            component: AuthView
         }]
     }, {
         path: '/',
@@ -60,7 +60,7 @@ router.beforeEach((to, from, next) => {
 
     if (to.meta.requiresAuth && !auth.isAuthenticated) {
         return next({
-            name: 'login'
+            name: 'auth'
         })
     }
 
