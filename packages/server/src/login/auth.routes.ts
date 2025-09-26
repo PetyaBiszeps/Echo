@@ -1,16 +1,16 @@
-import { RegisterController, LoginController } from '@/login/login.controller'
+import { RegisterController, LoginController } from '@/login/auth.controller'
 import { RegisterSchema, LoginSchema } from '@echo/shared'
 import { Auth } from '@/middleware/authValidation'
 import { Router } from 'express'
 
-const authRouter = Router()
+const router = Router()
 
-authRouter.post('/register',
+router.post('/register',
     Auth(RegisterSchema),
     RegisterController)
 
-authRouter.post('/login',
+router.post('/login',
     Auth(LoginSchema),
     LoginController)
 
-export default authRouter
+export default router

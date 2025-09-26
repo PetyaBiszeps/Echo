@@ -1,8 +1,8 @@
-import loginRoutes from '@/login/login.routes'
+import authRoutes from '@/login/auth.routes'
 import { Router } from 'express'
 
 const router = Router()
 
-router.use('/auth', loginRoutes)
+router.use('/auth', authRoutes)
 
 export default router
