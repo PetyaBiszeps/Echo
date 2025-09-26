@@ -1,7 +1,11 @@
-import type { IAuthUser, IAuthLogin, IAuthTokens } from '@/stores/auth/types'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import axios, { AxiosError } from 'axios'
+import type {
+    IAuthUser,
+    IAuthLogin,
+    IAuthTokens
+} from '@/types'
 
 const useAuthStore = defineStore('auth', () => {
     const user = ref<IAuthUser | null>(null)
