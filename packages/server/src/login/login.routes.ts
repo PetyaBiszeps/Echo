@@ -3,7 +3,7 @@ import { RegisterSchema, LoginSchema } from '@echo/shared'
 import { Auth } from '@/middleware/authValidation'
 import { Router } from 'express'
 
-const authRouter: Router = Router()
+const authRouter = Router()
 
 authRouter.post('/register',
     Auth(RegisterSchema),
