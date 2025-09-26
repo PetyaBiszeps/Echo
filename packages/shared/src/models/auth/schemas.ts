@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import type {
-    Register,
-    Login
+    IRegister,
+    ILogin
 } from './types'
 
 export const RegisterSchema = z.object({
@@ -12,7 +12,7 @@ export const RegisterSchema = z.object({
     password: z.string()
         .min(8)
         .max(100)
-}) satisfies z.ZodType<Register>
+}) satisfies z.ZodType<IRegister>
 
 export const LoginSchema = z.object({
     username: z.string()
@@ -22,4 +22,4 @@ export const LoginSchema = z.object({
     password: z.string()
         .min(8)
         .max(100)
-}) satisfies z.ZodType<Login>
+}) satisfies z.ZodType<ILogin>

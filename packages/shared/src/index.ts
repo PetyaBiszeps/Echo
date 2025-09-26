@@ -1,2 +1,2 @@
-export * from './schemas/auth'
-export * from './schemas/chat'
+export * from './models/auth'
+export * from './models/chat'
