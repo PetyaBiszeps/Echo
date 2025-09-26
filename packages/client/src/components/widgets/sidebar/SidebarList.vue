@@ -10,26 +10,26 @@ const { search } = defineProps<{
 }>()
 
 const members = ref<IUser[]>([
-  { id: 0, name: 'Ya', avatar: undefined, lastMessage: 'Hello :)', isRead: false, timestamp: undefined },
-  { id: 1, name: 'Mykyta', avatar: undefined, lastMessage: 'Lets go!', isRead: true, timestamp: undefined },
-  { id: 2, name: 'Vlad', avatar: undefined, lastMessage: 'Dunno brutha', isRead: false, timestamp: undefined },
-  { id: 3, name: 'Egor', avatar: undefined, lastMessage: 'Makes sense', isRead: false, timestamp: undefined },
-  { id: 4, name: 'Egor', avatar: undefined, lastMessage: 'Will you make any changes soon? I have to know', isRead: false, timestamp: undefined },
-  { id: 5, name: 'Ya', avatar: undefined, lastMessage: 'Hello :)', isRead: false, timestamp: undefined },
-  { id: 6, name: 'Mykyta', avatar: undefined, lastMessage: 'Lets go!', isRead: true, timestamp: undefined },
-  { id: 7, name: 'Vlad', avatar: undefined, lastMessage: 'Dunno brutha', isRead: false, timestamp: undefined },
-  { id: 8, name: 'Egor', avatar: undefined, lastMessage: 'Makes sense', isRead: false, timestamp: undefined },
-  { id: 9, name: 'Egor', avatar: undefined, lastMessage: 'Will you make any changes soon? I have to know', isRead: false, timestamp: undefined },
-  { id: 10, name: 'Ya', avatar: undefined, lastMessage: 'Hello :)', isRead: false, timestamp: undefined },
-  { id: 11, name: 'Mykyta', avatar: undefined, lastMessage: 'Lets go!', isRead: true, timestamp: undefined },
-  { id: 12, name: 'Vlad', avatar: undefined, lastMessage: 'Dunno brutha', isRead: false, timestamp: undefined },
-  { id: 13, name: 'Egor', avatar: undefined, lastMessage: 'Makes sense', isRead: false, timestamp: undefined },
-  { id: 14, name: 'Egor', avatar: undefined, lastMessage: 'Will you make any changes soon? I have to know', isRead: false, timestamp: undefined },
-  { id: 15, name: 'Ya', avatar: undefined, lastMessage: 'Hello :)', isRead: false, timestamp: undefined },
-  { id: 16, name: 'Mykyta', avatar: undefined, lastMessage: 'Lets go!', isRead: true, timestamp: undefined },
-  { id: 17, name: 'Vlad', avatar: undefined, lastMessage: 'Dunno brutha', isRead: false, timestamp: undefined },
-  { id: 18, name: 'Egor', avatar: undefined, lastMessage: 'Makes sense', isRead: false, timestamp: undefined },
-  { id: 19, name: 'Egor', avatar: undefined, lastMessage: 'Will you make any changes soon? I have to know', isRead: false, timestamp: undefined }
+  { id: 0, title: 'Ya', avatar: undefined, lastMessage: 'Hello :)', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 1, title: 'Mykyta', avatar: undefined, lastMessage: 'Lets go!', isRead: true, timestamp: undefined, unreadCount: 0 },
+  { id: 2, title: 'Vlad', avatar: undefined, lastMessage: 'Dunno brutha', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 3, title: 'Egor', avatar: undefined, lastMessage: 'Makes sense', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 4, title: 'Egor', avatar: undefined, lastMessage: 'Will you make any changes soon? I have to know', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 5, title: 'Ya', avatar: undefined, lastMessage: 'Hello :)', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 6, title: 'Mykyta', avatar: undefined, lastMessage: 'Lets go!', isRead: true, timestamp: undefined, unreadCount: 0 },
+  { id: 7, title: 'Vlad', avatar: undefined, lastMessage: 'Dunno brutha', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 8, title: 'Egor', avatar: undefined, lastMessage: 'Makes sense', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 9, title: 'Egor', avatar: undefined, lastMessage: 'Will you make any changes soon? I have to know', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 10, title: 'Ya', avatar: undefined, lastMessage: 'Hello :)', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 11, title: 'Mykyta', avatar: undefined, lastMessage: 'Lets go!', isRead: true, timestamp: undefined, unreadCount: 0 },
+  { id: 12, title: 'Vlad', avatar: undefined, lastMessage: 'Dunno brutha', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 13, title: 'Egor', avatar: undefined, lastMessage: 'Makes sense', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 14, title: 'Egor', avatar: undefined, lastMessage: 'Will you make any changes soon? I have to know', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 15, title: 'Ya', avatar: undefined, lastMessage: 'Hello :)', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 16, title: 'Mykyta', avatar: undefined, lastMessage: 'Lets go!', isRead: true, timestamp: undefined, unreadCount: 0 },
+  { id: 17, title: 'Vlad', avatar: undefined, lastMessage: 'Dunno brutha', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 18, title: 'Egor', avatar: undefined, lastMessage: 'Makes sense', isRead: false, timestamp: undefined, unreadCount: 0 },
+  { id: 19, title: 'Egor', avatar: undefined, lastMessage: 'Will you make any changes soon? I have to know', isRead: false, timestamp: undefined, unreadCount: 0 }
 ])
 
 const filteredMembers = computed(() => {
@@ -39,13 +39,13 @@ const filteredMembers = computed(() => {
     if (!query) {
       return true
     } else {
-      return member.name.toLowerCase().includes(query)
+      return member.title.toLowerCase().includes(query)
     }
   })
 
   if (query) {
     matched.sort((a, b) => {
-      const compare = a.name.localeCompare(b.name, undefined, {
+      const compare = a.title.localeCompare(b.title, undefined, {
         sensitivity: 'base'
       })
 

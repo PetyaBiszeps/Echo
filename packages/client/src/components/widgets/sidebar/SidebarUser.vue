@@ -12,11 +12,11 @@ const { user } = defineProps<{
   <li :class="['sidebarUser']">
     <img
       src="@/assets/icons/avatar.svg"
-      :alt="user.name"
+      :alt="user.title"
     >
 
     <section>
-      <h4>{{ user.name }}</h4>
+      <h4>{{ user.title }}</h4>
 
       <p>
         <span :class="['message']">{{ user.lastMessage }}</span>

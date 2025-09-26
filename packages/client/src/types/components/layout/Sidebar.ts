@@ -1,8 +1,9 @@
 export interface IUser {
     id: number
-    name: string
+    title: string
     avatar?: string
     lastMessage: string
     isRead: boolean
     timestamp?: string
+    unreadCount: number
 }
