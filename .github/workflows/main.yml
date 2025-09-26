@@ -17,8 +17,72 @@ on:
       - '.github/workflows/main.yml'
 
 jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      client: ${{ steps.changes.outputs.client }}
+      server: ${{ steps.changes.outputs.server }}
+      shared: ${{ steps.changes.outputs.shared }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          base: ${{ github.event.pull_request.base.ref || github.ref }}
+          filters: |
+            client:
+              - 'packages/client/**'
+            server:
+              - 'packages/server/**'
+            shared:
+              - 'packages/shared/**'
+
+  client:
+    name: Frontend CI
+    needs: changes
+    if: ${{ needs.changes.outputs.client == 'true' }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: main-ci-frontend-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Debug Node.js & Yarn
+        run: |
+          echo "Node: $(node -v)"
+          echo "Yarn: $(yarn -v)"
+
+      - name: Install monorepo dependencies
+        run: yarn install --no-lockfile
+
+      - name: Build shared
+        run: yarn workspace @echo/shared build
+
+      - name: Build client
+        run: |
+          if yarn --silent workspaces list | grep -q "@echo/client"; then 
+            yarn workspace @echo/client build
+          else
+            echo "No @echo/client workspace found - skipping..."
+          fi
+
   server:
     name: Backend CI
+    needs: changes
+    if: ${{ needs.changes.outputs.server == 'true' }}
     runs-on: ubuntu-latest
     concurrency:
       group: main-ci-backend-${{ github.ref }}
@@ -70,37 +134,3 @@ jobs:
 
       - name: Build server
         run: yarn workspace @echo/server build
-
-  client:
-    name: Frontend CI
-    runs-on: ubuntu-latest
-    concurrency:
-      group: main-ci-frontend-${{ github.ref }}
-      cancel-in-progress: true
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.x'
-
-      - name: Debug Node.js & Yarn
-        run: |
-          echo "Node: $(node -v)"
-          echo "Yarn: $(yarn -v)"
-
-      - name: Install monorepo dependencies
-        run: yarn install --no-lockfile
-
-      - name: Build shared
-        run: yarn workspace @echo/shared build
-
-      - name: Build client
-        run: |
-          if yarn --silent workspaces list | grep -q "@echo/client"; then 
-            yarn workspace @echo/client build
-          else
-            echo "No @echo/client workspace found - skipping..."
-          fi
