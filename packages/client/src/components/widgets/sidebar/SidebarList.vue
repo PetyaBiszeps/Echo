@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import type { IUser } from '@/components/layout/sidebar/Sidebar.types'
 import SidebarUser from '@/components/widgets/sidebar/SidebarUser.vue'
 import { ref, computed } from 'vue'
+import type {
+  IUser
+} from '@/types'
 
 const { search } = defineProps<{
   search: string | number

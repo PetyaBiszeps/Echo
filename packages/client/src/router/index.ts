@@ -29,6 +29,11 @@ const router = createRouter({
             path: '',
             name: 'inbox',
             component: ChatView
+        }, {
+            path: 'chat/:chatId',
+            name: 'chat',
+            component: ChatView,
+            props: true
         }]
     }, {
         path: '/:pathMatch(.*)*',

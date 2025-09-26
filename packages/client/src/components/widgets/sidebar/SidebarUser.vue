@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import type { IUser } from '@/components/layout/sidebar/Sidebar.types'
+import type {
+  IUser
+} from '@/types'
 
 const { user } = defineProps<{
   user: IUser
