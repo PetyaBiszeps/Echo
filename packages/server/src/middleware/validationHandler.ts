@@ -5,7 +5,7 @@ import type {
     NextFunction
 } from 'express'
 
-export function Auth(schema: z.ZodTypeAny) {
+export function Validate(schema: z.ZodTypeAny) {
     return (req: Request, res: Response, next: NextFunction) => {
         const result = schema.safeParse(req.body)
 
