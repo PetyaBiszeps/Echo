@@ -1,5 +1,5 @@
+import prisma from '@/db/prisma'
 import jwt from 'jsonwebtoken'
-import prisma from '@/prisma'
 import argon2 from 'argon2'
 import type {
     IRegister,

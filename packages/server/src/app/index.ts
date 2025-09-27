@@ -1,8 +1,8 @@
 import 'dotenv/config'
 import notFoundHandler from '@/middleware/notFoundHandler'
 import errorHandler from '@/middleware/errorHandler'
+import routes from '@/app/routes'
 import express from 'express'
-import routes from '@/routes'
 import cors from 'cors'
 
     // Constants
