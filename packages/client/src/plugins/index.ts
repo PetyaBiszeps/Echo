@@ -1,6 +1,10 @@
-import type { App, Plugin } from 'vue'
+import http from '@/plugins/http'
+import type {
+    App,
+    Plugin
+} from 'vue'
 
-const plugin: Plugin[] = []
+const plugin: Plugin[] = [http]
 
 export default {
     install (app: App): void {

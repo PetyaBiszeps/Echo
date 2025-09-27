@@ -9,5 +9,5 @@
       "@echo/shared": ["../shared/src/index.ts"]
     }
   },
-  "include": ["src", "env.d.ts", "vite.config.ts", "vitest.config.ts"]
+  "include": ["src", "env.d.ts", "vite.config.ts", "vitest.config.ts", "src/types/**/*.d.ts"]
 }
