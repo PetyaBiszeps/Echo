@@ -1,5 +1,5 @@
-import authRoutes from '@/auth/auth.routes'
-import chatRoutes from '@/chat/chat.routes'
+import authRoutes from '@/modules/auth/auth.routes'
+import chatRoutes from '@/modules/chat/chat.routes'
 import { Router } from 'express'
 
 const router = Router()

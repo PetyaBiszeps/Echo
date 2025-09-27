@@ -1,4 +1,4 @@
-import { GetChatController } from '@/chat/chat.controller'
+import { GetChatController } from '@/modules/chat/chat.controller'
 import { AuthGuard } from '@/middleware/authGuard'
 import { Router } from 'express'
 

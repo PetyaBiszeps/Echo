@@ -1,4 +1,4 @@
-import { ChatService } from '@/chat/chat.service'
+import { ChatService } from '@/modules/chat/chat.service'
 import type {
     Request,
     Response,

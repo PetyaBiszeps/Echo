@@ -1,4 +1,4 @@
-import { RegisterController, LoginController } from '@/auth/auth.controller'
+import { RegisterController, LoginController } from '@/modules/auth/auth.controller'
 import { RegisterSchema, LoginSchema } from '@echo/shared'
 import { Auth } from '@/middleware/authValidation'
 import { Router } from 'express'
