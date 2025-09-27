@@ -1,5 +1,5 @@
 import useAuthStore from '@/stores/auth'
-import axios from 'axios'
+import http from '@/constants/http'
 import type {
     App,
     Plugin
@@ -7,15 +7,6 @@ import type {
 
 export default {
     install(app: App) {
-        const http = axios.create({
-            baseURL: import.meta.env.VITE_APP_API_URL,
-            headers: {
-                'content-type': 'application/json'
-            },
-            withCredentials: true,
-            timeout: 10000
-        })
-
         const auth = useAuthStore()
 
         http.interceptors.request.use((config) => {

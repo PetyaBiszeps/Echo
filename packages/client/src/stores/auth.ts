@@ -1,6 +1,7 @@
+import type { AxiosError } from 'axios'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import axios, { AxiosError, type AxiosInstance } from 'axios'
+import http from '@/constants/http'
 import type {
     IAuthUser,
     IAuthLogin,
@@ -17,21 +18,17 @@ const useAuthStore = defineStore('auth', () => {
 
     async function register(data: IAuthLogin) {
         try {
-            const response = await axios.post<{
+            const { data: result } = await http.post<{
                 user: IAuthUser,
                 access_token: string
-            }>(`${import.meta.env.VITE_APP_API_URL}/auth/register`, {
+            }>('/auth/register', {
                 username: data.username,
                 password: data.password
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             })
 
-            user.value = response.data.user
+            user.value = result.user
             token.value = {
-                accessToken: response.data.access_token
+                accessToken: result.access_token
             }
         } catch (err) {
             const error = err as AxiosError<{
@@ -44,21 +41,17 @@ const useAuthStore = defineStore('auth', () => {
 
     async function login(data: IAuthLogin) {
         try {
-            const response = await axios.post<{
+            const { data: result } = await http.post<{
                 user: IAuthUser,
                 access_token: string
-            }>(`${import.meta.env.VITE_APP_API_URL}/auth/login`, {
+            }>('/auth/login', {
                 username: data.username,
                 password: data.password
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
             })
 
-            user.value = response.data.user
+            user.value = result.user
             token.value = {
-                accessToken: response.data.access_token
+                accessToken: result.access_token
             }
         } catch (err) {
             const error = err as AxiosError<{
