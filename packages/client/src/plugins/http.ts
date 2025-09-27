@@ -1,20 +1,21 @@
 import useAuthStore from '@/stores/auth'
 import axios from 'axios'
 import type {
-    App
+    App,
+    Plugin
 } from 'vue'
-
-export const http = axios.create({
-    baseURL: import.meta.env.VITE_APP_API_URL,
-    headers: {
-        'content-type': 'application/json'
-    },
-    withCredentials: true,
-    timeout: 10000
-})
 
 export default {
     install(app: App) {
+        const http = axios.create({
+            baseURL: import.meta.env.VITE_APP_API_URL,
+            headers: {
+                'content-type': 'application/json'
+            },
+            withCredentials: true,
+            timeout: 10000
+        })
+
         const auth = useAuthStore()
 
         http.interceptors.request.use((config) => {
@@ -39,4 +40,4 @@ export default {
 
         app.config.globalProperties.$http = http
     }
-}
+} satisfies Plugin
