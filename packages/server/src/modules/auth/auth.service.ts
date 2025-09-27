@@ -1,5 +1,6 @@
 import prisma from '@/db/prisma'
 import jwt from 'jsonwebtoken'
+import env from '@/config/env'
 import argon2 from 'argon2'
 import type {
     IRegister,
@@ -20,7 +21,7 @@ export class AuthService {
     }
 
     constructor(opts?: { jwtSecret?: string }) {
-        this.jwtSecret = opts?.jwtSecret ?? process.env.JWT_ACCESS_SECRET ?? 'FA2JF3SA4JI14358VD0TQ1EET0 '
+        this.jwtSecret = opts?.jwtSecret ?? env.JWT_ACCESS_SECRET ?? 'FA2JF3SA4JI14358VD0TQ1EET0 '
     }
 
     async register(data: IRegister): Promise<IAuthResponse> {

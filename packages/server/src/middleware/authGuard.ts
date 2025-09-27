@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import env from '@/config/env'
 import type {
     Request,
     Response,
@@ -31,13 +32,13 @@ export function AuthGuard(req: Request, res: Response, next: NextFunction) {
 
         const token = authHeader.replace('Bearer ', '')
 
-        if (!process.env.JWT_ACCESS_SECRET) {
+        if (!env.JWT_ACCESS_SECRET) {
             return res.status(500).json({
                 success: false,
                 error: 'Server configuration error'
             })
         }
-        req.user = jwt.verify(token, process.env.JWT_ACCESS_SECRET) as jwtPayload
+        req.user = jwt.verify(token, env.JWT_ACCESS_SECRET) as jwtPayload
 
         next()
     } catch (error) {
