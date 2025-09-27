@@ -11,5 +11,5 @@
       "@echo/shared": ["../shared/src/index.ts"]
     }
   },
-  "include": ["src", "vitest.config.ts"]
+  "include": ["src", "vite.config.mts", "vitest.config.ts", "src/types/**/*.d.ts"]
 }

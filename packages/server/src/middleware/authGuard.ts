@@ -1,3 +1,4 @@
+import type { IJWTPayload } from '@/types'
 import jwt from 'jsonwebtoken'
 import env from '@/config/env'
 import type {
@@ -5,19 +6,6 @@ import type {
     Response,
     NextFunction
 } from 'express'
-
-interface jwtPayload {
-    id: string
-    username: string
-    iat?: number
-    exp?: number
-}
-
-declare module 'express-serve-static-core' {
-    interface Request {
-        user?: jwtPayload
-    }
-}
 
 export function AuthGuard(req: Request, res: Response, next: NextFunction) {
     try {
@@ -38,7 +26,7 @@ export function AuthGuard(req: Request, res: Response, next: NextFunction) {
                 error: 'Server configuration error'
             })
         }
-        req.user = jwt.verify(token, env.JWT_ACCESS_SECRET) as jwtPayload
+        req.user = jwt.verify(token, env.JWT_ACCESS_SECRET) as IJWTPayload
 
         next()
     } catch (error) {
