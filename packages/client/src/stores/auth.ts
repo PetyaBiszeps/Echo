@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, type AxiosInstance } from 'axios'
 import type {
     IAuthUser,
     IAuthLogin,
