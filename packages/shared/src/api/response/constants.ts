@@ -3,3 +3,7 @@ export const ErrorCodes = {
     UNAUTHORIZED: 'UNAUTHORIZED',
     VALIDATION_ERROR: 'VALIDATION_ERROR'
 } as const
+
+export const SuccessCodes = {
+
+} as const
