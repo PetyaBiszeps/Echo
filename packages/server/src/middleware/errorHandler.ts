@@ -6,8 +6,6 @@ import type {
 } from 'express'
 
 const errorHandler: ErrorRequestHandler = (err: unknown, _req: Request, res: Response, next: NextFunction) => {
-    console.error('Unhandled err: ', err)
-
     if (res.headersSent) {
         return next(err as string)
     }

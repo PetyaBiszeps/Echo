@@ -1,6 +1,8 @@
+export type IResponse = IErrorAPI | ISuccessAPI
+
 export interface IErrorAPI {
     ok: false
-    error: {
+    data: {
         code: string
         message: string
         details?: unknown
