@@ -1,19 +1,17 @@
 export type IResponse = IErrorAPI | ISuccessAPI
 
-export interface IErrorAPI {
+export interface IErrorAPI<T = unknown> {
     ok: false
-    data: {
-        code: string
-        message: string
-        details?: unknown
-    }
+    data: IPayloadAPI<T>
 }
 
-export interface ISuccessAPI {
+export interface ISuccessAPI<T = unknown> {
     ok: true
-    data: {
-        code: string
-        message: string
-        details?: unknown
-    }
+    data: IPayloadAPI<T>
+}
+
+export interface IPayloadAPI<T = unknown> {
+    code: string
+    message: string
+    details?: T
 }

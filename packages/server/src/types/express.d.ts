@@ -1,4 +1,4 @@
-import type { IErrorAPI, ISuccessAPI } from '@echo/shared'
+import type { IPayloadAPI } from '@echo/shared'
 import type {
     IJWTPayload
 } from '@/types/auth'
@@ -10,8 +10,8 @@ declare global {
         }
 
         interface Response {
-            fail: (data: IErrorAPI['data'], statusCode?: number) => Response
-            ok: (data: ISuccessAPI['data'], statusCode?: number) => Response
+            fail: (data: IPayloadAPI, statusCode?: number) => Response
+            ok: (data: IPayloadAPI, statusCode?: number) => Response
         }
     }
 }
