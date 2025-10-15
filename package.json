@@ -16,13 +16,13 @@
     "lint": "yarn eslint packages --ext .ts,.js,.vue --fix"
   },
   "devDependencies": {
-    "@types/node": "^24.5.2",
-    "eslint": "^9.36.0",
+    "@types/node": "^24.7.2",
+    "eslint": "^9.37.0",
     "eslint-plugin-n": "^17.23.1",
-    "eslint-plugin-vue": "^10.5.0",
-    "jiti": "^2.6.0",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.44.1",
+    "eslint-plugin-vue": "^10.5.1",
+    "jiti": "^2.6.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.1",
     "vue-eslint-parser": "^10.2.0"
   }
 }
