@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction, Handler } from 'express'
-import { ErrorCodes } from '@echo/shared'
+import { ErrorMessages } from '@echo/shared'
 import { ZodError } from 'zod'
 import {
     HttpException,
@@ -24,11 +24,11 @@ const errorHandler = (method: Handler) => {
                     code: issue.code
                 }))
 
-                exception = new UnprocessableEntityException(ErrorCodes.UNPROCESSABLE_ENTITY, ZodErrors)
+                exception = new UnprocessableEntityException(ErrorMessages.UNPROCESSABLE_ENTITY, ZodErrors)
             } else if (err instanceof SyntaxError) {
-                exception = new BadRequestException(ErrorCodes.BAD_REQUEST, err)
+                exception = new BadRequestException(ErrorMessages.BAD_REQUEST, err)
             } else {
-                exception = new InternalException(ErrorCodes.INTERNAL_SERVER_ERROR, err)
+                exception = new InternalException(ErrorMessages.INTERNAL_SERVER_ERROR, err)
             }
 
             return res.status(500).json({

@@ -7,6 +7,11 @@ export const ErrorCodes = {
     INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR'
 } as const
 
-export const SuccessCodes = {
-
+export const ErrorMessages = {
+    CONFLICT: 'Conflict',
+    BAD_REQUEST: 'Bad Request',
+    UNAUTHORIZED: 'Unauthorized',
+    VALIDATION_ERROR: 'Validation Error',
+    UNPROCESSABLE_ENTITY: 'Unprocessable Entity',
+    INTERNAL_SERVER_ERROR: 'Internal Server Error'
 } as const
