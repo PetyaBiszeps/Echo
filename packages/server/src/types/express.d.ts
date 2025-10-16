@@ -11,7 +11,7 @@ declare global {
 
         interface Response {
             fail: (data: IPayloadAPI, statusCode?: number) => Response
-            ok: (data: IPayloadAPI, statusCode?: number) => Response
+            success: (data: IPayloadAPI, statusCode?: number) => Response
         }
     }
 }

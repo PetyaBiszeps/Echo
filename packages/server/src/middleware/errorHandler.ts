@@ -29,8 +29,7 @@ function errorHandler(err: unknown, _req: Request, res: Response, next: NextFunc
     }
 
     return res.status(exception.status).json({
-        ok: false,
-        status: exception.status,
+        success: false,
         data: exception.payload
     })
 }
