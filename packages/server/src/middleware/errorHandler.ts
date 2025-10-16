@@ -18,7 +18,13 @@ const errorHandler = (method: Handler) => {
             if (err instanceof HttpException) {
                 exception = err
             } else if (err instanceof ZodError) {
-                exception = new UnprocessableEntityException(ErrorCodes.UNPROCESSABLE_ENTITY, err)
+                const ZodErrors = err.issues.map(issue => ({
+                    path: issue.path.join('.'),
+                    message: issue.message,
+                    code: issue.code
+                }))
+
+                exception = new UnprocessableEntityException(ErrorCodes.UNPROCESSABLE_ENTITY, ZodErrors)
             } else if (err instanceof SyntaxError) {
                 exception = new BadRequestException(ErrorCodes.BAD_REQUEST, err)
             } else {
