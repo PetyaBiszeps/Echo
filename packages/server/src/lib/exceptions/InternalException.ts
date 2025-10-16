@@ -5,7 +5,7 @@ import type {
 } from '@echo/shared'
 
 export class InternalException<T = unknown> extends HttpException<T> {
-    constructor(message = 'Internal Server Error', details?: T) {
+    constructor(message: string, details?: T) {
         const payload: IPayloadAPI<T> = {
             code: ErrorCodes.INTERNAL_SERVER_ERROR,
             message: message,

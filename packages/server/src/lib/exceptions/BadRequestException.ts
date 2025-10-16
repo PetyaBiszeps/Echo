@@ -5,7 +5,7 @@ import type {
 } from '@echo/shared'
 
 export class BadRequestException<T = unknown> extends HttpException<T> {
-    constructor(message = 'Bad Request', details?: T) {
+    constructor(message: string, details?: T) {
         const payload: IPayloadAPI<T> = {
             code: ErrorCodes.BAD_REQUEST,
             message: message,

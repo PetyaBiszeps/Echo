@@ -5,7 +5,7 @@ import type {
 } from '@echo/shared'
 
 export class UnprocessableEntityException<T = unknown> extends HttpException<T> {
-    constructor(message = 'Unprocessable Entity', details?: T) {
+    constructor(message: string, details?: T) {
         const payload: IPayloadAPI<T> = {
             code: ErrorCodes.UNPROCESSABLE_ENTITY,
             message: message,
