@@ -7,6 +7,15 @@ export const ErrorCodes = {
     INTERNAL_SERVER_ERROR: 'INTERNAL_SERVER_ERROR'
 } as const
 
+export const ErrorStatuses = {
+    CONFLICT: 409,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    VALIDATION_ERROR: 400,
+    UNPROCESSABLE_ENTITY: 422,
+    INTERNAL_SERVER_ERROR: 500
+} as const
+
 export const ErrorMessages = {
     CONFLICT: 'Conflict',
     BAD_REQUEST: 'Bad Request',
