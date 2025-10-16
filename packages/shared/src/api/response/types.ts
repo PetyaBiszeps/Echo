@@ -13,5 +13,5 @@ export interface ISuccessAPI<T = unknown> {
 export interface IPayloadAPI<T = unknown> {
     code: string
     message: string
-    details?: T
+    details?: T | null
 }
