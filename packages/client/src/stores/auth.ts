@@ -32,6 +32,11 @@ const useAuthStore = defineStore('auth', () => {
             token.value = {
                 accessToken: result.access_token
             }
+
+            toaster.addToaster({
+                type: 'success',
+                message: 'Register successfully'
+            })
         } catch (err) {
             toaster.addToaster({
                 type: 'error',
@@ -54,6 +59,11 @@ const useAuthStore = defineStore('auth', () => {
             token.value = {
                 accessToken: result.access_token
             }
+
+            toaster.addToaster({
+                type: 'success',
+                message: 'Logged in successfully'
+            })
         } catch (err) {
             toaster.addToaster({
                 type: 'error',
