@@ -24,9 +24,9 @@ export default {
             if (status === 401) {
                 auth.logout()
             }
-            const msg = err.response?.data.message || err.message || 'Request failed'
+            const payload = err?.response?.data ?? err
 
-            return Promise.reject(msg)
+            return Promise.reject(payload)
         })
 
         app.config.globalProperties.$http = http

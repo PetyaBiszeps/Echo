@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import InputComponent from '@/components/ui/InputComponent.vue'
 import BaseButton from '@/components/ui/base/BaseButton.vue'
-// import useToastStore from '@/stores/toast'
 import useAuthStore from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
@@ -9,8 +8,6 @@ import { ref } from 'vue'
   // Init
 const router = useRouter()
 const auth = useAuthStore()
-// const toaster = useToastStore()
-const errors = ref<Record<string, string[]>>({})
 
   // Constants
 const input = ref({
@@ -20,39 +17,19 @@ const input = ref({
 
   // Methods
 async function handleRegister() {
-  errors.value = {}
+  await auth.register(input.value)
 
-  try {
-    await auth.register(input.value)
-
-    await router.push({
-      name: 'inbox'
-    })
-  } catch (err) {
-    if (typeof err === 'string') {
-      errors.value.general = [err]
-    } else {
-      errors.value.general = ['unknown error']
-    }
-  }
+  await router.push({
+    name: 'inbox'
+  })
 }
 
 async function handleLogin() {
-  errors.value = {}
+  await auth.login(input.value)
 
-  try {
-    await auth.login(input.value)
-
-    await router.push({
-      name: 'inbox'
-    })
-  } catch (err) {
-    if (typeof err === 'string') {
-      errors.value.general = [err]
-    } else {
-      errors.value.general = ['unknown error']
-    }
-  }
+  await router.push({
+    name: 'inbox'
+  })
 }
 </script>
 

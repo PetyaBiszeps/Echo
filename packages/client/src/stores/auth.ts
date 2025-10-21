@@ -1,4 +1,4 @@
-import type { AxiosError } from 'axios'
+import useToastStore from '@/stores/toast'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import http from '@/constants/http'
@@ -9,6 +9,8 @@ import type {
 } from '@/types'
 
 const useAuthStore = defineStore('auth', () => {
+    const toaster = useToastStore()
+
     const user = ref<IAuthUser | null>(null)
     const token = ref<IAuthTokens | null>(null)
 
@@ -31,11 +33,10 @@ const useAuthStore = defineStore('auth', () => {
                 accessToken: result.access_token
             }
         } catch (err) {
-            const error = err as AxiosError<{
-                message?: string
-            }>
-
-            throw error.response?.data?.message || error.message
+            toaster.addToaster({
+                type: 'error',
+                message: err.data.message
+            })
         }
     }
 
@@ -54,17 +55,21 @@ const useAuthStore = defineStore('auth', () => {
                 accessToken: result.access_token
             }
         } catch (err) {
-            const error = err as AxiosError<{
-                message?: string
-            }>
-
-            throw error.response?.data?.message || error.message
+            toaster.addToaster({
+                type: 'error',
+                message: err.data.message
+            })
         }
     }
 
     function logout() {
         user.value = null
         token.value = null
+
+        toaster.addToaster({
+            type: 'success',
+            message: 'Logged out successfully'
+        })
     }
 
     return {
