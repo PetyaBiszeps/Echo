@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import InputComponent from '@/components/ui/InputComponent.vue'
 import BaseButton from '@/components/ui/base/BaseButton.vue'
+// import useToastStore from '@/stores/toast'
 import useAuthStore from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
@@ -8,6 +9,7 @@ import { ref } from 'vue'
   // Init
 const router = useRouter()
 const auth = useAuthStore()
+// const toaster = useToastStore()
 const errors = ref<Record<string, string[]>>({})
 
   // Constants

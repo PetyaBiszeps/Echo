@@ -1,7 +1,10 @@
-export interface IToastMessage {
-    id: string
-    icon: string
+type IToastType = 'error' | 'warning' | 'success'
+
+export interface IToastPayload {
+    type: IToastType
     message: string
-    variant: 'error' | 'warning' | 'success'
-    duration: number
+}
+
+export interface IToast extends IToastPayload {
+    id: number
 }
