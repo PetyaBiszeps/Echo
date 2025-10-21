@@ -1,4 +1,7 @@
 $accent: var(--accent);
+$error: var(--error);
+$warning: var(--warning);
+$success: var(--success);
 $globalBG: var(--surface-1);
 
 $buttonBG: var(--surface-2);
@@ -21,5 +24,8 @@ $sidebarUserHover: var(--surface-8);
 
 $toastBG: var(--accent);
 $toastBorder: var(--surface-3);
+$toastErrorBorder: var(--error);
+$toastWarningBorder: var(--warning);
+$toastSuccessBorder: var(--success);
 
 $chatBG: var(--surface-6);

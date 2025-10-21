@@ -20,5 +20,17 @@
     background: color-mix(in srgb, theme.$toastBG 15%, transparent);
     border-radius: 0.5rem;
     backdrop-filter: blur(1px);
+
+    &.error {
+      border-color: theme.$toastErrorBorder;
+    }
+
+    &.warning {
+      border-color: theme.$toastWarningBorder;
+    }
+
+    &.success {
+      border-color: theme.$toastSuccessBorder;
+    }
   }
 }

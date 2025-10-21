@@ -1,5 +1,8 @@
 :root {
   --accent: #12D6DF;
+  --error: #E1033A;
+  --warning: #FFC107;
+  --success: #28C807;
   --surface-1: #F2F3F5;
   --surface-2: #FFFFFF;
   --surface-3: #DDE2E8;
@@ -11,6 +14,9 @@
 
   &.dark, &[data-theme="dark"] {
     --accent: #12D6DF;
+    --error: #E1033A;
+    --warning: #FFC107;
+    --success: #28C807;
     --surface-1: #F2F3F5;
     --surface-2: #FFFFFF;
     --surface-3: #DDE2E8;
