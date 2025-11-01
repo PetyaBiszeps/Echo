@@ -15,7 +15,7 @@ const useToastStore = defineStore('toast', () => {
     const getSuccessMessages = computed(() => successMessages.value)
     const getNeutralMessages = computed(() => neutralMessages.value)
 
-    function addErrorMessage(msg: string) {
+    function addErrorMessage(msg: IToast) {
         errorMessages.value.push(msg)
 
         setTimeout(() => {
@@ -27,7 +27,7 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function addWarningMessage(msg) {
+    function addWarningMessage(msg: IToast) {
         warningMessages.value.push(msg)
 
         setTimeout(() => {
@@ -39,7 +39,7 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function addSuccessMessage(msg) {
+    function addSuccessMessage(msg: IToast) {
         successMessages.value.push(msg)
 
         setTimeout(() => {
@@ -51,7 +51,7 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function addNeutralMessage(msg) {
+    function addNeutralMessage(msg: IToast) {
         neutralMessages.value.push(msg)
 
         setTimeout(() => {
@@ -63,37 +63,35 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function hideErrorMessage(index) {
+    function hideErrorMessage(index: number) {
         errorMessages.value.splice(index, 1)
     }
 
-    function hideWarningMessage(index) {
+    function hideWarningMessage(index: number) {
         warningMessages.value.splice(index, 1)
     }
 
-    function hideSuccessMessage(index) {
+    function hideSuccessMessage(index: number) {
         successMessages.value.splice(index, 1)
     }
 
-    function hideNeutralMessage(index) {
+    function hideNeutralMessage(index: number) {
         neutralMessages.value.splice(index, 1)
     }
 
-    function addToaster({ type, message }) {
-        const payload = { type, message }
-
-        if (type === 'error') {
-            return addErrorMessage(payload)
+    function addToaster(toast: IToast) {
+        if (toast.type === 'error') {
+            return addErrorMessage(toast)
         }
 
-        if (type === 'warning') {
-            return addWarningMessage(payload)
+        if (toast.type === 'warning') {
+            return addWarningMessage(toast)
         }
 
-        if (type === 'success') {
-            return addSuccessMessage(payload)
+        if (toast.type === 'success') {
+            return addSuccessMessage(toast)
         }
-        return addNeutralMessage(payload)
+        return addNeutralMessage(toast)
     }
 
     function clearToaster() {
