@@ -1,21 +1,21 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type {
-    IToast
+    IToastPayload
 } from '@/types'
 
 const useToastStore = defineStore('toast', () => {
-    const errorMessages = ref<IToast[]>([])
-    const warningMessages = ref<IToast[]>([])
-    const successMessages = ref<IToast[]>([])
-    const neutralMessages = ref<IToast[]>([])
+    const errorMessages = ref<IToastPayload[]>([])
+    const warningMessages = ref<IToastPayload[]>([])
+    const successMessages = ref<IToastPayload[]>([])
+    const neutralMessages = ref<IToastPayload[]>([])
 
     const getErrorMessages = computed(() => errorMessages.value)
     const getWarningMessages = computed(() => warningMessages.value)
     const getSuccessMessages = computed(() => successMessages.value)
     const getNeutralMessages = computed(() => neutralMessages.value)
 
-    function addErrorMessage(msg: IToast) {
+    function addErrorMessage(msg: IToastPayload) {
         errorMessages.value.push(msg)
 
         setTimeout(() => {
@@ -27,7 +27,7 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function addWarningMessage(msg: IToast) {
+    function addWarningMessage(msg: IToastPayload) {
         warningMessages.value.push(msg)
 
         setTimeout(() => {
@@ -39,7 +39,7 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function addSuccessMessage(msg: IToast) {
+    function addSuccessMessage(msg: IToastPayload) {
         successMessages.value.push(msg)
 
         setTimeout(() => {
@@ -51,7 +51,7 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function addNeutralMessage(msg: IToast) {
+    function addNeutralMessage(msg: IToastPayload) {
         neutralMessages.value.push(msg)
 
         setTimeout(() => {
@@ -79,19 +79,19 @@ const useToastStore = defineStore('toast', () => {
         neutralMessages.value.splice(index, 1)
     }
 
-    function addToaster(toast: IToast) {
-        if (toast.type === 'error') {
-            return addErrorMessage(toast)
+    function addToaster(payload: IToastPayload) {
+        if (payload.type === 'error') {
+            return addErrorMessage(payload)
         }
 
-        if (toast.type === 'warning') {
-            return addWarningMessage(toast)
+        if (payload.type === 'warning') {
+            return addWarningMessage(payload)
         }
 
-        if (toast.type === 'success') {
-            return addSuccessMessage(toast)
+        if (payload.type === 'success') {
+            return addSuccessMessage(payload)
         }
-        return addNeutralMessage(toast)
+        return addNeutralMessage(payload)
     }
 
     function clearToaster() {
