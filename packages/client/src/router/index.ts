@@ -1,10 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router'
 import DefaultLayout from '@/layouts/DefaultLayout.vue'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import ErrorView from '@/views/ErrorView.vue'
 import ChatView from '@/views/ChatView.vue'
 import AuthView from '@/views/AuthView.vue'
 import useAuthStore from '@/stores/auth'
+import {
+    createRouter,
+    createWebHistory
+} from 'vue-router'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,7 +54,7 @@ const router = createRouter({
 })
 
     // Guard
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
     const auth = useAuthStore()
 
     if (to.meta.public) {

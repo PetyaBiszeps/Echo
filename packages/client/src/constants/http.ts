@@ -1,6 +1,6 @@
 import axios, {
     type AxiosInstance
-} from "axios"
+} from 'axios'
 
 const http: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_APP_API_URL,
