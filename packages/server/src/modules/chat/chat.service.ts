@@ -11,13 +11,15 @@ export class ChatService {
             id: '2', username: 'Nathan'
         }, {
             id: '3', username: 'Krein'
+        }, {
+            id: '4', username: 'Kan'
         }]
 
         return [{
             id: '1',
             title: 'Alice',
             participants: [{
-                id: userId, username: 'current_user',
+                id: userId, username: 'current_user'
             }, mockUsers[0]],
             lastMessage: {
                 id: 'msg1',
@@ -32,10 +34,19 @@ export class ChatService {
             id: '2',
             title: 'Nathan',
             participants: [{
-                id: userId, username: 'current_user',
+                id: userId, username: 'current_user'
             }, mockUsers[1]],
             unreadCount: 0,
             createdAt: new Date('2024-01-02'),
+            updatedAt: new Date()
+        }, {
+            id: '3',
+            title: 'Kan',
+            participants: [{
+                id: userId, username: 'current_user'
+            }, mockUsers[2]],
+            unreadCount: 4,
+            createdAt: new Date('2025-05-02'),
             updatedAt: new Date()
         }]
     }
