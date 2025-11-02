@@ -1,3 +1,4 @@
+import getErrorMessage from '@/utils/getErrorMessage'
 import useToastStore from '@/stores/toast'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
@@ -37,10 +38,10 @@ const useAuthStore = defineStore('auth', () => {
                 type: 'success',
                 message: 'Register successfully'
             })
-        } catch (err) {
+        } catch (err: unknown) {
             toaster.addToaster({
                 type: 'error',
-                message: err.data.message
+                message: getErrorMessage(err)
             })
         }
     }
@@ -64,10 +65,10 @@ const useAuthStore = defineStore('auth', () => {
                 type: 'success',
                 message: 'Logged in successfully'
             })
-        } catch (err) {
+        } catch (err: unknown) {
             toaster.addToaster({
                 type: 'error',
-                message: err.data.message
+                message: getErrorMessage(err)
             })
         }
     }

@@ -63,22 +63,6 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function hideErrorMessage(index: number) {
-        errorMessages.value.splice(index, 1)
-    }
-
-    function hideWarningMessage(index: number) {
-        warningMessages.value.splice(index, 1)
-    }
-
-    function hideSuccessMessage(index: number) {
-        successMessages.value.splice(index, 1)
-    }
-
-    function hideNeutralMessage(index: number) {
-        neutralMessages.value.splice(index, 1)
-    }
-
     function addToaster(payload: IToastPayload) {
         if (payload.type === 'error') {
             return addErrorMessage(payload)
@@ -94,18 +78,12 @@ const useToastStore = defineStore('toast', () => {
         return addNeutralMessage(payload)
     }
 
-    function clearToaster() {
-        errorMessages.value = []
-        warningMessages.value = []
-        successMessages.value = []
-    }
-
     return {
-        errorMessages, getErrorMessages, addErrorMessage, hideErrorMessage,
-        warningMessages, getWarningMessages, addWarningMessage, hideWarningMessage,
-        successMessages, getSuccessMessages, addSuccessMessage, hideSuccessMessage,
-        neutralMessages, getNeutralMessages, addNeutralMessage, hideNeutralMessage,
-        addToaster, clearToaster
+        errorMessages, getErrorMessages,
+        warningMessages, getWarningMessages,
+        successMessages, getSuccessMessages,
+        neutralMessages, getNeutralMessages,
+        addToaster
     }
 })
 
