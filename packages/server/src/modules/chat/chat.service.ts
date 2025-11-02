@@ -13,6 +13,8 @@ export class ChatService {
             id: '3', username: 'Krein'
         }, {
             id: '4', username: 'Kan'
+        }, {
+            id: '5', username: 'John'
         }]
 
         return [{
@@ -47,6 +49,15 @@ export class ChatService {
             }, mockUsers[2]],
             unreadCount: 4,
             createdAt: new Date('2025-05-02'),
+            updatedAt: new Date()
+        }, {
+            id: '4',
+            title: 'John',
+            participants: [{
+                id: userId, username: 'current_user'
+            }, mockUsers[2]],
+            unreadCount: 4,
+            createdAt: new Date('2023-12-12'),
             updatedAt: new Date()
         }]
     }
