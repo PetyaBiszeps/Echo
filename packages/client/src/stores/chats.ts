@@ -1,3 +1,5 @@
+import getErrorMessage from '@/utils/getErrorMessage'
+import useToastStore from '@/stores/toast'
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import http from '@/constants/http'
@@ -7,6 +9,7 @@ import type {
 } from '@/types'
 
 const useChatStore = defineStore('chats', () => {
+    const toaster = useToastStore()
     const chatList = ref<IChats[]>([])
     const selectedChatId = ref<number | null>(null)
 
@@ -60,8 +63,11 @@ const useChatStore = defineStore('chats', () => {
             }))
 
             setChat(chats)
-        } catch (err) {
-            console.error(err)
+        } catch (err: unknown) {
+            toaster.addToaster({
+                type: 'error',
+                message: getErrorMessage(err)
+            })
         }
     }
 
