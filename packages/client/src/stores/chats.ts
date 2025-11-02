@@ -4,8 +4,8 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import http from '@/constants/http'
 import type {
-    IChats,
-    IMessage
+    IChats
+    // IMessage
 } from '@/types'
 
 const useChatStore = defineStore('chats', () => {
@@ -21,30 +21,6 @@ const useChatStore = defineStore('chats', () => {
         chatList.value = newChatList
     }
 
-    function selectChat(chatId: number) {
-        selectedChatId.value = chatId
-    }
-
-    function addMessage(chatId: number, message: IMessage) {
-        const chat = chatList.value.find(chat => chat.id === chatId)
-
-        if (!chat) {
-            return
-        }
-        chat.lastMessage = message
-        chat.updatedAt = new Date()
-        chat.unreadCount = (chat.unreadCount ?? 0) + 1
-    }
-
-    function markChatAsRead(chatId: number) {
-        const chat = chatList.value.find(chat => chat.id === chatId)
-
-        if (!chat) {
-            return
-        }
-        chat.unreadCount = 0
-    }
-
     async function loadChats() {
         try {
             const { data } = await http.get('/chats', {
@@ -53,7 +29,7 @@ const useChatStore = defineStore('chats', () => {
                 }
             })
 
-            const chats: IChats[] = data.data.map((chat: any) => ({
+            const chats: IChats[] = data.data.map((chat: IChats) => ({
                 ...chat,
                 createdAt: new Date(chat.createdAt),
                 updatedAt: new Date(chat.updatedAt),
@@ -75,10 +51,6 @@ const useChatStore = defineStore('chats', () => {
         chatList,
         selectedChatId,
         getChat,
-        setChat,
-        selectChat,
-        addMessage,
-        markChatAsRead,
         loadChats
     }
 }, {

@@ -1,9 +1,7 @@
-import type { Server } from 'socket.io'
-// import env from '@/config/env'
-// import jwt from 'jsonwebtoken'
-// import type {
-//    IJWTPayload
-// } from '@/types/auth'
+import type {
+    // Socket,
+    Server
+} from 'socket.io'
 
 function initChatSocket(io: Server) {
     io.use(() => {
