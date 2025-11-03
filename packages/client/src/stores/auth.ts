@@ -6,7 +6,8 @@ import http from '@/constants/http'
 import type {
     IAuthUser,
     IAuthLogin,
-    IAuthTokens
+    IAuthTokens,
+    IAuthRegister
 } from '@/types'
 
 const useAuthStore = defineStore('auth', () => {
@@ -19,7 +20,7 @@ const useAuthStore = defineStore('auth', () => {
         return !!token.value && !!user.value
     })
 
-    async function register(data: IAuthLogin) {
+    async function register(data: IAuthRegister) {
         try {
             const { data: result } = await http.post<{
                 user: IAuthUser,

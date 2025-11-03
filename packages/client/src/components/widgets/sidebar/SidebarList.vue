@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SidebarUser from '@/components/widgets/sidebar/SidebarUser.vue'
+import SidebarChat from '@/components/widgets/sidebar/SidebarChat.vue'
 import useChatStore from '@/stores/chats'
 import {
   computed,
@@ -11,45 +11,43 @@ const { search } = defineProps<{
 }>()
 
   // Init
-const chats = useChatStore()
+const chatStore = useChatStore()
 
-const members = computed(() => {
-  return chats.chatList.map(chat => {
-    const lastMessage = chat.lastMessage
-
+const chats = computed(() => {
+  return chatStore.chatList.map(chat => {
     return {
       id: chat.id,
-      title: chat.title,
-      avatar: chat.participants[0]?.avatar,
-      lastMessage: lastMessage?.content ?? '',
-      isRead: chat.unreadCount === 0,
-      timeStamp: lastMessage?.timestamp,
-      unreadCount: chat.unreadCount ?? 0
+      title: chat.title ?? chat.participants[1].username ?? '',
+      participants: chat.participants,
+      lastMessage: chat.lastMessage,
+      unreadCount: chat.unreadCount,
+      createdAt: chat.createdAt,
+      updatedAt: chat.updatedAt
     }
   })
 })
 
-const filteredMembers = computed(() => {
+const filteredChats = computed(() => {
   const query = search.toString().toLowerCase().trim()
 
-  const matched = members.value.filter((member) => {
+  const matched = chats.value.filter((chat) => {
     if (!query) {
       return true
     } else {
-      return member.title.toLowerCase().includes(query)
+      return chat.title.toLowerCase().includes(query)
     }
   })
 
   if (query) {
     matched.sort((a, b) => {
-      const compare = a.title.localeCompare(b.title, undefined, {
+      const compare = (a.title ?? '').localeCompare(b.title ?? '', undefined, {
         sensitivity: 'base'
       })
 
       if (compare !== 0) {
         return compare
       } else {
-        return a.id - b.id
+        return a.id.localeCompare(b.id)
       }
     })
   }
@@ -58,16 +56,16 @@ const filteredMembers = computed(() => {
 })
 
 onBeforeMount(() => {
-  chats.loadChats()
+  chatStore.loadChats()
 })
 </script>
 
 <template>
   <ul :class="['sidebarList']">
-    <SidebarUser
-      v-for="member in filteredMembers"
-      :key="member.id"
-      :user="member"
+    <SidebarChat
+      v-for="chat in filteredChats"
+      :key="chat.id"
+      :chat="chat"
     />
   </ul>
 </template>

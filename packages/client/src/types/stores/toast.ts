@@ -1,10 +1,6 @@
 type IToastType = 'error' | 'warning' | 'success'
 
-export interface IToastPayload {
+export interface IToast {
     type: IToastType
     message: string
-}
-
-export interface IToast extends IToastPayload {
-    id: number
 }

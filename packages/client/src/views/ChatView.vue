@@ -3,11 +3,11 @@ import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 import type {
   IChat
-} from '@/types'
+} from '@echo/shared'
 
-const {
-  chatId = null
-} = defineProps<IChat>()
+const { chatId = null } = defineProps<{
+  chatId?: IChat['id'] | null
+}>()
 
   // Init
 const route = useRoute()

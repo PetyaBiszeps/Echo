@@ -2,7 +2,9 @@
 import BaseMultiselect from '@/components/ui/base/BaseMultiselect.vue'
 import BaseSelect from '@/components/ui/base/BaseSelect.vue'
 import BaseInput from '@/components/ui/base/BaseInput.vue'
-import { computed } from 'vue'
+import {
+  computed
+} from 'vue'
 
 const {
   id,

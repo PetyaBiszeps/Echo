@@ -1,21 +1,21 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type {
-    IToastPayload
+    IToast
 } from '@/types'
 
 const useToastStore = defineStore('toast', () => {
-    const errorMessages = ref<IToastPayload[]>([])
-    const warningMessages = ref<IToastPayload[]>([])
-    const successMessages = ref<IToastPayload[]>([])
-    const neutralMessages = ref<IToastPayload[]>([])
+    const errorMessages = ref<IToast[]>([])
+    const warningMessages = ref<IToast[]>([])
+    const successMessages = ref<IToast[]>([])
+    const neutralMessages = ref<IToast[]>([])
 
     const getErrorMessages = computed(() => errorMessages.value)
     const getWarningMessages = computed(() => warningMessages.value)
     const getSuccessMessages = computed(() => successMessages.value)
     const getNeutralMessages = computed(() => neutralMessages.value)
 
-    function addErrorMessage(msg: IToastPayload) {
+    function addErrorMessage(msg: IToast) {
         errorMessages.value.push(msg)
 
         setTimeout(() => {
@@ -27,7 +27,7 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function addWarningMessage(msg: IToastPayload) {
+    function addWarningMessage(msg: IToast) {
         warningMessages.value.push(msg)
 
         setTimeout(() => {
@@ -39,7 +39,7 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function addSuccessMessage(msg: IToastPayload) {
+    function addSuccessMessage(msg: IToast) {
         successMessages.value.push(msg)
 
         setTimeout(() => {
@@ -51,7 +51,7 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function addNeutralMessage(msg: IToastPayload) {
+    function addNeutralMessage(msg: IToast) {
         neutralMessages.value.push(msg)
 
         setTimeout(() => {
@@ -63,7 +63,7 @@ const useToastStore = defineStore('toast', () => {
         }, 6000)
     }
 
-    function addToaster(payload: IToastPayload) {
+    function addToaster(payload: IToast) {
         if (payload.type === 'error') {
             return addErrorMessage(payload)
         }

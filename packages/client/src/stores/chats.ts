@@ -4,20 +4,19 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import http from '@/constants/http'
 import type {
-    IChats
-    // IMessage
-} from '@/types'
+    IChat
+} from '@echo/shared'
 
 const useChatStore = defineStore('chats', () => {
     const toaster = useToastStore()
-    const chatList = ref<IChats[]>([])
-    const selectedChatId = ref<number | null>(null)
+    const chatList = ref<IChat[]>([])
+    const selectedChatId = ref<string | null>(null)
 
     const getChat = computed(() => {
         return chatList.value.find(chat => chat.id === selectedChatId.value) ?? null
     })
 
-    function setChat(newChatList: IChats[]) {
+    function setChat(newChatList: IChat[]) {
         chatList.value = newChatList
     }
 
@@ -29,13 +28,15 @@ const useChatStore = defineStore('chats', () => {
                 }
             })
 
-            const chats: IChats[] = data.data.map((chat: IChats) => ({
+            const chats: IChat[] = data.data.map((chat: IChat) => ({
                 ...chat,
-                createdAt: new Date(chat.createdAt),
-                updatedAt: new Date(chat.updatedAt),
+                createdAt: new Date(chat.createdAt).toISOString(),
+                updatedAt: new Date(chat.updatedAt).toISOString(),
                 lastMessage: chat.lastMessage
-                    ? { ...chat.lastMessage, timestamp: new Date(chat.lastMessage.timestamp) }
-                    : undefined
+                    ? {
+                        ...chat.lastMessage,
+                        timestamp: new Date(chat.lastMessage.timestamp).toISOString()
+                    } : undefined
             }))
 
             setChat(chats)
