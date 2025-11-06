@@ -4,7 +4,9 @@
   gap: 0.8rem;
   width: 100%;
   display: flex;
+  overflow: auto;
   max-width: 800px;
+  max-height: 650px;
   margin-top: 1.5rem;
   box-sizing: border-box;
   flex-direction: column;
