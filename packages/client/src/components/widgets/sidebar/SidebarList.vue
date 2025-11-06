@@ -57,13 +57,8 @@ const filteredChats = computed(() => {
 })
 
   // Methods
-function chooseChat(index: number) {
-  const selectedChat = filteredChats.value[index]
-
-  if (!selectedChat) {
-    return
-  }
-  chatStore.selectChat(selectedChat.id)
+function chooseChat(chatId: string) {
+  chatStore.selectChat(chatId)
 }
 
 onBeforeMount(() => {
@@ -74,7 +69,7 @@ onBeforeMount(() => {
 <template>
   <ul :class="['sidebarList']">
     <SidebarChat
-      v-for="(chat, index) in filteredChats"
+      v-for="chat in filteredChats"
       :key="chat.id"
       :chat="chat"
 
@@ -82,7 +77,7 @@ onBeforeMount(() => {
         active: chatStore.selectedChatId === chat.id
       }]"
 
-      @click="chooseChat(index)"
+      @click="chooseChat(chat.id)"
     />
   </ul>
 </template>

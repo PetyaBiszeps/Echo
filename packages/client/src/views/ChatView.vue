@@ -1,26 +1,21 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { computed } from 'vue'
-import type {
-  IChat
-} from '@echo/shared'
-
-const { chatId = null } = defineProps<{
-  chatId?: IChat['id'] | null
-}>()
+import ChatComponent from '@/components/layout/ChatComponent.vue'
+import useChatStore from '@/stores/chats'
+import {
+  computed
+} from 'vue'
 
   // Init
-const route = useRoute()
+const chatStore = useChatStore()
 
-const selectedChat = computed(() => {
-  return chatId || route.params.chatId as string || null
-})
+  // Constants
+const selectedChat = computed(() => chatStore.getChat)
 </script>
 
 <template>
   <main :class="['chatView']">
     <template v-if="selectedChat">
-      <p>Chat selected!</p>
+      <ChatComponent />
     </template>
 
     <template v-else>
