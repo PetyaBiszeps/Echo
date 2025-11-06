@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import MessageComponent from '@/components/widgets/chat/MessageComponent.vue'
-import TitleComponent from '@/components/widgets/chat/TitleComponent.vue'
+import ChatWrapper from '@/components/widgets/chat/ChatWrapper.vue'
+import ChatTitle from '@/components/widgets/chat/ChatTitle.vue'
 import useChatStore from '@/stores/chats'
 import { computed } from 'vue'
 import type {
-  IChat,
-  IMessage
+  IChat
 } from '@echo/shared'
 
   // Init
@@ -13,32 +12,14 @@ const chatStore = useChatStore()
 
   // Constants
 const chat = computed<IChat | null>(() => chatStore.getChat)
-
-const messages = computed<IMessage[]>(() => {
-  if (!chat.value) {
-    return []
-  }
-
-  return [{
-    id: 'm1',
-    content: `Hello from ${chat.value.title ?? 'Unnamed chat'}`,
-    senderId: chat.value.participants[0].id,
-    timestamp: new Date().toISOString()
-  }, {
-      id: 'm2',
-      content: 'This is a test message',
-      senderId: chat.value.participants[1]?.id ?? 'unknown',
-      timestamp: new Date().toISOString()
-  }]
-})
 </script>
 
 <template>
   <main :class="['chat']">
     <template v-if="chat">
-      <TitleComponent :chat="chat" />
+      <ChatTitle :chat="chat" />
 
-      <MessageComponent :messages="messages" />
+      <ChatWrapper :chat="chat" />
     </template>
 
     <template v-else>

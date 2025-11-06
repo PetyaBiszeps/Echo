@@ -1,0 +1,10 @@
+@use "@/styles/theme" as theme;
+
+.chatMessage {
+  width: fit-content;
+  padding: 0.25rem;
+  display: inline-block;
+  background: theme.$accent;
+  box-sizing: border-box;
+  border-radius: 0.4rem;
+}

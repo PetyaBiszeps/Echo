@@ -28,8 +28,9 @@
 @use "@/styles/components/widgets/sidebar/sidebarSearch.scss";
 
       // Chat
-@use "@/styles/components/widgets/chat/titleComponent.scss";
-@use "@/styles/components/widgets/chat/messageComponent.scss";
+@use "@/styles/components/widgets/chat/chatTitle.scss";
+@use "@/styles/components/widgets/chat/chatMessage.scss";
+@use "@/styles/components/widgets/chat/chatWrapper.scss";
 
     // UI
 @use "@/styles/components/ui/toastComponent.scss";

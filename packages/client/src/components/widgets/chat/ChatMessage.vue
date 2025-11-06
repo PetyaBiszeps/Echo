@@ -9,12 +9,12 @@ const { messages } = defineProps<{
 </script>
 
 <template>
-  <div
+  <li
     v-for="message in messages"
     :key="message.id"
 
-    :class="['message']"
+    :class="['chatMessage']"
   >
-    <h1>{{ message.content }}</h1>
-  </div>
+    <p>{{ message.content }}</p>
+  </li>
 </template>
