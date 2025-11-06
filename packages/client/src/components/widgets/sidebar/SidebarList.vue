@@ -13,6 +13,7 @@ const { search } = defineProps<{
   // Init
 const chatStore = useChatStore()
 
+  // Constants
 const chats = computed(() => {
   return chatStore.chatList.map(chat => {
     return {
@@ -55,6 +56,16 @@ const filteredChats = computed(() => {
   return matched
 })
 
+  // Methods
+function chooseChat(index: number) {
+  const selectedChat = filteredChats.value[index]
+
+  if (!selectedChat) {
+    return
+  }
+  chatStore.selectChat(selectedChat.id)
+}
+
 onBeforeMount(() => {
   chatStore.loadChats()
 })
@@ -63,9 +74,15 @@ onBeforeMount(() => {
 <template>
   <ul :class="['sidebarList']">
     <SidebarChat
-      v-for="chat in filteredChats"
+      v-for="(chat, index) in filteredChats"
       :key="chat.id"
       :chat="chat"
+
+      :class="[{
+        active: chatStore.selectedChatId === chat.id
+      }]"
+
+      @click="chooseChat(index)"
     />
   </ul>
 </template>

@@ -16,6 +16,10 @@ const useChatStore = defineStore('chats', () => {
         return chatList.value.find(chat => chat.id === selectedChatId.value) ?? null
     })
 
+    function selectChat(chatId: string) {
+        selectedChatId.value = chatId
+    }
+
     function setChat(newChatList: IChat[]) {
         chatList.value = newChatList
     }
@@ -52,6 +56,8 @@ const useChatStore = defineStore('chats', () => {
         chatList,
         selectedChatId,
         getChat,
+        setChat,
+        selectChat,
         loadChats
     }
 }, {

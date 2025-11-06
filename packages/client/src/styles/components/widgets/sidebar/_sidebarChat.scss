@@ -1,6 +1,6 @@
 @use "@/styles/theme.scss" as theme;
 
-.sidebarUser {
+.sidebarChat {
   display: flex;
   cursor: pointer;
   padding: 1rem 0.5rem;
@@ -31,6 +31,10 @@
         margin-right: 0.3rem;
       }
     }
+  }
+
+  &.active {
+    background: theme.$sidebarUserHover;
   }
 
   &:hover {

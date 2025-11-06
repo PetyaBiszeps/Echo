@@ -9,7 +9,7 @@ const { chat } = defineProps<{
 </script>
 
 <template>
-  <li :class="['sidebarUser']">
+  <li :class="['sidebarChat']">
     <img
       src="@/assets/icons/avatar.svg"
       :alt="chat.title || ''"
