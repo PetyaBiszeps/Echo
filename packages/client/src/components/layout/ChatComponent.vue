@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MessageComponent from '@/components/widgets/chat/MessageComponent.vue'
+import TitleComponent from '@/components/widgets/chat/TitleComponent.vue'
 import useChatStore from '@/stores/chats'
 import { computed } from 'vue'
 import type {
@@ -35,6 +36,8 @@ const messages = computed<IMessage[]>(() => {
 <template>
   <main :class="['chat']">
     <template v-if="chat">
+      <TitleComponent :chat="chat" />
+
       <MessageComponent :messages="messages" />
     </template>
 

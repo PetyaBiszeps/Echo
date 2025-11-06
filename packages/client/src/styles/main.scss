@@ -27,6 +27,10 @@
 @use "@/styles/components/widgets/sidebar/sidebarList.scss";
 @use "@/styles/components/widgets/sidebar/sidebarSearch.scss";
 
+      // Chat
+@use "@/styles/components/widgets/chat/titleComponent.scss";
+@use "@/styles/components/widgets/chat/messageComponent.scss";
+
     // UI
 @use "@/styles/components/ui/toastComponent.scss";
 @use "@/styles/components/ui/inputComponent.scss";
