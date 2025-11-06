@@ -16,7 +16,7 @@ export class AuthService {
 
     private signToken(payload: object) {
         return jwt.sign(payload, this.jwtSecret, {
-            expiresIn: '15m'
+            expiresIn: '1h'
         })
     }
 
