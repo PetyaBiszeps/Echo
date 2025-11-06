@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type {
+  IChat,
   IMessage
 } from '@echo/shared'
 
 const { messages } = defineProps<{
+  chat: IChat
   messages: IMessage[]
 }>()
 </script>
@@ -13,7 +15,9 @@ const { messages } = defineProps<{
     v-for="message in messages"
     :key="message.id"
 
-    :class="['chatMessage']"
+    :class="['chatMessage', {
+      interlocutor: message.senderId === chat.participants[1].id
+    }]"
   >
     <p>{{ message.content }}</p>
   </li>

@@ -32,6 +32,9 @@ const messages = computed<IMessage[]>(() => {
 
 <template>
   <ul :class="['chatWrapper']">
-    <ChatMessage :messages="messages" />
+    <ChatMessage
+      :chat="chat"
+      :messages="messages"
+    />
   </ul>
 </template>
