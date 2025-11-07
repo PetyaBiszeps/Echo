@@ -1,0 +1,40 @@
+@use "@/styles/theme.scss" as theme;
+
+button {
+  width: 100%;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s ease;
+
+  span {
+    font-weight: bold;
+  }
+
+  &[data-size='sm'] {
+    padding: 0.3rem;
+  }
+
+  &[data-size='md'] {
+    padding: 0.5rem;
+  }
+
+  &[data-size='lg'] {
+    padding: 0.8rem;
+  }
+
+  &[data-variant='default'] {
+    border: 1px solid theme.$buttonBorder;
+    background: theme.$buttonBG;
+    border-radius: 0.5rem;
+  }
+
+  &:hover:not(:disabled) {
+    border: 1px solid theme.$buttonHoverBorder;
+    background: theme.$buttonHover;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: theme.$buttonDisabledBG;
+  }
+}

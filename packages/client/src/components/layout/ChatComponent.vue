@@ -30,6 +30,7 @@ const chat = computed<IChat | null>(() => chatStore.getChat)
         :id="'message'"
         :name="'message'"
         :type="'text'"
+        :size="'lg'"
         :placeholder="'Message'"
       />
     </template>

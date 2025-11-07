@@ -34,5 +34,10 @@
 @use "@/styles/components/widgets/chat/chatWrapper.scss";
 
     // UI
-@use "@/styles/components/ui/toastComponent.scss";
+      // Base
+@use "@/styles/components/ui/base/baseInput.scss";
+@use "@/styles/components/ui/base/baseButton.scss";
+
+      // Global
 @use "@/styles/components/ui/inputComponent.scss";
+@use "@/styles/components/ui/toastComponent.scss";

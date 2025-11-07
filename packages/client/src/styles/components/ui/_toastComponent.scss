@@ -4,6 +4,7 @@
 .messageWrapper {
   top: 10%;
   gap: 0.5rem;
+  z-index: 999;
   display: flex;
   position: fixed;
   max-width: 55rem;
