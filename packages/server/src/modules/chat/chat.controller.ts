@@ -1,4 +1,4 @@
-import { ChatService } from '@/modules/chat/chat.service'
+import { ChatService } from '@/modules/chat/chat.service.ts'
 import type {
   Request,
   Response,

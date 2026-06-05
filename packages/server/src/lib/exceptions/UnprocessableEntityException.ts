@@ -1,4 +1,4 @@
-import { HttpException } from '@/lib/exceptions/HttpException'
+import { HttpException } from '@/lib/exceptions/HttpException.ts'
 import { ErrorCodes } from '@echo/shared'
 import type {
   IPayloadAPI

@@ -1,6 +1,8 @@
-import { GetChatController } from '@/modules/chat/chat.controller'
-import { AuthGuard } from '@/middleware/authGuard'
-import { Router } from 'express'
+import { GetChatController } from '@/modules/chat/chat.controller.ts'
+import { AuthGuard } from '@/middleware/authGuard.ts'
+import {
+  Router
+} from 'express'
 
 const router = Router()
 

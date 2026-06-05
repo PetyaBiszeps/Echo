@@ -1,7 +1,7 @@
-import notFoundHandler from '@/middleware/notFoundHandler'
-import errorHandler from '@/middleware/errorHandler'
-import routes from '@/app/routes'
-import env from '@/config/env'
+import notFoundHandler from '@/middleware/notFoundHandler.ts'
+import errorHandler from '@/middleware/errorHandler.ts'
+import routes from '@/app/routes.ts'
+import env from '@/config/env.ts'
 import express from 'express'
 import cors from 'cors'
 

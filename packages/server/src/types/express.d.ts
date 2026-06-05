@@ -1,7 +1,7 @@
 import type { IPayloadAPI } from '@echo/shared'
 import type {
   IJWTPayload
-} from '@/types/auth'
+} from '@/types'
 
 declare global {
   namespace Express {

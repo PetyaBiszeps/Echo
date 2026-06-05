@@ -1,6 +1,6 @@
-import prisma from '@/db/prisma'
+import prisma from '@/db/prisma.ts'
+import env from '@/config/env.ts'
 import jwt from 'jsonwebtoken'
-import env from '@/config/env'
 import argon2 from 'argon2'
 import type {
   IRegister,

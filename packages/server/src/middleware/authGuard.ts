@@ -1,6 +1,6 @@
 import type { IJWTPayload } from '@/types'
+import env from '@/config/env.ts'
 import jwt from 'jsonwebtoken'
-import env from '@/config/env'
 import type {
   Request,
   Response,

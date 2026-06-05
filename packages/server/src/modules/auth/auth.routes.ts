@@ -1,7 +1,10 @@
-import { RegisterController, LoginController } from '@/modules/auth/auth.controller'
-import { RegisterSchema, LoginSchema } from '@echo/shared'
-import { Validate } from '@/middleware/validationHandler'
+import { RegisterController, LoginController } from '@/modules/auth/auth.controller.ts'
+import { Validate } from '@/middleware/validationHandler.ts'
 import { Router } from 'express'
+import {
+  LoginSchema,
+  RegisterSchema
+} from '@echo/shared'
 
 const router = Router()
 
