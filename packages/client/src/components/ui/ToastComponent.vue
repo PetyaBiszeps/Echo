@@ -4,10 +4,10 @@ import {
   computed
 } from 'vue'
 
-  // Init
+// Init
 const toaster = useToastStore()
 
-  // Constants
+// Constants
 const errorMessages = computed(() => toaster.errorMessages || [])
 const warningMessages = computed(() => toaster.warningMessages || [])
 const successMessages = computed(() => toaster.successMessages || [])
@@ -26,13 +26,13 @@ const payload = computed(() => {
     title: message.type,
     type: message.type,
     source: index < errors.length
-        ? 'error' : index < errors.length + warnings.length
-            ? 'warning' : index < errors.length + warnings.length + success.length
-                ? 'success' : 'neutral'
+      ? 'error' : index < errors.length + warnings.length
+        ? 'warning' : index < errors.length + warnings.length + success.length
+          ? 'success' : 'neutral'
   }))
 })
 
-  // Methods
+// Methods
 function getIcon(type: string) {
   switch (type) {
     case 'success':

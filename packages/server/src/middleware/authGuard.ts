@@ -2,51 +2,51 @@ import type { IJWTPayload } from '@/types'
 import jwt from 'jsonwebtoken'
 import env from '@/config/env'
 import type {
-    Request,
-    Response,
-    NextFunction
+  Request,
+  Response,
+  NextFunction
 } from 'express'
 
 export function AuthGuard(req: Request, res: Response, next: NextFunction) {
-    try {
-        const authHeader = req.headers.authorization
+  try {
+    const authHeader = req.headers.authorization
 
-        if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({
-                success: false,
-                error: 'Authorization token required'
-            })
-        }
-
-        const token = authHeader.replace('Bearer ', '')
-
-        if (!env.JWT_ACCESS_SECRET) {
-            return res.status(500).json({
-                success: false,
-                error: 'Server configuration error'
-            })
-        }
-        req.user = jwt.verify(token, env.JWT_ACCESS_SECRET) as IJWTPayload
-
-        next()
-    } catch (error) {
-        if (error instanceof jwt.JsonWebTokenError) {
-            return res.status(401).json({
-                success: false,
-                error: 'Invalid token'
-            })
-        }
-
-        if (error instanceof jwt.TokenExpiredError) {
-            return res.status(401).json({
-                success: false,
-                error: 'Token expired'
-            })
-        }
-
-        return res.status(500).json({
-            success: false,
-            error: 'Authentication error'
-        })
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({
+        success: false,
+        error: 'Authorization token required'
+      })
     }
+
+    const token = authHeader.replace('Bearer ', '')
+
+    if (!env.JWT_ACCESS_SECRET) {
+      return res.status(500).json({
+        success: false,
+        error: 'Server configuration error'
+      })
+    }
+    req.user = jwt.verify(token, env.JWT_ACCESS_SECRET) as IJWTPayload
+
+    next()
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid token'
+      })
+    }
+
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({
+        success: false,
+        error: 'Token expired'
+      })
+    }
+
+    return res.status(500).json({
+      success: false,
+      error: 'Authentication error'
+    })
+  }
 }

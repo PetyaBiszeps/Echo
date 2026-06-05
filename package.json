@@ -1,28 +1,29 @@
 {
   "name": "echo-messenger",
   "version": "1.0.0",
-  "license": "MIT",
-  "private": true,
   "type": "module",
-  "workspaces": [
-    "packages/*"
-  ],
+  "private": true,
   "scripts": {
     "dev": "node scripts/dev.js",
     "build": "yarn workspace @echo/server build & yarn workspace @echo/client build & yarn workspace @echo/shared build",
     "clean": "yarn workspace @echo/server clean & yarn workspace @echo/client clean & yarn workspace @echo/shared clean",
     "dev:client": "yarn workspace @echo/client dev",
     "dev:server": "yarn workspace @echo/server dev",
-    "lint": "yarn eslint packages --ext .ts,.js,.vue --fix"
+    "lint": "eslint packages --ext .ts,.js,.vue",
+    "lint:fix": "eslint packages --ext .ts,.js,.vue --fix"
   },
   "devDependencies": {
-    "@types/node": "^24.9.2",
-    "eslint": "^9.39.0",
-    "eslint-plugin-n": "^17.23.1",
-    "eslint-plugin-vue": "^10.5.1",
-    "jiti": "^2.6.1",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.2",
-    "vue-eslint-parser": "^10.2.0"
-  }
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/node": "^25.9.1",
+    "eslint": "^10.4.0",
+    "eslint-plugin-n": "^18.0.1",
+    "eslint-plugin-vue": "^10.9.1",
+    "globals": "^17.6.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.60.0",
+    "vue-eslint-parser": "^10.4.0"
+  },
+  "author": "YP00",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@11.5.2+sha512.71c631e382066efc25625d5cf029075de07b61b37f6e27350fbd84b1bda5864c8c1967adc280776b45c30a715c0359a3be08fef42d5bb09e2b99029979692916"
 }

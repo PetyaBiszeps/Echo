@@ -6,11 +6,11 @@ import { Router } from 'express'
 const router = Router()
 
 router.post('/register',
-    Validate(RegisterSchema),
-    RegisterController)
+  Validate(RegisterSchema),
+  RegisterController)
 
 router.post('/login',
-    Validate(LoginSchema),
-    LoginController)
+  Validate(LoginSchema),
+  LoginController)
 
 export default router

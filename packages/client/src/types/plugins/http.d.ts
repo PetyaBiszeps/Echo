@@ -1,9 +1,9 @@
 import type {
-    AxiosInstance
+  AxiosInstance
 } from 'axios'
 
 declare module 'vue' {
-    interface ComponentCustomProperties {
-        $http: AxiosInstance
-    }
+  interface ComponentCustomProperties {
+    $http: AxiosInstance
+  }
 }

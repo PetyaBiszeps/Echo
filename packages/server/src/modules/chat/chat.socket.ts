@@ -1,16 +1,16 @@
 import type {
-    // Socket,
-    Server
+  // Socket,
+  Server
 } from 'socket.io'
 
 function initChatSocket(io: Server) {
-    io.use(() => {
+  io.use(() => {
 
-    })
+  })
 
-    io.on('connection', () => {
+  io.on('connection', () => {
 
-    })
+  })
 }
 
 export default initChatSocket

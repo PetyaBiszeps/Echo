@@ -5,17 +5,17 @@ import useAuthStore from '@/stores/auth'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 
-  // Init
+// Init
 const router = useRouter()
 const auth = useAuthStore()
 
-  // Constants
+// Constants
 const input = ref({
   username: '',
   password: ''
 })
 
-  // Methods
+// Methods
 async function handleRegister() {
   await auth.register(input.value)
 

@@ -22,7 +22,7 @@ const {
 }>()
 const emit = defineEmits(['focus', 'blur'])
 
-  // Constants
+// Constants
 const model = defineModel<string | number>({
   required: true
 })

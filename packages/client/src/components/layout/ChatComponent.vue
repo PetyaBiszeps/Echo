@@ -9,10 +9,10 @@ import type {
 } from '@echo/shared'
 
 
-  // Init
+// Init
 const chatStore = useChatStore()
 
-  // Constants
+// Constants
 const msg = ref<string | number>('')
 const chat = computed<IChat | null>(() => chatStore.getChat)
 </script>

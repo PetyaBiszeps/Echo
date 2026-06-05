@@ -1,0 +1,15 @@
+# Defaults
+packages:
+  - 'packages/*'
+
+# Allowed dependency scripts
+allowBuilds:
+  '@parcel/watcher': true
+  '@prisma/client': true
+  '@prisma/engines': true
+  argon2: true
+  esbuild: true
+  prisma: true
+
+# Pnpm-specific rules
+minimumReleaseAge: 10080

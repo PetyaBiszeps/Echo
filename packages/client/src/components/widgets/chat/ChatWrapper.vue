@@ -10,7 +10,7 @@ const { chat } = defineProps<{
   chat: IChat
 }>()
 
-  // Constants
+// Constants
 const messages = computed<IMessage[]>(() => {
   if (!chat) {
     return []

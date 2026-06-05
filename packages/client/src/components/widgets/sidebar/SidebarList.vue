@@ -10,10 +10,10 @@ const { search } = defineProps<{
   search: string | number
 }>()
 
-  // Init
+// Init
 const chatStore = useChatStore()
 
-  // Constants
+// Constants
 const chats = computed(() => {
   return chatStore.chatList.map(chat => {
     return {
@@ -56,7 +56,7 @@ const filteredChats = computed(() => {
   return matched
 })
 
-  // Methods
+// Methods
 function chooseChat(chatId: string) {
   chatStore.selectChat(chatId)
 }

@@ -5,7 +5,7 @@ import { Router } from 'express'
 const router = Router()
 
 router.get('/',
-    AuthGuard,
-    GetChatController)
+  AuthGuard,
+  GetChatController)
 
 export default router

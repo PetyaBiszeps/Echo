@@ -1,93 +1,93 @@
 const shownMessage = (err: unknown, max = 300): string => {
-    try {
-        const message = JSON.stringify(err)
+  try {
+    const message = JSON.stringify(err)
 
-        return message.length > 300
-            ? `${message.slice(0, max)}...` : message
+    return message.length > 300
+      ? `${message.slice(0, max)}...` : message
+  } catch {
+    try {
+      return String(err)
     } catch {
-        try {
-            return String(err)
-        } catch {
-            return 'Unknown error'
-        }
+      return 'Unknown error'
     }
+  }
 }
 
 const hasMessage = (x: unknown): x is {
-    message: unknown
+  message: unknown
 } => {
-    return typeof x === 'object' && x !== null && 'message' in x
+  return typeof x === 'object' && x !== null && 'message' in x
 }
 
 function getErrorMessage(err: unknown): string {
-    if (err instanceof Error) {
-        return err.message || err.name
+  if (err instanceof Error) {
+    return err.message || err.name
+  }
+
+  if (err === undefined || err === null) {
+    return 'Unknown error'
+  }
+
+  if (typeof err === 'string') {
+    return err
+  }
+  const msg = err as {
+    response?: {
+      data?: unknown
     }
 
-    if (err === undefined || err === null) {
-        return 'Unknown error'
+    data?: unknown
+  }
+
+  const error = msg.response?.data ?? msg.data
+
+  if (error && typeof error === 'object') {
+    const response = error as {
+      message?: unknown
+      details?: unknown[]
+      errors?: unknown[]
     }
 
-    if (typeof err === 'string') {
-        return err
-    }
-    const msg = err as {
-        response?: {
-            data?: unknown
-        }
-
-        data?: unknown
+    if (typeof response.message === 'string') {
+      return response.message
     }
 
-    const error = msg.response?.data ?? msg.data
-
-    if (error && typeof error === 'object') {
-        const response = error as {
-            message?: unknown
-            details?: unknown[]
-            errors?: unknown[]
+    if (Array.isArray(response.details) && response.details.length) {
+      return response.details.map(item => {
+        if (typeof item === 'string') {
+          return item
         }
 
-        if (typeof response.message === 'string') {
-            return response.message
+        if (hasMessage(item) && typeof item.message === 'string') {
+          return item.message
         }
 
-        if (Array.isArray(response.details) && response.details.length) {
-            return response.details.map(item => {
-                if (typeof item === 'string') {
-                    return item
-                }
-
-                if (hasMessage(item) && typeof item.message === 'string') {
-                    return item.message
-                }
-
-                return shownMessage(item)
-            }).join(', ')
-        }
-
-        if (Array.isArray(response.errors) && response.errors.length) {
-            return response.errors.map(item => {
-                if (typeof item === 'string') {
-                    return item
-                }
-
-                if (hasMessage(item) && typeof item.message === 'string') {
-                    return item.message
-                }
-
-                return shownMessage(item)
-            }).join(', ')
-        }
-
-        if (hasMessage(response) && typeof response.message === 'string') {
-            return response.message
-        }
-
-        return shownMessage(response)
+        return shownMessage(item)
+      }).join(', ')
     }
 
-    return shownMessage(err)
+    if (Array.isArray(response.errors) && response.errors.length) {
+      return response.errors.map(item => {
+        if (typeof item === 'string') {
+          return item
+        }
+
+        if (hasMessage(item) && typeof item.message === 'string') {
+          return item.message
+        }
+
+        return shownMessage(item)
+      }).join(', ')
+    }
+
+    if (hasMessage(response) && typeof response.message === 'string') {
+      return response.message
+    }
+
+    return shownMessage(response)
+  }
+
+  return shownMessage(err)
 }
 
 export default getErrorMessage

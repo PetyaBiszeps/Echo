@@ -8,7 +8,7 @@ const { id, name, type, placeholder } = defineProps<{
   placeholder: string
 }>()
 
-  // Constants
+// Constants
 const model = defineModel<string | number>({
   required: true
 })

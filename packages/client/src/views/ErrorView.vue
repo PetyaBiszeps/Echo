@@ -2,10 +2,10 @@
 import BaseButton from '@/components/ui/base/BaseButton.vue'
 import { useRouter } from 'vue-router'
 
-  // Constants
+// Constants
 const router = useRouter()
 
-  // Methods
+// Methods
 async function backToHome() {
   await router.push('/')
 }

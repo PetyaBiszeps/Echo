@@ -6,7 +6,7 @@ import App from '@/App.vue'
 import '@/styles/main.scss'
 
 createApp(App)
-    .use(store)
-    .use(router)
-    .use(plugin)
-    .mount('#app')
+  .use(store)
+  .use(router)
+  .use(plugin)
+  .mount('#app')

@@ -6,7 +6,7 @@ import {
   ref
 } from 'vue'
 
-  // Constants
+// Constants
 const search = ref<string | number>('')
 </script>
 
