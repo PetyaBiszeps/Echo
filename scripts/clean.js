@@ -2,18 +2,18 @@
 
 // Constants
 const commands = [{
-    name: 'client',
-    cmd: 'yarn workspace @echo/client clean'
+  name: 'client',
+  cmd: 'pnpm --filter @echo/client clean'
 }, {
-    name: 'server',
-    cmd: 'yarn workspace @echo/server clean'
+  name: 'server',
+  cmd: 'pnpm --filter @echo/server clean'
 }, {
-    name: 'shared',
-    cmd: 'yarn workspace @echo/shared clean'
+  name: 'shared',
+  cmd: 'pnpm --filter @echo/shared clean'
 }]
 // const children = []
 
 // Init
 commands.forEach(({ name, cmd }) => {
-    console.log(`[${name}] ${cmd}`)
+  console.log(`[${name}] ${cmd}`)
 })

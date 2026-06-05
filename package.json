@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/dev.js",
-    "build": "yarn workspace @echo/server build & yarn workspace @echo/client build & yarn workspace @echo/shared build",
-    "clean": "yarn workspace @echo/server clean & yarn workspace @echo/client clean & yarn workspace @echo/shared clean",
-    "dev:client": "yarn workspace @echo/client dev",
-    "dev:server": "yarn workspace @echo/server dev",
+    "build": "pnpm --filter @echo/shared build && pnpm --filter @echo/server build && pnpm --filter @echo/client build",
+    "clean": "pnpm --filter @echo/shared clean && pnpm --filter @echo/server clean && pnpm --filter @echo/client clean",
+    "dev:client": "pnpm --filter @echo/client dev",
+    "dev:server": "pnpm --filter @echo/server dev",
     "lint": "eslint packages --ext .ts,.js,.vue",
     "lint:fix": "eslint packages --ext .ts,.js,.vue --fix"
   },

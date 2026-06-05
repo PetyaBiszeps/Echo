@@ -1,4 +1,5 @@
 {
+  "name": "@echo/client",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

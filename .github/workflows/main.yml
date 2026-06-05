@@ -60,21 +60,24 @@ jobs:
         with:
           node-version: '22.x'
 
-      - name: Debug Node.js & Yarn
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Debug Node.js & pnpm
         run: |
           echo "Node: $(node -v)"
-          echo "Yarn: $(yarn -v)"
+          echo "pnpm: $(pnpm -v)"
 
       - name: Install monorepo dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build shared
-        run: yarn workspace @echo/shared build
+        run: pnpm --filter @echo/shared build
 
       - name: Build client
         run: |
-          if yarn --silent workspaces list | grep -q "@echo/client"; then 
-            yarn workspace @echo/client build
+          if pnpm --filter @echo/client list --depth -1 >/dev/null 2>&1; then
+            pnpm --filter @echo/client build
           else
             echo "No @echo/client workspace found - skipping..."
           fi
@@ -115,22 +118,25 @@ jobs:
         with:
           node-version: '22.x'
 
-      - name: Debug Node.js & Yarn
+      - name: Enable pnpm
+        run: corepack enable
+
+      - name: Debug Node.js & pnpm
         run: |
           echo "Node: $(node -v)"
-          echo "Yarn: $(yarn -v)"
+          echo "pnpm: $(pnpm -v)"
 
       - name: Install monorepo dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Build shared
-        run: yarn workspace @echo/shared build
+        run: pnpm --filter @echo/shared build
 
       - name: Generate Prisma client
-        run: yarn workspace @echo/server prisma generate
+        run: pnpm --filter @echo/server exec prisma generate
 
       - name: Apply DB migrations
-        run: yarn workspace @echo/server prisma migrate deploy
+        run: pnpm --filter @echo/server exec prisma migrate deploy
 
       - name: Build server
-        run: yarn workspace @echo/server build
+        run: pnpm --filter @echo/server build

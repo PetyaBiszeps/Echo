@@ -1,19 +1,19 @@
 // import { spawn } from 'node:child_process'
 
-    // Constants
+// Constants
 const commands = [{
-    name: 'client',
-    cmd: 'yarn workspace @echo/client build'
+  name: 'client',
+  cmd: 'pnpm --filter @echo/client build'
 }, {
-    name: 'server',
-    cmd: 'yarn workspace @echo/server build'
+  name: 'server',
+  cmd: 'pnpm --filter @echo/server build'
 }, {
-    name: 'shared',
-    cmd: 'yarn workspace @echo/shared build'
+  name: 'shared',
+  cmd: 'pnpm --filter @echo/shared build'
 }]
 // const children = []
 
-    // Init
+// Init
 commands.forEach(({ name, cmd }) => {
-    console.log(`[${name}] ${cmd}`)
+  console.log(`[${name}] ${cmd}`)
 })

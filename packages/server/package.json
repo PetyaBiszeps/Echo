@@ -1,4 +1,5 @@
 {
+  "name": "@echo/server",
   "type": "module",
   "scripts": {
     "dev": "vite-node src/app/index.ts",
