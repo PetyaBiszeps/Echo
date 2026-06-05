@@ -1,4 +1,4 @@
-import type { IUser } from '../chat'
+import type { IUser } from '../chat/index.js'
 
 export interface IRegister {
   username: string

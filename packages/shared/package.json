@@ -1,5 +1,6 @@
 {
   "name": "@echo/shared",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -8,5 +9,12 @@
   },
   "dependencies": {
     "zod": "^4.1.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   }
 }

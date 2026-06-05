@@ -2,7 +2,7 @@ import { z } from 'zod'
 import type {
   IRegister,
   ILogin
-} from './types'
+} from './types.js'
 
 export const RegisterSchema = z.object({
   username: z.string()

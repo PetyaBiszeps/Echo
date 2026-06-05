@@ -1,3 +1,3 @@
-export * from './models/auth'
-export * from './models/chat'
-export * from './api/response'
+export * from './models/auth/index.js'
+export * from './models/chat/index.js'
+export * from './api/response/index.js'

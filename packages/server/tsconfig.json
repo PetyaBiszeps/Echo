@@ -3,13 +3,19 @@
   "compilerOptions": {
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "baseUrl": ".",
-    "outDir": "dist",
-    "types": ["node"],
     "paths": {
-      "@/*": ["src/*"],
-      "@echo/shared": ["../shared/src/index.ts"]
-    }
+      "@/*": ["src/*"]
+    },
+    "outDir": "dist",
+    "types": ["node"]
   },
-  "include": ["src", "vite.config.mts", "vitest.config.ts", "src/types/**/*.d.ts"]
+  "include": [
+    "src",
+    "vite.config.mts", "vite.config.ts", "vite.config.mjs", "vite.config.js",
+    "vitest.config.ts", "vitest.config.js",
+    "src/types/**/*.d.ts"
+  ]
 }
