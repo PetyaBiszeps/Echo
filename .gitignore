@@ -1,21 +1,34 @@
-# OS / IDE
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+out
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
 .DS_Store
+.fleet
 .idea
 
-# Node
-node_modules
-dist
-
-# Env
+# Local env files
 .env
 .env.*
 !.env.example
 
-# Logs
-*.log
-
 # DB
 *.sql
 
-# Prisma
+# ORM
 packages/server/prisma/generated
+
+# Design
+*.pen
