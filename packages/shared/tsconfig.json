@@ -6,6 +6,7 @@
     "noEmit": false,
     "declaration": true,
     "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     "baseUrl": ".",
     "rootDir": "src",
     "paths": {
