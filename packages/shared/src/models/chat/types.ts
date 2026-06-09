@@ -7,8 +7,10 @@ export interface IUser {
 export interface IChat {
   id: string
   title?: string | null
+  name?: string | null
   participants: IUser[]
   lastMessage?: IMessage | null
+  latestMessage?: IMessage | null
   unreadCount: number
   createdAt: string   // ISO
   updatedAt: string   // ISO
@@ -16,7 +18,9 @@ export interface IChat {
 
 export interface IMessage {
   id: string
+  chatId?: string
   content: string
   senderId: string
+  createdAt?: string
   timestamp: string
 }

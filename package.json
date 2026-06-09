@@ -9,8 +9,8 @@
     "clean": "pnpm --filter @echo/shared clean && pnpm --filter @echo/server clean && pnpm --filter @echo/client clean",
     "dev:client": "pnpm --filter @echo/client dev",
     "dev:server": "pnpm --filter @echo/server dev",
-    "lint": "eslint packages --ext .ts,.js,.vue",
-    "lint:fix": "eslint packages --ext .ts,.js,.vue --fix"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.10.0",

@@ -1,64 +1,144 @@
+import prisma from '@/db/prisma.ts'
+import {
+  BadRequestException,
+  UnauthorizedException
+} from '@/lib/exceptions'
 import type {
-  IUser,
-  IChat
+  IChat,
+  IMessage,
+  IUser
 } from '@echo/shared'
 
 export class ChatService {
-  async getChat(userId: string): Promise<IChat[]> {
-    const mockUsers: IUser[] = [{
-      id: '1', username: 'Alice'
-    }, {
-      id: '2', username: 'Nathan'
-    }, {
-      id: '3', username: 'Krein'
-    }, {
-      id: '4', username: 'Kan'
-    }, {
-      id: '5', username: 'John'
-    }]
-
-    return [{
-      id: '1',
-      title: 'Alice',
-      participants: [{
-        id: userId, username: 'current_user'
-      }, mockUsers[0]],
-      lastMessage: {
-        id: 'msg1',
-        content: 'Привет! Как дела?',
-        senderId: mockUsers[0].id,
-        timestamp: new Date().toISOString()
+  async getChats(userId: string): Promise<IChat[]> {
+    const chats = await prisma.chat.findMany({
+      where: {
+        members: {
+          some: {
+            userId
+          }
+        }
       },
-      unreadCount: 2,
-      createdAt: new Date('2024-01-01').toISOString(),
-      updatedAt: new Date().toISOString()
-    }, {
-      id: '2',
-      title: 'Nathan',
-      participants: [{
-        id: userId, username: 'current_user'
-      }, mockUsers[1]],
-      unreadCount: 0,
-      createdAt: new Date('2024-01-02').toISOString(),
-      updatedAt: new Date().toISOString()
-    }, {
-      id: '3',
-      title: 'Kan',
-      participants: [{
-        id: userId, username: 'current_user'
-      }, mockUsers[2]],
-      unreadCount: 4,
-      createdAt: new Date('2025-05-02').toISOString(),
-      updatedAt: new Date().toISOString()
-    }, {
-      id: '4',
-      title: 'John',
-      participants: [{
-        id: userId, username: 'current_user'
-      }, mockUsers[2]],
-      unreadCount: 4,
-      createdAt: new Date('2023-12-12').toISOString(),
-      updatedAt: new Date().toISOString()
-    }]
+      include: {
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true
+              }
+            }
+          },
+          orderBy: {
+            joinedAt: 'asc'
+          }
+        },
+        messages: {
+          orderBy: {
+            createdAt: 'desc'
+          },
+          take: 1
+        }
+      },
+      orderBy: {
+        updatedAt: 'desc'
+      }
+    })
+
+    return chats.map(chat => {
+      const participants: IUser[] = chat.members.map(member => ({
+        id: member.user.id,
+        username: member.user.username
+      }))
+      const latestMessage = chat.messages[0]
+        ? this.toMessage(chat.messages[0])
+        : null
+      const fallbackTitle = participants.find(participant => participant.id !== userId)?.username ?? null
+
+      return {
+        id: chat.id,
+        title: chat.title,
+        name: chat.title ?? fallbackTitle,
+        participants,
+        lastMessage: latestMessage,
+        latestMessage,
+        unreadCount: 0,
+        createdAt: chat.createdAt.toISOString(),
+        updatedAt: chat.updatedAt.toISOString()
+      }
+    })
+  }
+
+  async getMessages(userId: string, chatId: string): Promise<IMessage[]> {
+    await this.assertMember(userId, chatId)
+
+    const messages = await prisma.message.findMany({
+      where: {
+        chatId
+      },
+      orderBy: {
+        createdAt: 'asc'
+      }
+    })
+
+    return messages.map(message => this.toMessage(message))
+  }
+
+  async createMessage(userId: string, chatId: string, content: unknown): Promise<IMessage> {
+    const normalizedContent = typeof content === 'string'
+      ? content.trim()
+      : ''
+
+    if (!normalizedContent) {
+      throw new BadRequestException('Message content is required')
+    }
+
+    await this.assertMember(userId, chatId)
+
+    const message = await prisma.message.create({
+      data: {
+        chatId,
+        senderId: userId,
+        content: normalizedContent
+      }
+    })
+
+    return this.toMessage(message)
+  }
+
+  private async assertMember(userId: string, chatId: string) {
+    const member = await prisma.chatMember.findUnique({
+      where: {
+        chatId_userId: {
+          chatId,
+          userId
+        }
+      }
+    })
+
+    if (!member) {
+      throw new UnauthorizedException('Chat not found or access denied')
+    }
+
+    return member
+  }
+
+  private toMessage(message: {
+    id: string
+    chatId: string
+    senderId: string
+    content: string
+    createdAt: Date
+  }): IMessage {
+    const createdAt = message.createdAt.toISOString()
+
+    return {
+      id: message.id,
+      chatId: message.chatId,
+      senderId: message.senderId,
+      content: message.content,
+      createdAt,
+      timestamp: createdAt
+    }
   }
 }

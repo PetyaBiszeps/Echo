@@ -26,6 +26,7 @@ logs
 
 # DB
 *.sql
+!packages/server/prisma/migrations/**/migration.sql
 
 # ORM
 packages/server/prisma/generated
