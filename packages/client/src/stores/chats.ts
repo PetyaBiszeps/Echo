@@ -26,11 +26,7 @@ const useChatStore = defineStore('chats', () => {
 
   async function loadChats() {
     try {
-      const { data } = await http.get('/chats', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`
-        }
-      })
+      const { data } = await http.get('/chats')
 
       const chats: IChat[] = data.data.map((chat: IChat) => ({
         ...chat,

@@ -6,8 +6,11 @@
     "noEmit": true,
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
+    "rootDir": "../..",
     "paths": {
-      "@/*": ["src/*", "src/*.ts", "src/*/index.ts"]
+      "@/*": ["src/*", "src/*.ts", "src/*/index.ts"],
+      "@echo/shared": ["../shared/src/index.ts"],
+      "@echo/shared/*": ["../shared/src/*"]
     },
     "outDir": "dist",
     "types": ["node"]

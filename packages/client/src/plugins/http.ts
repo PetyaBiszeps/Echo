@@ -22,7 +22,7 @@ export default {
       const status = err.response?.status
 
       if (status === 401) {
-        auth.logout()
+        auth.logout(false)
       }
       const payload = err?.response?.data ?? err
 

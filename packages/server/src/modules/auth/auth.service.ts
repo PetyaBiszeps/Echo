@@ -1,7 +1,13 @@
 import prisma from '@/db/prisma.ts'
 import env from '@/config/env.ts'
+import {
+  BadRequestException,
+  ConflictException,
+  UnauthorizedException
+} from '@/lib/exceptions'
 import jwt from 'jsonwebtoken'
 import argon2 from 'argon2'
+import type { IJWTPayload } from '@/types'
 import type {
   IRegister,
   ILogin,
@@ -14,7 +20,7 @@ export class AuthService {
     type: argon2.argon2id
   }
 
-  private signToken(payload: object) {
+  private signToken(payload: IJWTPayload) {
     return jwt.sign(payload, this.jwtSecret, {
       expiresIn: '1h'
     })
@@ -26,7 +32,7 @@ export class AuthService {
 
   async register(data: IRegister): Promise<IAuthResponse> {
     if (!data.username || !data.password) {
-      throw new Error('Invalid data. Please enter a username and password')
+      throw new BadRequestException('Invalid data. Please enter a username and password')
     }
     const exists = await prisma.user.findUnique({
       where: {
@@ -35,7 +41,7 @@ export class AuthService {
     })
 
     if (exists) {
-      throw new Error('User with this username already exists')
+      throw new ConflictException('User with this username already exists')
     }
     const hashPassword: string = await argon2.hash(data.password, this.argonOptions)
 
@@ -60,7 +66,7 @@ export class AuthService {
 
   async login(data: ILogin): Promise<IAuthResponse> {
     if (!data.username || !data.password) {
-      throw new Error('Invalid data. Please enter a username and password')
+      throw new BadRequestException('Invalid data. Please enter a username and password')
     }
     const user = await prisma.user.findUnique({
       where: {
@@ -69,12 +75,12 @@ export class AuthService {
     })
 
     if (!user) {
-      throw new Error('User with this username does not exist')
+      throw new UnauthorizedException('Invalid credentials. Please enter valid username and password')
     }
     const verified: boolean = await argon2.verify(user.password, data.password)
 
     if (!verified) {
-      throw new Error('Invalid credentials. Please enter valid username and password')
+      throw new UnauthorizedException('Invalid credentials. Please enter valid username and password')
     }
     const token: string = this.signToken({
       id: user.id

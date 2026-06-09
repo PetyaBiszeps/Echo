@@ -15,6 +15,7 @@ const useAuthStore = defineStore('auth', () => {
 
   const user = ref<IAuthUser | null>(null)
   const token = ref<IAuthTokens | null>(null)
+  const errorMessage = ref<string | null>(null)
 
   const isAuthenticated = computed(() => {
     return Boolean(token.value) && Boolean(user.value)
@@ -22,6 +23,7 @@ const useAuthStore = defineStore('auth', () => {
 
   async function register(data: IAuthRegister) {
     try {
+      errorMessage.value = null
       const { data: result } = await http.post<{
         user: IAuthUser,
         access_token: string
@@ -40,15 +42,23 @@ const useAuthStore = defineStore('auth', () => {
         message: 'Register successfully'
       })
     } catch (err: unknown) {
+      const message = getErrorMessage(err)
+
+      errorMessage.value = message
       toaster.addToaster({
         type: 'error',
-        message: getErrorMessage(err)
+        message
+      })
+
+      throw new Error(message, {
+        cause: err
       })
     }
   }
 
   async function login(data: IAuthLogin) {
     try {
+      errorMessage.value = null
       const { data: result } = await http.post<{
         user: IAuthUser,
         access_token: string
@@ -67,25 +77,35 @@ const useAuthStore = defineStore('auth', () => {
         message: 'Logged in successfully'
       })
     } catch (err: unknown) {
+      const message = getErrorMessage(err)
+
+      errorMessage.value = message
       toaster.addToaster({
         type: 'error',
-        message: getErrorMessage(err)
+        message
+      })
+
+      throw new Error(message, {
+        cause: err
       })
     }
   }
 
-  function logout() {
+  function logout(showToast = true) {
     user.value = null
     token.value = null
+    errorMessage.value = null
 
-    toaster.addToaster({
-      type: 'success',
-      message: 'Logged out successfully'
-    })
+    if (showToast) {
+      toaster.addToaster({
+        type: 'success',
+        message: 'Logged out successfully'
+      })
+    }
   }
 
   return {
-    user, token, isAuthenticated,
+    user, token, errorMessage, isAuthenticated,
     register, login, logout
   }
 }, {

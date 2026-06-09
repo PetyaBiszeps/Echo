@@ -17,19 +17,27 @@ const input = ref({
 
 // Methods
 async function handleRegister() {
-  await auth.register(input.value)
+  try {
+    await auth.register(input.value)
 
-  await router.push({
-    name: 'inbox'
-  })
+    await router.push({
+      name: 'inbox'
+    })
+  } catch {
+    // Store already exposes and toasts the error.
+  }
 }
 
 async function handleLogin() {
-  await auth.login(input.value)
+  try {
+    await auth.login(input.value)
 
-  await router.push({
-    name: 'inbox'
-  })
+    await router.push({
+      name: 'inbox'
+    })
+  } catch {
+    // Store already exposes and toasts the error.
+  }
 }
 </script>
 
@@ -62,6 +70,10 @@ async function handleLogin() {
         :placeholder="'enter password...'"
         :autocomplete="'current-password'"
       />
+
+      <p v-if="auth.errorMessage">
+        {{ auth.errorMessage }}
+      </p>
     </main>
 
     <footer>
