@@ -8,6 +8,7 @@ import type {
   JwtPayload
 } from 'jsonwebtoken'
 import type {
+  IChat,
   IMessage
 } from '@echo/shared'
 import type {
@@ -28,6 +29,10 @@ interface MessageNewPayload {
   message: IMessage
 }
 
+interface ChatUpdatedPayload {
+  chat: IChat
+}
+
 interface SocketErrorPayload {
   code: string
   message: string
@@ -42,8 +47,11 @@ interface SocketAckResponse<T = null> {
 type SocketAck<T = null> = (response: SocketAckResponse<T>) => void
 
 const service = new ChatService()
+let socketServer: Server | null = null
 
 function initChatSocket(io: Server) {
+  socketServer = io
+
   io.use((socket, next) => {
     try {
       const token = socket.handshake.auth?.token
@@ -127,12 +135,29 @@ function initChatSocket(io: Server) {
         }
 
         io.to(getChatRoom(payloadData.chatId)).emit('message:new', data)
+        await emitChatUpdated(payloadData.chatId)
 
         return sendSuccess(ack)
       } catch (error) {
         return sendSocketHandlerError(socket, ack, error)
       }
     })
+  })
+}
+
+export async function emitChatUpdated(chatId: string) {
+  if (!socketServer) {
+    return
+  }
+
+  const updates = await service.getChatUpdates(chatId)
+
+  updates.forEach(({ userId, chat }) => {
+    const data: ChatUpdatedPayload = {
+      chat
+    }
+
+    socketServer?.to(getUserRoom(userId)).emit('chat:updated', data)
   })
 }
 

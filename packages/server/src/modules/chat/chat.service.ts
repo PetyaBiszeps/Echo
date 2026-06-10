@@ -9,6 +9,31 @@ import type {
   IUser
 } from '@echo/shared'
 
+type ChatWithMembersAndMessages = {
+  id: string
+  title: string | null
+  createdAt: Date
+  updatedAt: Date
+  members: Array<{
+    user: {
+      id: string
+      username: string
+    }
+  }>
+  messages: Array<{
+    id: string
+    chatId: string
+    senderId: string
+    content: string
+    createdAt: Date
+  }>
+}
+
+export interface IChatUpdate {
+  userId: string
+  chat: IChat
+}
+
 export class ChatService {
   async getChatIds(userId: string): Promise<string[]> {
     const members = await prisma.chatMember.findMany({
@@ -59,6 +84,19 @@ export class ChatService {
     })
 
     return chats.map(chat => this.toChat(chat, userId))
+  }
+
+  async getChatUpdates(chatId: string): Promise<IChatUpdate[]> {
+    const chat = await this.getChatById(chatId)
+
+    if (!chat) {
+      return []
+    }
+
+    return chat.members.map(member => ({
+      userId: member.user.id,
+      chat: this.toChat(chat, member.user.id)
+    }))
   }
 
   async createDirectChat(userId: string, username: unknown): Promise<IChat> {
@@ -198,13 +236,23 @@ export class ChatService {
 
     await this.assertMember(userId, chatId)
 
-    const message = await prisma.message.create({
-      data: {
-        chatId,
-        senderId: userId,
-        content: normalizedContent
-      }
-    })
+    const [message] = await prisma.$transaction([
+      prisma.message.create({
+        data: {
+          chatId,
+          senderId: userId,
+          content: normalizedContent
+        }
+      }),
+      prisma.chat.update({
+        where: {
+          id: chatId
+        },
+        data: {
+          updatedAt: new Date()
+        }
+      })
+    ])
 
     return this.toMessage(message)
   }
@@ -226,25 +274,36 @@ export class ChatService {
     return member
   }
 
-  private toChat(chat: {
-    id: string
-    title: string | null
-    createdAt: Date
-    updatedAt: Date
-    members: Array<{
-      user: {
-        id: string
-        username: string
+  private async getChatById(chatId: string): Promise<ChatWithMembersAndMessages | null> {
+    return prisma.chat.findUnique({
+      where: {
+        id: chatId
+      },
+      include: {
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true
+              }
+            }
+          },
+          orderBy: {
+            joinedAt: 'asc'
+          }
+        },
+        messages: {
+          orderBy: {
+            createdAt: 'desc'
+          },
+          take: 1
+        }
       }
-    }>
-    messages: Array<{
-      id: string
-      chatId: string
-      senderId: string
-      content: string
-      createdAt: Date
-    }>
-  }, userId: string): IChat {
+    })
+  }
+
+  private toChat(chat: ChatWithMembersAndMessages, userId: string): IChat {
     const participants: IUser[] = chat.members.map(member => ({
       id: member.user.id,
       username: member.user.username

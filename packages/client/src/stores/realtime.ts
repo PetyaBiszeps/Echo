@@ -2,10 +2,17 @@ import { defineStore } from 'pinia'
 import { shallowRef, ref } from 'vue'
 import { io } from 'socket.io-client'
 import type { Socket } from 'socket.io-client'
-import type { IMessage } from '@echo/shared'
+import type {
+  IChat,
+  IMessage
+} from '@echo/shared'
 
 interface MessageNewPayload {
   message?: IMessage
+}
+
+interface ChatUpdatedPayload {
+  chat?: IChat
 }
 
 interface SocketAckResponse {
@@ -17,15 +24,21 @@ interface SocketAckResponse {
 }
 
 type MessageHandler = (message: IMessage) => void
+type ChatHandler = (chat: IChat) => void
 
 const useRealtimeStore = defineStore('realtime', () => {
   const socket = shallowRef<Socket | null>(null)
   const isConnected = ref(false)
   const connectionError = ref<string | null>(null)
   let messageHandler: MessageHandler | null = null
+  let chatUpdatedHandler: ChatHandler | null = null
 
   function setMessageHandler(handler: MessageHandler) {
     messageHandler = handler
+  }
+
+  function setChatUpdatedHandler(handler: ChatHandler) {
+    chatUpdatedHandler = handler
   }
 
   function connect(accessToken: string | null | undefined) {
@@ -65,6 +78,12 @@ const useRealtimeStore = defineStore('realtime', () => {
     nextSocket.on('message:new', (payload: MessageNewPayload) => {
       if (isMessage(payload?.message)) {
         messageHandler?.(payload.message)
+      }
+    })
+
+    nextSocket.on('chat:updated', (payload: ChatUpdatedPayload) => {
+      if (isChat(payload?.chat)) {
+        chatUpdatedHandler?.(payload.chat)
       }
     })
 
@@ -129,6 +148,7 @@ const useRealtimeStore = defineStore('realtime', () => {
     isConnected,
     connectionError,
     setMessageHandler,
+    setChatUpdatedHandler,
     connect,
     disconnect,
     joinChat,
@@ -150,6 +170,13 @@ function getSocketUrl() {
   }
 
   return 'http://localhost:3001'
+}
+
+function isChat(chat: unknown): chat is IChat {
+  return typeof chat === 'object'
+    && chat !== null
+    && typeof (chat as IChat).id === 'string'
+    && Array.isArray((chat as IChat).participants)
 }
 
 function isMessage(message: unknown): message is IMessage {

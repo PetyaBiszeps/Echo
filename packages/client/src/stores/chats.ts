@@ -206,6 +206,22 @@ const useChatStore = defineStore('chats', () => {
     return normalizedMessage
   }
 
+  function receiveChatUpdate(chat: IChat) {
+    const normalizedChat = normalizeChat(chat)
+    const exists = chatList.value.some(item => item.id === normalizedChat.id)
+
+    chatList.value = [
+      normalizedChat,
+      ...chatList.value.filter(item => item.id !== normalizedChat.id)
+    ]
+
+    if (!exists) {
+      void useRealtimeStore().joinChat(normalizedChat.id)
+    }
+
+    return normalizedChat
+  }
+
   function normalizeMessage(message: IMessage): IMessage {
     const timestamp = new Date(message.timestamp).toISOString()
 
@@ -265,6 +281,7 @@ const useChatStore = defineStore('chats', () => {
     createChat,
     loadChats,
     loadMessages,
+    receiveChatUpdate,
     receiveMessage,
     sendMessage
   }
