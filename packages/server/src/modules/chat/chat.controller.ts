@@ -26,6 +26,25 @@ export async function GetChatController(req: Request, res: Response, next: NextF
   }
 }
 
+export async function PostChatController(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userId = requireUserId(req, res)
+
+    if (!userId) {
+      return undefined
+    }
+
+    const chat = await service.createDirectChat(userId, req.body?.username)
+
+    return res.status(201).json({
+      success: true,
+      data: chat
+    })
+  } catch (err) {
+    return next(err)
+  }
+}
+
 export async function GetChatMessagesController(req: Request, res: Response, next: NextFunction) {
   try {
     const userId = requireUserId(req, res)

@@ -10,6 +10,19 @@ import type {
 } from '@echo/shared'
 
 export class ChatService {
+  async getChatIds(userId: string): Promise<string[]> {
+    const members = await prisma.chatMember.findMany({
+      where: {
+        userId
+      },
+      select: {
+        chatId: true
+      }
+    })
+
+    return members.map(member => member.chatId)
+  }
+
   async getChats(userId: string): Promise<IChat[]> {
     const chats = await prisma.chat.findMany({
       where: {
@@ -45,28 +58,118 @@ export class ChatService {
       }
     })
 
-    return chats.map(chat => {
-      const participants: IUser[] = chat.members.map(member => ({
-        id: member.user.id,
-        username: member.user.username
-      }))
-      const latestMessage = chat.messages[0]
-        ? this.toMessage(chat.messages[0])
-        : null
-      const fallbackTitle = participants.find(participant => participant.id !== userId)?.username ?? null
+    return chats.map(chat => this.toChat(chat, userId))
+  }
 
-      return {
-        id: chat.id,
-        title: chat.title,
-        name: chat.title ?? fallbackTitle,
-        participants,
-        lastMessage: latestMessage,
-        latestMessage,
-        unreadCount: 0,
-        createdAt: chat.createdAt.toISOString(),
-        updatedAt: chat.updatedAt.toISOString()
+  async createDirectChat(userId: string, username: unknown): Promise<IChat> {
+    const normalizedUsername = typeof username === 'string'
+      ? username.trim()
+      : ''
+
+    if (!normalizedUsername) {
+      throw new BadRequestException('Username is required')
+    }
+
+    const targetUser = await prisma.user.findUnique({
+      where: {
+        username: normalizedUsername
+      },
+      select: {
+        id: true,
+        username: true
       }
     })
+
+    if (!targetUser) {
+      throw new BadRequestException('User not found')
+    }
+
+    if (targetUser.id === userId) {
+      throw new BadRequestException('Cannot create a chat with yourself')
+    }
+
+    const existingChat = await prisma.chat.findFirst({
+      where: {
+        AND: [{
+          members: {
+            some: {
+              userId
+            }
+          }
+        }, {
+          members: {
+            some: {
+              userId: targetUser.id
+            }
+          }
+        }]
+      },
+      include: {
+        _count: {
+          select: {
+            members: true
+          }
+        },
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true
+              }
+            }
+          },
+          orderBy: {
+            joinedAt: 'asc'
+          }
+        },
+        messages: {
+          orderBy: {
+            createdAt: 'desc'
+          },
+          take: 1
+        }
+      }
+    })
+
+    if (existingChat && existingChat._count.members === 2) {
+      return this.toChat(existingChat, userId)
+    }
+
+    const chat = await prisma.chat.create({
+      data: {
+        members: {
+          create: [{
+            userId
+          }, {
+            userId: targetUser.id
+          }]
+        }
+      },
+      include: {
+        members: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true
+              }
+            }
+          },
+          orderBy: {
+            joinedAt: 'asc'
+          }
+        },
+        messages: {
+          orderBy: {
+            createdAt: 'desc'
+          },
+          take: 1
+        }
+      }
+    })
+
+    return this.toChat(chat, userId)
   }
 
   async getMessages(userId: string, chatId: string): Promise<IMessage[]> {
@@ -106,7 +209,7 @@ export class ChatService {
     return this.toMessage(message)
   }
 
-  private async assertMember(userId: string, chatId: string) {
+  async assertMember(userId: string, chatId: string) {
     const member = await prisma.chatMember.findUnique({
       where: {
         chatId_userId: {
@@ -121,6 +224,47 @@ export class ChatService {
     }
 
     return member
+  }
+
+  private toChat(chat: {
+    id: string
+    title: string | null
+    createdAt: Date
+    updatedAt: Date
+    members: Array<{
+      user: {
+        id: string
+        username: string
+      }
+    }>
+    messages: Array<{
+      id: string
+      chatId: string
+      senderId: string
+      content: string
+      createdAt: Date
+    }>
+  }, userId: string): IChat {
+    const participants: IUser[] = chat.members.map(member => ({
+      id: member.user.id,
+      username: member.user.username
+    }))
+    const latestMessage = chat.messages[0]
+      ? this.toMessage(chat.messages[0])
+      : null
+    const fallbackTitle = participants.find(participant => participant.id !== userId)?.username ?? null
+
+    return {
+      id: chat.id,
+      title: chat.title,
+      name: chat.title ?? fallbackTitle,
+      participants,
+      lastMessage: latestMessage,
+      latestMessage,
+      unreadCount: 0,
+      createdAt: chat.createdAt.toISOString(),
+      updatedAt: chat.updatedAt.toISOString()
+    }
   }
 
   private toMessage(message: {

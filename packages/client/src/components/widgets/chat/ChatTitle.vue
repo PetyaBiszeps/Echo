@@ -10,6 +10,6 @@ const { chat } = defineProps<{
 
 <template>
   <header :class="['chatTitle']">
-    <h2>{{ chat.title }}</h2>
+    <h2>{{ chat.name ?? chat.title }}</h2>
   </header>
 </template>

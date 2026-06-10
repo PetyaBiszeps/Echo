@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import BaseInput from '@/components/ui/base/BaseInput.vue'
+import useChatStore from '@/stores/chats'
 
-const { id, name, type, size, placeholder } = defineProps<{
+const { chatId, id, name, type, size, placeholder } = defineProps<{
+  chatId: string
   id: string
   name: string
   type: string
@@ -9,10 +11,28 @@ const { id, name, type, size, placeholder } = defineProps<{
   placeholder: string
 }>()
 
+// Init
+const chatStore = useChatStore()
+
 // Constants
 const model = defineModel<string | number>({
   required: true
 })
+
+// Methods
+async function sendMessage() {
+  const content = model.value.toString().trim()
+
+  if (!content) {
+    return
+  }
+
+  const message = await chatStore.sendMessage(chatId, content)
+
+  if (message) {
+    model.value = ''
+  }
+}
 </script>
 
 <template>
@@ -25,6 +45,9 @@ const model = defineModel<string | number>({
       :type="type"
       :size="size"
       :placeholder="placeholder"
+      :disabled="chatStore.sendingMessage"
+
+      @keyup.enter="sendMessage"
     />
   </div>
 </template>

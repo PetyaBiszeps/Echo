@@ -18,7 +18,8 @@ const chats = computed(() => {
   return chatStore.chatList.map(chat => {
     return {
       id: chat.id,
-      title: chat.title ?? chat.participants[1].username ?? '',
+      title: chat.name ?? chat.title ?? chat.participants[1]?.username ?? '',
+      name: chat.name,
       participants: chat.participants,
       lastMessage: chat.lastMessage,
       unreadCount: chat.unreadCount,

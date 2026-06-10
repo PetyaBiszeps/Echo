@@ -1,13 +1,20 @@
 <script setup lang="ts">
+import useAuthStore from '@/stores/auth'
 import type {
-  IChat,
   IMessage
 } from '@echo/shared'
 
 const { messages } = defineProps<{
-  chat: IChat
   messages: IMessage[]
 }>()
+
+// Init
+const authStore = useAuthStore()
+
+// Methods
+function isOwnMessage(message: IMessage) {
+  return message.senderId === authStore.user?.id
+}
 </script>
 
 <template>
@@ -16,7 +23,7 @@ const { messages } = defineProps<{
     :key="message.id"
 
     :class="['chatMessage', {
-      interlocutor: message.senderId === chat.participants[1].id
+      own: isOwnMessage(message)
     }]"
   >
     <p>{{ message.content }}</p>

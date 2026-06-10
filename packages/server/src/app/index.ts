@@ -2,13 +2,25 @@ import notFoundHandler from '@/middleware/notFoundHandler.ts'
 import errorHandler from '@/middleware/errorHandler.ts'
 import routes from '@/app/routes.ts'
 import env from '@/config/env.ts'
+import initChatSocket from '@/modules/chat/chat.socket.ts'
+import { createServer } from 'node:http'
 import express from 'express'
 import cors from 'cors'
+import { Server } from 'socket.io'
 
 // Constants
 const app = express()
+const httpServer = createServer(app)
+const io = new Server(httpServer, {
+  cors: {
+    origin: env.CORS_ORIGIN,
+    credentials: true
+  }
+})
 const host = env.HOST
 const port = env.PORT
+
+initChatSocket(io)
 
 // Init
 app.use(express.json({
@@ -28,6 +40,6 @@ app.use(notFoundHandler)
 app.use(errorHandler)
 
 // Starting server
-app.listen(port, host, (): void => {
+httpServer.listen(port, host, (): void => {
   console.log(`Server started on http://${host}:${port}`)
 })

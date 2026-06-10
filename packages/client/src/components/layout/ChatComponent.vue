@@ -3,7 +3,7 @@ import ChatWrapper from '@/components/widgets/chat/ChatWrapper.vue'
 import ChatTitle from '@/components/widgets/chat/ChatTitle.vue'
 import ChatInput from '@/components/widgets/chat/ChatInput.vue'
 import useChatStore from '@/stores/chats'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type {
   IChat
 } from '@echo/shared'
@@ -15,6 +15,14 @@ const chatStore = useChatStore()
 // Constants
 const msg = ref<string | number>('')
 const chat = computed<IChat | null>(() => chatStore.getChat)
+
+watch(() => chatStore.selectedChatId, (chatId) => {
+  if (chatId) {
+    chatStore.loadMessages(chatId)
+  }
+}, {
+  immediate: true
+})
 </script>
 
 <template>
@@ -28,6 +36,7 @@ const chat = computed<IChat | null>(() => chatStore.getChat)
         v-model="msg"
 
         :id="'message'"
+        :chat-id="chat.id"
         :name="'message'"
         :type="'text'"
         :size="'lg'"

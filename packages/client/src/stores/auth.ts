@@ -1,5 +1,7 @@
 import getErrorMessage from '@/utils/getErrorMessage'
 import useToastStore from '@/stores/toast'
+import useChatStore from '@/stores/chats'
+import useRealtimeStore from '@/stores/realtime'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import http from '@/constants/http'
@@ -12,6 +14,8 @@ import type {
 
 const useAuthStore = defineStore('auth', () => {
   const toaster = useToastStore()
+  const chatStore = useChatStore()
+  const realtimeStore = useRealtimeStore()
 
   const user = ref<IAuthUser | null>(null)
   const token = ref<IAuthTokens | null>(null)
@@ -36,6 +40,8 @@ const useAuthStore = defineStore('auth', () => {
       token.value = {
         accessToken: result.access_token
       }
+      chatStore.resetChatState()
+      realtimeStore.connect(result.access_token)
 
       toaster.addToaster({
         type: 'success',
@@ -71,6 +77,8 @@ const useAuthStore = defineStore('auth', () => {
       token.value = {
         accessToken: result.access_token
       }
+      chatStore.resetChatState()
+      realtimeStore.connect(result.access_token)
 
       toaster.addToaster({
         type: 'success',
@@ -92,9 +100,11 @@ const useAuthStore = defineStore('auth', () => {
   }
 
   function logout(showToast = true) {
+    realtimeStore.disconnect()
     user.value = null
     token.value = null
     errorMessage.value = null
+    chatStore.resetChatState()
 
     if (showToast) {
       toaster.addToaster({

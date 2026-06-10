@@ -12,11 +12,11 @@ const { chat } = defineProps<{
   <li :class="['sidebarChat']">
     <img
       src="@/assets/icons/avatar.svg"
-      :alt="chat.title || ''"
+      :alt="chat.name ?? chat.title ?? ''"
     >
 
     <section>
-      <h4>{{ chat.title }}</h4>
+      <h4>{{ chat.name ?? chat.title }}</h4>
 
       <p>
         <span :class="['message']">{{ chat.lastMessage?.content }}</span>
