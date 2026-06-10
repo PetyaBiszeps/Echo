@@ -27,6 +27,7 @@ const search = ref<string | number>('')
 const users = ref<IUser[]>([])
 const searching = ref(false)
 const searchError = ref<string | null>(null)
+const highlightedIndex = ref(-1)
 const query = computed(() => search.value.toString().trim())
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
 let searchRequestId = 0
@@ -45,6 +46,7 @@ async function searchUsers(value: string, requestId: number) {
 
     if (requestId === searchRequestId) {
       users.value = data.data
+      highlightedIndex.value = users.value.length > 0 ? 0 : -1
     }
   } catch (err: unknown) {
     if (requestId === searchRequestId) {
@@ -62,15 +64,71 @@ async function chooseUser(user: IUser) {
   const chat = await chatStore.createChat(user.username)
 
   if (chat) {
-    search.value = ''
-    users.value = []
-    searchError.value = null
+    closeSearch()
     await router.push({
       name: 'chat',
       params: {
         chatId: chat.id
       }
     })
+  }
+}
+
+function closeSearch() {
+  searchRequestId += 1
+
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+
+  search.value = ''
+  users.value = []
+  searching.value = false
+  searchError.value = null
+  highlightedIndex.value = -1
+}
+
+function moveHighlightedIndex(offset: number) {
+  if (users.value.length === 0) {
+    highlightedIndex.value = -1
+    return
+  }
+
+  const nextIndex = highlightedIndex.value + offset
+
+  highlightedIndex.value = (nextIndex + users.value.length) % users.value.length
+}
+
+function handleSearchKeydown(event: KeyboardEvent) {
+  if (!query.value) {
+    return
+  }
+
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    closeSearch()
+    return
+  }
+
+  if (event.key === 'ArrowDown') {
+    event.preventDefault()
+    moveHighlightedIndex(1)
+    return
+  }
+
+  if (event.key === 'ArrowUp') {
+    event.preventDefault()
+    moveHighlightedIndex(-1)
+    return
+  }
+
+  if (event.key === 'Enter') {
+    const user = users.value[highlightedIndex.value]
+
+    if (user) {
+      event.preventDefault()
+      void chooseUser(user)
+    }
   }
 }
 
@@ -85,8 +143,11 @@ watch(query, (value) => {
     users.value = []
     searching.value = false
     searchError.value = null
+    highlightedIndex.value = -1
     return
   }
+
+  highlightedIndex.value = -1
 
   const requestId = searchRequestId
 
@@ -112,6 +173,8 @@ onBeforeUnmount(() => {
         :name="'search'"
         :type="'search'"
         :placeholder="'Search'"
+
+        @keydown="handleSearchKeydown"
       />
 
       <SidebarTab />
@@ -144,10 +207,13 @@ onBeforeUnmount(() => {
           :class="['sidebarList']"
         >
           <li
-            v-for="user in users"
+            v-for="(user, index) in users"
             :key="user.id"
 
-            :class="['sidebarChat']"
+            :class="['sidebarChat', {
+              highlighted: highlightedIndex === index
+            }]"
+            @mouseenter="highlightedIndex = index"
             @click="chooseUser(user)"
           >
             <img

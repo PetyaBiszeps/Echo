@@ -4,6 +4,7 @@ import ChatTitle from '@/components/widgets/chat/ChatTitle.vue'
 import ChatInput from '@/components/widgets/chat/ChatInput.vue'
 import BaseButton from '@/components/ui/base/BaseButton.vue'
 import useChatStore from '@/stores/chats'
+import useRealtimeStore from '@/stores/realtime'
 import {
   computed,
   nextTick,
@@ -17,12 +18,22 @@ import type {
 
 // Init
 const chatStore = useChatStore()
+const realtimeStore = useRealtimeStore()
 
 // Constants
 const msg = ref('')
 const chatInput = ref<{ focusInput: () => void } | null>(null)
 const chat = computed<IChat | null>(() => chatStore.getChat)
 const inputDisabled = computed(() => chatStore.messagesLoading || chatStore.sendingMessage)
+const realtimeStatus = computed(() => {
+  if (realtimeStore.isConnected) {
+    return null
+  }
+
+  return realtimeStore.connectionError
+    ? 'Realtime unavailable'
+    : 'Reconnecting...'
+})
 const inputPlaceholder = computed(() => {
   const chatName = chat.value?.name ?? chat.value?.title
 
@@ -59,6 +70,13 @@ function retryLoadMessages() {
   <main :class="['chat']">
     <template v-if="chat">
       <ChatTitle :chat="chat" />
+
+      <p
+        v-if="realtimeStatus"
+        :class="['chatRealtimeStatus']"
+      >
+        {{ realtimeStatus }}
+      </p>
 
       <section :class="['chatBody']">
         <div

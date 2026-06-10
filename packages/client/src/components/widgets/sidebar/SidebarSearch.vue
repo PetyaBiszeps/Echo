@@ -7,6 +7,9 @@ const { id, name, type, placeholder } = defineProps<{
   type: string
   placeholder: string
 }>()
+const emit = defineEmits<{
+  keydown: [event: KeyboardEvent]
+}>()
 
 // Constants
 const model = defineModel<string | number>({
@@ -23,6 +26,8 @@ const model = defineModel<string | number>({
       :name="name"
       :type="type"
       :placeholder="placeholder"
+
+      @keydown="emit('keydown', $event)"
     />
   </div>
 </template>
