@@ -5,6 +5,9 @@ import {
   computed,
   onBeforeMount
 } from 'vue'
+import {
+  useRouter
+} from 'vue-router'
 
 const { search } = defineProps<{
   search: string | number
@@ -12,6 +15,7 @@ const { search } = defineProps<{
 
 // Init
 const chatStore = useChatStore()
+const router = useRouter()
 
 // Constants
 const chats = computed(() => {
@@ -53,6 +57,12 @@ const filteredChats = computed(() => {
 // Methods
 function chooseChat(chatId: string) {
   chatStore.selectChat(chatId)
+  void router.push({
+    name: 'chat',
+    params: {
+      chatId
+    }
+  })
 }
 
 onBeforeMount(() => {

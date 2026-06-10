@@ -31,12 +31,12 @@ const inputPlaceholder = computed(() => {
     : 'Message'
 })
 
-watch(() => chatStore.selectedChatId, (chatId) => {
-  if (chatId) {
-    void chatStore.loadMessages(chatId).finally(() => {
-      void focusMessageInput()
-    })
+watch(() => [chatStore.selectedChatId, chatStore.messagesLoading] as const, ([chatId, loading]) => {
+  if (!chatId || loading) {
+    return
   }
+
+  void focusMessageInput()
 }, {
   immediate: true
 })

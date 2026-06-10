@@ -33,6 +33,10 @@ const router = createRouter({
       name: 'inbox',
       component: ChatView
     }, {
+      path: 'chat',
+      name: 'chat-empty',
+      component: ChatView
+    }, {
       path: 'chat/:chatId',
       name: 'chat',
       component: ChatView,

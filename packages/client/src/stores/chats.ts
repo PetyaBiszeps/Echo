@@ -35,6 +35,12 @@ const useChatStore = defineStore('chats', () => {
     void useRealtimeStore().joinChat(chatId)
   }
 
+  function clearSelectedChat() {
+    selectedChatId.value = null
+    messagesError.value = null
+    sendingError.value = null
+  }
+
   function setChat(newChatList: IChat[]) {
     chatList.value = sortChats(newChatList)
   }
@@ -121,6 +127,8 @@ const useChatStore = defineStore('chats', () => {
       const messages: IMessage[] = data.data.map((message: IMessage) => normalizeMessage(message))
 
       setMessages(chatId, messages)
+
+      return true
     } catch (err: unknown) {
       const message = getErrorMessage(err)
 
@@ -129,6 +137,8 @@ const useChatStore = defineStore('chats', () => {
         type: 'error',
         message
       })
+
+      return false
     } finally {
       messagesLoading.value = false
     }
@@ -296,6 +306,7 @@ const useChatStore = defineStore('chats', () => {
     currentMessages,
     setChat,
     selectChat,
+    clearSelectedChat,
     resetChatState,
     createChat,
     loadChats,

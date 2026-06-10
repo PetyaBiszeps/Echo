@@ -11,12 +11,16 @@ import {
   ref,
   watch
 } from 'vue'
+import {
+  useRouter
+} from 'vue-router'
 import type {
   IUser
 } from '@echo/shared'
 
 // Init
 const chatStore = useChatStore()
+const router = useRouter()
 
 // Constants
 const search = ref<string | number>('')
@@ -61,6 +65,12 @@ async function chooseUser(user: IUser) {
     search.value = ''
     users.value = []
     searchError.value = null
+    await router.push({
+      name: 'chat',
+      params: {
+        chatId: chat.id
+      }
+    })
   }
 }
 
