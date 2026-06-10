@@ -2,13 +2,14 @@
 import BaseInput from '@/components/ui/base/BaseInput.vue'
 import useChatStore from '@/stores/chats'
 
-const { chatId, id, name, type, size, placeholder } = defineProps<{
+const { chatId, id, name, type, size, placeholder, disabled = false } = defineProps<{
   chatId: string
   id: string
   name: string
   type: string
   size: string
   placeholder: string
+  disabled?: boolean
 }>()
 
 // Init
@@ -23,7 +24,7 @@ const model = defineModel<string | number>({
 async function sendMessage() {
   const content = model.value.toString().trim()
 
-  if (!content) {
+  if (!content || disabled) {
     return
   }
 
@@ -45,7 +46,7 @@ async function sendMessage() {
       :type="type"
       :size="size"
       :placeholder="placeholder"
-      :disabled="chatStore.sendingMessage"
+      :disabled="disabled || chatStore.sendingMessage"
 
       @keyup.enter="sendMessage"
     />

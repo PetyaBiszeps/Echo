@@ -16,6 +16,7 @@ const useChatStore = defineStore('chats', () => {
   const messagesByChat = ref<Record<string, IMessage[]>>({})
   const messagesLoading = ref(false)
   const messagesError = ref<string | null>(null)
+  const sendingError = ref<string | null>(null)
   const sendingMessage = ref(false)
   const creatingChat = ref(false)
 
@@ -51,6 +52,7 @@ const useChatStore = defineStore('chats', () => {
     messagesByChat.value = {}
     messagesLoading.value = false
     messagesError.value = null
+    sendingError.value = null
     sendingMessage.value = false
     creatingChat.value = false
   }
@@ -141,7 +143,7 @@ const useChatStore = defineStore('chats', () => {
 
     try {
       sendingMessage.value = true
-      messagesError.value = null
+      sendingError.value = null
 
       const realtimeStore = useRealtimeStore()
 
@@ -154,7 +156,7 @@ const useChatStore = defineStore('chats', () => {
 
         const message = realtimeStore.connectionError ?? 'Unable to send message'
 
-        messagesError.value = message
+        sendingError.value = message
         toaster.addToaster({
           type: 'error',
           message
@@ -174,7 +176,7 @@ const useChatStore = defineStore('chats', () => {
     } catch (err: unknown) {
       const message = getErrorMessage(err)
 
-      messagesError.value = message
+      sendingError.value = message
       toaster.addToaster({
         type: 'error',
         message
@@ -271,6 +273,7 @@ const useChatStore = defineStore('chats', () => {
     messagesByChat,
     messagesLoading,
     messagesError,
+    sendingError,
     sendingMessage,
     creatingChat,
     getChat,
