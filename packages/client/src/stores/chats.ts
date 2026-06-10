@@ -36,7 +36,7 @@ const useChatStore = defineStore('chats', () => {
   }
 
   function setChat(newChatList: IChat[]) {
-    chatList.value = newChatList
+    chatList.value = sortChats(newChatList)
   }
 
   function setMessages(chatId: string, messages: IMessage[]) {
@@ -93,9 +93,9 @@ const useChatStore = defineStore('chats', () => {
       const chat = normalizeChat(data.data as IChat)
       const exists = chatList.value.some(item => item.id === chat.id)
 
-      chatList.value = exists
+      chatList.value = sortChats(exists
         ? chatList.value.map(item => item.id === chat.id ? chat : item)
-        : [chat, ...chatList.value]
+        : [chat, ...chatList.value])
       selectChat(chat.id)
       await loadMessages(chat.id)
 
@@ -212,10 +212,10 @@ const useChatStore = defineStore('chats', () => {
     const normalizedChat = normalizeChat(chat)
     const exists = chatList.value.some(item => item.id === normalizedChat.id)
 
-    chatList.value = [
+    chatList.value = sortChats([
       normalizedChat,
       ...chatList.value.filter(item => item.id !== normalizedChat.id)
-    ]
+    ])
 
     if (!exists) {
       void useRealtimeStore().joinChat(normalizedChat.id)
@@ -253,7 +253,7 @@ const useChatStore = defineStore('chats', () => {
   }
 
   function updateChatLastMessage(chatId: string, message: IMessage) {
-    chatList.value = chatList.value.map(chat => {
+    chatList.value = sortChats(chatList.value.map(chat => {
       if (chat.id !== chatId) {
         return chat
       }
@@ -264,7 +264,23 @@ const useChatStore = defineStore('chats', () => {
         latestMessage: message,
         updatedAt: message.createdAt ?? message.timestamp
       }
-    })
+    }))
+  }
+
+  function sortChats(chats: IChat[]) {
+    return [...chats].sort((a, b) => getChatActivityTime(b) - getChatActivityTime(a))
+  }
+
+  function getChatActivityTime(chat: IChat) {
+    const value = chat.latestMessage?.timestamp
+      ?? chat.latestMessage?.createdAt
+      ?? chat.lastMessage?.timestamp
+      ?? chat.lastMessage?.createdAt
+      ?? chat.updatedAt
+
+    const time = new Date(value).getTime()
+
+    return Number.isNaN(time) ? 0 : time
   }
 
   return {

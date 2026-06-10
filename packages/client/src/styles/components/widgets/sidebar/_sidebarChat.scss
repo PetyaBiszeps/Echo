@@ -3,38 +3,57 @@
 .sidebarChat {
   display: flex;
   cursor: pointer;
-  padding: 1rem 0.5rem;
+  padding: 0.85rem 0.5rem;
   border-radius: 0.5rem;
+  transition: background 0.2s ease;
 
   img {
     width: 3.5rem;
+    height: 3.5rem;
     margin-right: 0.5rem;
   }
 
   section {
     width: 100%;
+    min-width: 0;
     overflow: hidden;
 
-    p {
+    header {
       gap: 0.5rem;
       display: flex;
-      white-space: nowrap;
+      align-items: center;
       justify-content: space-between;
 
-      .message {
+      h4 {
         overflow: hidden;
-        margin-right: 1rem;
+        white-space: nowrap;
         text-overflow: ellipsis;
       }
 
-      .status {
-        margin-right: 0.3rem;
+      time {
+        opacity: 0.7;
+        flex-shrink: 0;
+        font-size: 0.75rem;
+      }
+    }
+
+    p {
+      width: 100%;
+      min-width: 0;
+      display: block;
+      white-space: nowrap;
+
+      .message {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
   }
 
   &.active {
     background: theme.$sidebarUserHover;
+    outline: 1px solid theme.$inputHoverBorder;
   }
 
   &:hover {

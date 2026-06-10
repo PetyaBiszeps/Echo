@@ -1,54 +1,102 @@
 <script setup lang="ts">
-import BaseInput from '@/components/ui/base/BaseInput.vue'
 import useChatStore from '@/stores/chats'
+import {
+  nextTick,
+  ref,
+  watch
+} from 'vue'
 
-const { chatId, id, name, type, size, placeholder, disabled = false } = defineProps<{
+const props = withDefaults(defineProps<{
   chatId: string
   id: string
   name: string
-  type: string
+  type?: string
   size: string
   placeholder: string
   disabled?: boolean
-}>()
+}>(), {
+  disabled: false,
+  type: 'text'
+})
 
 // Init
 const chatStore = useChatStore()
 
 // Constants
+const textarea = ref<HTMLTextAreaElement | null>(null)
 const model = defineModel<string | number>({
   required: true
 })
 
 // Methods
-async function sendMessage() {
-  const content = model.value.toString().trim()
+function resizeTextarea() {
+  const element = textarea.value
 
-  if (!content || disabled) {
+  if (!element) {
     return
   }
 
-  const message = await chatStore.sendMessage(chatId, content)
+  element.style.height = 'auto'
+  element.style.height = `${element.scrollHeight}px`
+}
+
+function focusInput() {
+  textarea.value?.focus({
+    preventScroll: true
+  })
+}
+
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key !== 'Enter' || event.shiftKey) {
+    return
+  }
+
+  event.preventDefault()
+  void sendMessage()
+}
+
+async function sendMessage() {
+  const content = model.value.toString().trim()
+
+  if (!content || props.disabled || chatStore.sendingMessage) {
+    return
+  }
+
+  const message = await chatStore.sendMessage(props.chatId, content)
 
   if (message) {
     model.value = ''
+    await nextTick()
+    resizeTextarea()
+    focusInput()
   }
 }
+
+watch(() => model.value, () => {
+  void nextTick(resizeTextarea)
+})
+
+defineExpose({
+  focusInput
+})
 </script>
 
 <template>
   <div :class="['chatInput']">
-    <BaseInput
+    <textarea
       v-model="model"
+      ref="textarea"
 
-      :id="id"
-      :name="name"
-      :type="type"
-      :size="size"
-      :placeholder="placeholder"
-      :disabled="disabled || chatStore.sendingMessage"
+      :id="props.id"
+      :name="props.name"
+      :data-type="props.type"
+      :data-size="props.size"
+      :placeholder="props.placeholder"
+      :disabled="props.disabled || chatStore.sendingMessage"
+      :rows="1"
 
-      @keyup.enter="sendMessage"
+      @input="resizeTextarea"
+      @keydown="handleKeydown"
     />
   </div>
 </template>

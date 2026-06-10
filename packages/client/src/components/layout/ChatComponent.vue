@@ -4,7 +4,12 @@ import ChatTitle from '@/components/widgets/chat/ChatTitle.vue'
 import ChatInput from '@/components/widgets/chat/ChatInput.vue'
 import BaseButton from '@/components/ui/base/BaseButton.vue'
 import useChatStore from '@/stores/chats'
-import { ref, computed, watch } from 'vue'
+import {
+  computed,
+  nextTick,
+  ref,
+  watch
+} from 'vue'
 import type {
   IChat
 } from '@echo/shared'
@@ -14,21 +19,38 @@ import type {
 const chatStore = useChatStore()
 
 // Constants
-const msg = ref<string | number>('')
+const msg = ref('')
+const chatInput = ref<{ focusInput: () => void } | null>(null)
 const chat = computed<IChat | null>(() => chatStore.getChat)
 const inputDisabled = computed(() => chatStore.messagesLoading || chatStore.sendingMessage)
+const inputPlaceholder = computed(() => {
+  const chatName = chat.value?.name ?? chat.value?.title
+
+  return chatName
+    ? `Message ${chatName}`
+    : 'Message'
+})
 
 watch(() => chatStore.selectedChatId, (chatId) => {
   if (chatId) {
-    chatStore.loadMessages(chatId)
+    void chatStore.loadMessages(chatId).finally(() => {
+      void focusMessageInput()
+    })
   }
 }, {
   immediate: true
 })
 
+async function focusMessageInput() {
+  await nextTick()
+  chatInput.value?.focusInput()
+}
+
 function retryLoadMessages() {
   if (chatStore.selectedChatId) {
-    chatStore.loadMessages(chatStore.selectedChatId)
+    void chatStore.loadMessages(chatStore.selectedChatId).finally(() => {
+      void focusMessageInput()
+    })
   }
 }
 </script>
@@ -81,13 +103,14 @@ function retryLoadMessages() {
 
       <ChatInput
         v-model="msg"
+        ref="chatInput"
 
         :id="'message'"
         :chat-id="chat.id"
         :name="'message'"
         :type="'text'"
         :size="'lg'"
-        :placeholder="'Message'"
+        :placeholder="inputPlaceholder"
         :disabled="inputDisabled"
       />
     </template>

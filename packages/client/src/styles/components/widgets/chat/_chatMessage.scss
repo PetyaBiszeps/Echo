@@ -2,11 +2,29 @@
 
 .chatMessage {
   width: fit-content;
-  padding: 0.25rem;
-  display: inline-block;
+  padding: 0.35rem 0.5rem;
+  display: flex;
+  max-width: min(75%, 32rem);
+  margin-top: 0.75rem;
   background: theme.$accent;
   box-sizing: border-box;
   border-radius: 0.4rem;
+  flex-direction: column;
+
+  p {
+    overflow-wrap: anywhere;
+  }
+
+  time {
+    opacity: 0.7;
+    font-size: 0.75rem;
+    margin-top: 0.15rem;
+    align-self: flex-end;
+  }
+
+  &.grouped {
+    margin-top: 0.25rem;
+  }
 
   &.own,
   &.interlocutor {

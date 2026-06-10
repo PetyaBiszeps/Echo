@@ -15,18 +15,7 @@ const chatStore = useChatStore()
 
 // Constants
 const chats = computed(() => {
-  return chatStore.chatList.map(chat => {
-    return {
-      id: chat.id,
-      title: chat.name ?? chat.title ?? chat.participants[1]?.username ?? '',
-      name: chat.name,
-      participants: chat.participants,
-      lastMessage: chat.lastMessage,
-      unreadCount: chat.unreadCount,
-      createdAt: chat.createdAt,
-      updatedAt: chat.updatedAt
-    }
-  })
+  return chatStore.chatList
 })
 
 const filteredChats = computed(() => {
@@ -36,13 +25,17 @@ const filteredChats = computed(() => {
     if (!query) {
       return true
     } else {
-      return chat.title.toLowerCase().includes(query)
+      const title = chat.name ?? chat.title ?? chat.participants[1]?.username ?? ''
+
+      return title.toLowerCase().includes(query)
     }
   })
 
   if (query) {
     matched.sort((a, b) => {
-      const compare = (a.title ?? '').localeCompare(b.title ?? '', undefined, {
+      const aTitle = a.name ?? a.title ?? a.participants[1]?.username ?? ''
+      const bTitle = b.name ?? b.title ?? b.participants[1]?.username ?? ''
+      const compare = aTitle.localeCompare(bTitle, undefined, {
         sensitivity: 'base'
       })
 
