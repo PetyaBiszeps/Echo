@@ -2,28 +2,94 @@
 import SidebarSearch from '@/components/widgets/sidebar/SidebarSearch.vue'
 import SidebarList from '@/components/widgets/sidebar/SidebarList.vue'
 import SidebarTab from '@/components/widgets/sidebar/SidebarTab.vue'
-import BaseButton from '@/components/ui/base/BaseButton.vue'
-import BaseInput from '@/components/ui/base/BaseInput.vue'
+import getErrorMessage from '@/utils/getErrorMessage'
 import useChatStore from '@/stores/chats'
+import http from '@/constants/http'
 import {
-  ref
+  computed,
+  onBeforeUnmount,
+  ref,
+  watch
 } from 'vue'
+import type {
+  IUser
+} from '@echo/shared'
 
 // Init
 const chatStore = useChatStore()
 
 // Constants
 const search = ref<string | number>('')
-const username = ref<string | number>('')
+const users = ref<IUser[]>([])
+const searching = ref(false)
+const searchError = ref<string | null>(null)
+const query = computed(() => search.value.toString().trim())
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
+let searchRequestId = 0
 
 // Methods
-async function createChat() {
-  const chat = await chatStore.createChat(username.value.toString())
+async function searchUsers(value: string, requestId: number) {
+  try {
+    searching.value = true
+    searchError.value = null
 
-  if (chat) {
-    username.value = ''
+    const { data } = await http.get('/users/search', {
+      params: {
+        q: value
+      }
+    })
+
+    if (requestId === searchRequestId) {
+      users.value = data.data
+    }
+  } catch (err: unknown) {
+    if (requestId === searchRequestId) {
+      users.value = []
+      searchError.value = getErrorMessage(err)
+    }
+  } finally {
+    if (requestId === searchRequestId) {
+      searching.value = false
+    }
   }
 }
+
+async function chooseUser(user: IUser) {
+  const chat = await chatStore.createChat(user.username)
+
+  if (chat) {
+    search.value = ''
+    users.value = []
+    searchError.value = null
+  }
+}
+
+watch(query, (value) => {
+  searchRequestId += 1
+
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+
+  if (!value) {
+    users.value = []
+    searching.value = false
+    searchError.value = null
+    return
+  }
+
+  const requestId = searchRequestId
+
+  searchTimeout = setTimeout(() => {
+    void searchUsers(value, requestId)
+  }, 300)
+})
+
+onBeforeUnmount(() => {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+})
 </script>
 
 <template>
@@ -38,29 +104,57 @@ async function createChat() {
         :placeholder="'Search'"
       />
 
-      <form @submit.prevent="createChat">
-        <BaseInput
-          v-model="username"
-
-          :id="'chat-username'"
-          :name="'chat-username'"
-          :type="'text'"
-          :placeholder="'Username'"
-          :disabled="chatStore.creatingChat"
-        />
-
-        <BaseButton
-          :name="'Start chat'"
-          :type="'submit'"
-          :disabled="chatStore.creatingChat"
-        />
-      </form>
-
       <SidebarTab />
     </header>
 
     <main>
-      <SidebarList :search="search" />
+      <SidebarList
+        v-if="!query"
+        :search="''"
+      />
+
+      <section
+        v-else
+        :class="['sidebarSearchResults']"
+      >
+        <p v-if="searching">
+          Searching...
+        </p>
+
+        <p v-else-if="searchError">
+          {{ searchError }}
+        </p>
+
+        <p v-else-if="users.length === 0">
+          No users found
+        </p>
+
+        <ul
+          v-else
+          :class="['sidebarList']"
+        >
+          <li
+            v-for="user in users"
+            :key="user.id"
+
+            :class="['sidebarChat']"
+            @click="chooseUser(user)"
+          >
+            <img
+              src="@/assets/icons/avatar.svg"
+              :alt="user.username"
+            >
+
+            <section>
+              <h4>{{ user.username }}</h4>
+
+              <p>
+                <span :class="['message']">Start chat</span>
+              </p>
+            </section>
+          </li>
+        </ul>
+      </section>
     </main>
   </aside>
 </template>
