@@ -29,6 +29,7 @@ const searching = ref(false)
 const searchError = ref<string | null>(null)
 const highlightedIndex = ref(-1)
 const query = computed(() => search.value.toString().trim())
+const creatingChatUserIds = new Set<string>()
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
 let searchRequestId = 0
 
@@ -61,16 +62,26 @@ async function searchUsers(value: string, requestId: number) {
 }
 
 async function chooseUser(user: IUser) {
-  const chat = await chatStore.createChat(user.username)
+  if (creatingChatUserIds.has(user.id)) {
+    return
+  }
 
-  if (chat) {
-    closeSearch()
-    await router.push({
-      name: 'chat',
-      params: {
-        chatId: chat.id
-      }
-    })
+  creatingChatUserIds.add(user.id)
+
+  try {
+    const chat = await chatStore.createChat(user.username)
+
+    if (chat) {
+      closeSearch()
+      await router.push({
+        name: 'chat',
+        params: {
+          chatId: chat.id
+        }
+      })
+    }
+  } finally {
+    creatingChatUserIds.delete(user.id)
   }
 }
 

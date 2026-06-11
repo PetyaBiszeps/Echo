@@ -148,11 +148,8 @@ function initChatSocket(io: Server) {
         }
 
         const message = await service.createMessage(userId, payloadData.chatId, payloadData.content)
-        const data: MessageNewPayload = {
-          message
-        }
 
-        io.to(getChatRoom(payloadData.chatId)).emit('message:new', data)
+        emitMessageNew(message)
         await emitChatUpdated(payloadData.chatId)
 
         return sendSuccess(ack)
@@ -173,6 +170,18 @@ function initChatSocket(io: Server) {
       clearSocketTyping(io, socket)
     })
   })
+}
+
+export function emitMessageNew(message: IMessage) {
+  if (!socketServer || !message.chatId) {
+    return
+  }
+
+  const data: MessageNewPayload = {
+    message
+  }
+
+  socketServer.to(getChatRoom(message.chatId)).emit('message:new', data)
 }
 
 export async function emitChatUpdated(chatId: string) {

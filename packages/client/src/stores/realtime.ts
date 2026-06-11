@@ -31,6 +31,7 @@ interface SocketAckResponse {
 
 type MessageHandler = (message: IMessage) => void
 type ChatHandler = (chat: IChat) => void
+type AuthErrorHandler = () => void
 
 const TYPING_EXPIRY_MS = 5000
 
@@ -43,6 +44,7 @@ const useRealtimeStore = defineStore('realtime', () => {
   const localTypingChatIds = new Set<string>()
   let messageHandler: MessageHandler | null = null
   let chatUpdatedHandler: ChatHandler | null = null
+  let authErrorHandler: AuthErrorHandler | null = null
 
   function setMessageHandler(handler: MessageHandler) {
     messageHandler = handler
@@ -50,6 +52,10 @@ const useRealtimeStore = defineStore('realtime', () => {
 
   function setChatUpdatedHandler(handler: ChatHandler) {
     chatUpdatedHandler = handler
+  }
+
+  function setAuthErrorHandler(handler: AuthErrorHandler) {
+    authErrorHandler = handler
   }
 
   function connect(accessToken: string | null | undefined) {
@@ -88,6 +94,10 @@ const useRealtimeStore = defineStore('realtime', () => {
       connectionError.value = error.message
       localTypingChatIds.clear()
       clearAllTypingState()
+
+      if (isAuthConnectionError(error.message)) {
+        authErrorHandler?.()
+      }
     })
 
     nextSocket.on('message:new', (payload: MessageNewPayload) => {
@@ -308,6 +318,7 @@ const useRealtimeStore = defineStore('realtime', () => {
     typingByChat,
     setMessageHandler,
     setChatUpdatedHandler,
+    setAuthErrorHandler,
     connect,
     disconnect,
     joinChat,
@@ -333,6 +344,14 @@ function getSocketUrl() {
   }
 
   return 'http://localhost:3001'
+}
+
+function isAuthConnectionError(message: string) {
+  const normalizedMessage = message.toLowerCase()
+
+  return normalizedMessage.includes('token')
+    || normalizedMessage.includes('authorization')
+    || normalizedMessage.includes('authentication')
 }
 
 function isChat(chat: unknown): chat is IChat {

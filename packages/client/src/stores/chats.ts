@@ -19,6 +19,11 @@ const useChatStore = defineStore('chats', () => {
   const sendingError = ref<string | null>(null)
   const sendingMessage = ref(false)
   const creatingChat = ref(false)
+  const markReadInFlight = new Set<string>()
+  const markReadPending = new Set<string>()
+  const markReadRequestIds = new Map<string, number>()
+  let messagesLoadRequestId = 0
+  let markReadRequestId = 0
 
   const getChat = computed(() => {
     return chatList.value.find(chat => chat.id === selectedChatId.value) ?? null
@@ -36,9 +41,15 @@ const useChatStore = defineStore('chats', () => {
   }
 
   function clearSelectedChat() {
+    messagesLoadRequestId += 1
+    markReadRequestId += 1
+    markReadInFlight.clear()
+    markReadPending.clear()
+    markReadRequestIds.clear()
     selectedChatId.value = null
     messagesError.value = null
     sendingError.value = null
+    messagesLoading.value = false
   }
 
   function setChat(newChatList: IChat[]) {
@@ -53,6 +64,11 @@ const useChatStore = defineStore('chats', () => {
   }
 
   function resetChatState() {
+    messagesLoadRequestId += 1
+    markReadRequestId += 1
+    markReadInFlight.clear()
+    markReadPending.clear()
+    markReadRequestIds.clear()
     chatList.value = []
     selectedChatId.value = null
     messagesByChat.value = {}
@@ -119,6 +135,8 @@ const useChatStore = defineStore('chats', () => {
   }
 
   async function loadMessages(chatId: string) {
+    const requestId = ++messagesLoadRequestId
+
     try {
       messagesLoading.value = true
       messagesError.value = null
@@ -126,10 +144,18 @@ const useChatStore = defineStore('chats', () => {
       const { data } = await http.get(`/chats/${chatId}/messages`)
       const messages: IMessage[] = data.data.map((message: IMessage) => normalizeMessage(message))
 
+      if (!isCurrentMessageLoad(requestId, chatId)) {
+        return true
+      }
+
       setMessages(chatId, messages)
 
       return true
     } catch (err: unknown) {
+      if (!isCurrentMessageLoad(requestId, chatId)) {
+        return true
+      }
+
       const message = getErrorMessage(err)
 
       messagesError.value = message
@@ -140,20 +166,47 @@ const useChatStore = defineStore('chats', () => {
 
       return false
     } finally {
-      messagesLoading.value = false
+      if (requestId === messagesLoadRequestId) {
+        messagesLoading.value = false
+      }
     }
   }
 
   async function markChatRead(chatId: string) {
+    if (selectedChatId.value !== chatId) {
+      return null
+    }
+
+    if (markReadInFlight.has(chatId)) {
+      markReadPending.add(chatId)
+      return null
+    }
+
+    const requestId = ++markReadRequestId
+
+    markReadInFlight.add(chatId)
+    markReadRequestIds.set(chatId, requestId)
+
     try {
       const { data } = await http.post(`/chats/${chatId}/read`)
       const chat = normalizeChat(data.data as IChat)
 
-      upsertChat(chat)
+      if (isCurrentMarkRead(requestId, chatId)) {
+        upsertChat(chat)
+      }
 
       return chat
     } catch {
       return null
+    } finally {
+      if (markReadRequestIds.get(chatId) === requestId) {
+        markReadRequestIds.delete(chatId)
+        markReadInFlight.delete(chatId)
+
+        if (markReadPending.delete(chatId) && selectedChatId.value === chatId) {
+          void markChatRead(chatId)
+        }
+      }
     }
   }
 
@@ -334,6 +387,14 @@ const useChatStore = defineStore('chats', () => {
     const time = new Date(value).getTime()
 
     return Number.isNaN(time) ? 0 : time
+  }
+
+  function isCurrentMessageLoad(requestId: number, chatId: string) {
+    return requestId === messagesLoadRequestId && selectedChatId.value === chatId
+  }
+
+  function isCurrentMarkRead(requestId: number, chatId: string) {
+    return markReadRequestIds.get(chatId) === requestId && selectedChatId.value === chatId
   }
 
   return {

@@ -29,13 +29,21 @@ async function syncChatFromRoute(chatId: string | null) {
     await chatStore.loadChats()
   }
 
-  if (requestId !== routeRequestId) {
+  if (isStaleRequest(requestId)) {
     return
   }
 
   const chat = chatStore.chatList.find(item => item.id === chatId)
 
+  if (isStaleRequest(requestId)) {
+    return
+  }
+
   if (!chat) {
+    if (isStaleRequest(requestId)) {
+      return
+    }
+
     chatStore.clearSelectedChat()
     await router.replace({
       name: 'chat-empty'
@@ -47,9 +55,21 @@ async function syncChatFromRoute(chatId: string | null) {
     chatStore.selectChat(chatId)
   }
 
+  if (isStaleRequest(requestId)) {
+    return
+  }
+
   const loaded = await chatStore.loadMessages(chatId)
 
+  if (isStaleRequest(requestId)) {
+    return
+  }
+
   if (!loaded) {
+    if (isStaleRequest(requestId)) {
+      return
+    }
+
     chatStore.clearSelectedChat()
     await router.replace({
       name: 'chat-empty'
@@ -57,7 +77,15 @@ async function syncChatFromRoute(chatId: string | null) {
     return
   }
 
+  if (isStaleRequest(requestId) || chatStore.selectedChatId !== chatId) {
+    return
+  }
+
   await chatStore.markChatRead(chatId)
+}
+
+function isStaleRequest(requestId: number) {
+  return requestId !== routeRequestId
 }
 
 watch(() => route.params.chatId, (value) => {

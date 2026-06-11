@@ -23,6 +23,9 @@ const realtimeStore = useRealtimeStore()
 
 realtimeStore.setMessageHandler(chatStore.receiveMessage)
 realtimeStore.setChatUpdatedHandler(chatStore.receiveChatUpdate)
+realtimeStore.setAuthErrorHandler(() => {
+  authStore.logout(false)
+})
 
 if (authStore.token?.accessToken) {
   realtimeStore.connect(authStore.token.accessToken)

@@ -1,5 +1,8 @@
 import { ChatService } from '@/modules/chat/chat.service.ts'
-import { emitChatUpdated } from '@/modules/chat/chat.socket.ts'
+import {
+  emitChatUpdated,
+  emitMessageNew
+} from '@/modules/chat/chat.socket.ts'
 import type {
   Request,
   Response,
@@ -78,6 +81,9 @@ export async function PostChatMessageController(req: Request, res: Response, nex
 
     const chatId = getChatId(req)
     const message = await service.createMessage(userId, chatId, req.body?.content)
+
+    emitMessageNew(message)
+    await emitChatUpdated(chatId)
 
     return res.status(201).json({
       success: true,
