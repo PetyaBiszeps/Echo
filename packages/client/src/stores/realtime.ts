@@ -15,6 +15,12 @@ interface ChatUpdatedPayload {
   chat?: IChat
 }
 
+interface TypingUpdatePayload {
+  chatId?: string
+  userId?: string
+  isTyping?: boolean
+}
+
 interface SocketAckResponse {
   ok: boolean
   error?: {
@@ -26,10 +32,15 @@ interface SocketAckResponse {
 type MessageHandler = (message: IMessage) => void
 type ChatHandler = (chat: IChat) => void
 
+const TYPING_EXPIRY_MS = 5000
+
 const useRealtimeStore = defineStore('realtime', () => {
   const socket = shallowRef<Socket | null>(null)
   const isConnected = ref(false)
   const connectionError = ref<string | null>(null)
+  const typingByChat = ref<Record<string, string[]>>({})
+  const typingExpiryTimers = new Map<string, ReturnType<typeof setTimeout>>()
+  const localTypingChatIds = new Set<string>()
   let messageHandler: MessageHandler | null = null
   let chatUpdatedHandler: ChatHandler | null = null
 
@@ -68,11 +79,15 @@ const useRealtimeStore = defineStore('realtime', () => {
 
     nextSocket.on('disconnect', () => {
       isConnected.value = false
+      localTypingChatIds.clear()
+      clearAllTypingState()
     })
 
     nextSocket.on('connect_error', (error) => {
       isConnected.value = false
       connectionError.value = error.message
+      localTypingChatIds.clear()
+      clearAllTypingState()
     })
 
     nextSocket.on('message:new', (payload: MessageNewPayload) => {
@@ -87,10 +102,25 @@ const useRealtimeStore = defineStore('realtime', () => {
       }
     })
 
+    nextSocket.on('typing:update', (payload: TypingUpdatePayload) => {
+      if (!isTypingUpdatePayload(payload)) {
+        return
+      }
+
+      if (payload.isTyping) {
+        setTypingUser(payload.chatId, payload.userId)
+        return
+      }
+
+      clearTypingUser(payload.chatId, payload.userId)
+    })
+
     socket.value = nextSocket
   }
 
   function disconnect() {
+    stopAllTyping()
+    clearAllTypingState()
     socket.value?.removeAllListeners()
     socket.value?.disconnect()
     socket.value = null
@@ -144,15 +174,148 @@ const useRealtimeStore = defineStore('realtime', () => {
     })
   }
 
+  function startTyping(chatId: string) {
+    const normalizedChatId = chatId.trim()
+
+    if (!normalizedChatId || localTypingChatIds.has(normalizedChatId)) {
+      return false
+    }
+
+    if (!emitTypingEvent('typing:start', normalizedChatId)) {
+      return false
+    }
+
+    localTypingChatIds.add(normalizedChatId)
+
+    return true
+  }
+
+  function stopTyping(chatId: string) {
+    const normalizedChatId = chatId.trim()
+
+    if (!normalizedChatId) {
+      return false
+    }
+
+    const wasTyping = localTypingChatIds.delete(normalizedChatId)
+
+    if (!wasTyping) {
+      return false
+    }
+
+    return emitTypingEvent('typing:stop', normalizedChatId)
+  }
+
+  function stopAllTyping() {
+    const chatIds = Array.from(localTypingChatIds)
+
+    localTypingChatIds.clear()
+    chatIds.forEach(chatId => {
+      emitTypingEvent('typing:stop', chatId)
+    })
+  }
+
+  function getTypingUserIds(chatId: string) {
+    return typingByChat.value[chatId.trim()] ?? []
+  }
+
+  function emitTypingEvent(event: 'typing:start' | 'typing:stop', chatId: string) {
+    const activeSocket = socket.value
+
+    if (!activeSocket?.connected) {
+      return false
+    }
+
+    activeSocket.emit(event, {
+      chatId
+    })
+
+    return true
+  }
+
+  function setTypingUser(chatId: string, userId: string) {
+    const users = typingByChat.value[chatId] ?? []
+
+    if (!users.includes(userId)) {
+      typingByChat.value = {
+        ...typingByChat.value,
+        [chatId]: [
+          ...users,
+          userId
+        ]
+      }
+    }
+
+    refreshTypingExpiry(chatId, userId)
+  }
+
+  function clearTypingUser(chatId: string, userId: string) {
+    clearTypingExpiry(chatId, userId)
+
+    const users = typingByChat.value[chatId]
+
+    if (!users?.includes(userId)) {
+      return
+    }
+
+    const nextUsers = users.filter(item => item !== userId)
+
+    if (nextUsers.length > 0) {
+      typingByChat.value = {
+        ...typingByChat.value,
+        [chatId]: nextUsers
+      }
+      return
+    }
+
+    const nextTypingByChat = {
+      ...typingByChat.value
+    }
+
+    delete nextTypingByChat[chatId]
+    typingByChat.value = nextTypingByChat
+  }
+
+  function refreshTypingExpiry(chatId: string, userId: string) {
+    clearTypingExpiry(chatId, userId)
+
+    typingExpiryTimers.set(getTypingKey(chatId, userId), setTimeout(() => {
+      clearTypingUser(chatId, userId)
+    }, TYPING_EXPIRY_MS))
+  }
+
+  function clearTypingExpiry(chatId: string, userId: string) {
+    const key = getTypingKey(chatId, userId)
+    const timer = typingExpiryTimers.get(key)
+
+    if (!timer) {
+      return
+    }
+
+    clearTimeout(timer)
+    typingExpiryTimers.delete(key)
+  }
+
+  function clearAllTypingState() {
+    typingExpiryTimers.forEach(timer => clearTimeout(timer))
+    typingExpiryTimers.clear()
+    typingByChat.value = {}
+  }
+
   return {
     isConnected,
     connectionError,
+    typingByChat,
     setMessageHandler,
     setChatUpdatedHandler,
     connect,
     disconnect,
     joinChat,
-    sendMessage
+    sendMessage,
+    startTyping,
+    stopTyping,
+    stopAllTyping,
+    getTypingUserIds
   }
 })
 
@@ -186,6 +349,20 @@ function isMessage(message: unknown): message is IMessage {
     && typeof (message as IMessage).chatId === 'string'
     && typeof (message as IMessage).senderId === 'string'
     && typeof (message as IMessage).content === 'string'
+}
+
+function isTypingUpdatePayload(payload: unknown): payload is Required<TypingUpdatePayload> {
+  return typeof payload === 'object'
+    && payload !== null
+    && typeof (payload as TypingUpdatePayload).chatId === 'string'
+    && Boolean((payload as TypingUpdatePayload).chatId?.trim())
+    && typeof (payload as TypingUpdatePayload).userId === 'string'
+    && Boolean((payload as TypingUpdatePayload).userId?.trim())
+    && typeof (payload as TypingUpdatePayload).isTyping === 'boolean'
+}
+
+function getTypingKey(chatId: string, userId: string) {
+  return `${chatId}:${userId}`
 }
 
 export default useRealtimeStore

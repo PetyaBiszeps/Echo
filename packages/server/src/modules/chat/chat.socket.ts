@@ -25,12 +25,22 @@ interface MessageSendPayload {
   content: string
 }
 
+interface TypingPayload {
+  chatId: string
+}
+
 interface MessageNewPayload {
   message: IMessage
 }
 
 interface ChatUpdatedPayload {
   chat: IChat
+}
+
+interface TypingUpdatePayload {
+  chatId: string
+  userId: string
+  isTyping: boolean
 }
 
 interface SocketErrorPayload {
@@ -46,8 +56,16 @@ interface SocketAckResponse<T = null> {
 
 type SocketAck<T = null> = (response: SocketAckResponse<T>) => void
 
+interface TypingState {
+  chatId: string
+  userId: string
+  socketIds: Set<string>
+}
+
 const service = new ChatService()
 let socketServer: Server | null = null
+const typingByChatUser = new Map<string, TypingState>()
+const typingKeysBySocket = new Map<string, Set<string>>()
 
 function initChatSocket(io: Server) {
   socketServer = io
@@ -142,6 +160,18 @@ function initChatSocket(io: Server) {
         return sendSocketHandlerError(socket, ack, error)
       }
     })
+
+    socket.on('typing:start', async (payload: unknown, ack?: SocketAck) => {
+      return handleTypingEvent(io, socket, userId, payload, true, ack)
+    })
+
+    socket.on('typing:stop', async (payload: unknown, ack?: SocketAck) => {
+      return handleTypingEvent(io, socket, userId, payload, false, ack)
+    })
+
+    socket.on('disconnecting', () => {
+      clearSocketTyping(io, socket)
+    })
   })
 }
 
@@ -159,6 +189,140 @@ export async function emitChatUpdated(chatId: string) {
 
     socketServer?.to(getUserRoom(userId)).emit('chat:updated', data)
   })
+}
+
+async function handleTypingEvent(
+  io: Server,
+  socket: Socket,
+  userId: string,
+  payload: unknown,
+  isTyping: boolean,
+  ack?: SocketAck
+) {
+  try {
+    const data = getTypingPayload(payload)
+
+    if (!data) {
+      return sendFailure(ack, 'INVALID_CHAT_ID', 'Chat id is required')
+    }
+
+    await service.assertMember(userId, data.chatId)
+
+    const shouldBroadcast = isTyping
+      ? addSocketTyping(socket, data.chatId, userId)
+      : removeSocketTyping(socket, data.chatId, userId)
+
+    if (shouldBroadcast) {
+      emitTypingUpdate(io, socket.id, data.chatId, userId, isTyping)
+    }
+
+    return sendSuccess(ack)
+  } catch (error) {
+    return sendSocketHandlerError(socket, ack, error)
+  }
+}
+
+function addSocketTyping(socket: Socket, chatId: string, userId: string) {
+  const key = getTypingKey(chatId, userId)
+  const state = typingByChatUser.get(key)
+
+  if (state) {
+    if (state.socketIds.has(socket.id)) {
+      return false
+    }
+
+    state.socketIds.add(socket.id)
+    addTypingKeyToSocket(socket.id, key)
+
+    return false
+  }
+
+  typingByChatUser.set(key, {
+    chatId,
+    userId,
+    socketIds: new Set([socket.id])
+  })
+  addTypingKeyToSocket(socket.id, key)
+
+  return true
+}
+
+function removeSocketTyping(socket: Socket, chatId: string, userId: string) {
+  const key = getTypingKey(chatId, userId)
+  const state = typingByChatUser.get(key)
+
+  if (!state?.socketIds.has(socket.id)) {
+    return false
+  }
+
+  state.socketIds.delete(socket.id)
+  removeTypingKeyFromSocket(socket.id, key)
+
+  if (state.socketIds.size > 0) {
+    return false
+  }
+
+  typingByChatUser.delete(key)
+
+  return true
+}
+
+function clearSocketTyping(io: Server, socket: Socket) {
+  const keys = typingKeysBySocket.get(socket.id)
+
+  if (!keys) {
+    return
+  }
+
+  typingKeysBySocket.delete(socket.id)
+
+  keys.forEach(key => {
+    const state = typingByChatUser.get(key)
+
+    if (!state) {
+      return
+    }
+
+    state.socketIds.delete(socket.id)
+
+    if (state.socketIds.size > 0) {
+      return
+    }
+
+    typingByChatUser.delete(key)
+    emitTypingUpdate(io, socket.id, state.chatId, state.userId, false)
+  })
+}
+
+function addTypingKeyToSocket(socketId: string, key: string) {
+  const keys = typingKeysBySocket.get(socketId) ?? new Set<string>()
+
+  keys.add(key)
+  typingKeysBySocket.set(socketId, keys)
+}
+
+function removeTypingKeyFromSocket(socketId: string, key: string) {
+  const keys = typingKeysBySocket.get(socketId)
+
+  if (!keys) {
+    return
+  }
+
+  keys.delete(key)
+
+  if (keys.size === 0) {
+    typingKeysBySocket.delete(socketId)
+  }
+}
+
+function emitTypingUpdate(io: Server, socketId: string, chatId: string, userId: string, isTyping: boolean) {
+  const data: TypingUpdatePayload = {
+    chatId,
+    userId,
+    isTyping
+  }
+
+  io.to(getChatRoom(chatId)).except(socketId).emit('typing:update', data)
 }
 
 function isJwtPayload(payload: string | JwtPayload): payload is IJWTPayload {
@@ -201,6 +365,18 @@ function getMessageSendPayload(payload: unknown): MessageSendPayload {
     chatId: getPayloadString(payload, 'chatId'),
     content: getPayloadString(payload, 'content')
   }
+}
+
+function getTypingPayload(payload: unknown): TypingPayload | null {
+  const chatId = getPayloadString(payload, 'chatId')
+
+  return chatId
+    ? { chatId }
+    : null
+}
+
+function getTypingKey(chatId: string, userId: string) {
+  return `${chatId}:${userId}`
 }
 
 function getUserRoom(userId: string) {

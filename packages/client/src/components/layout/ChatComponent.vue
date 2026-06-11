@@ -3,6 +3,7 @@ import ChatWrapper from '@/components/widgets/chat/ChatWrapper.vue'
 import ChatTitle from '@/components/widgets/chat/ChatTitle.vue'
 import ChatInput from '@/components/widgets/chat/ChatInput.vue'
 import BaseButton from '@/components/ui/base/BaseButton.vue'
+import useAuthStore from '@/stores/auth'
 import useChatStore from '@/stores/chats'
 import useRealtimeStore from '@/stores/realtime'
 import {
@@ -17,6 +18,7 @@ import type {
 
 
 // Init
+const authStore = useAuthStore()
 const chatStore = useChatStore()
 const realtimeStore = useRealtimeStore()
 
@@ -40,6 +42,36 @@ const inputPlaceholder = computed(() => {
   return chatName
     ? `Message ${chatName}`
     : 'Message'
+})
+const typingText = computed(() => {
+  const activeChat = chat.value
+
+  if (!activeChat) {
+    return null
+  }
+
+  const currentUserId = authStore.user?.id
+  const typingUserIds = realtimeStore
+    .getTypingUserIds(activeChat.id)
+    .filter(userId => userId !== currentUserId)
+
+  if (typingUserIds.length === 0) {
+    return null
+  }
+
+  const names = typingUserIds.map(userId => {
+    return activeChat.participants.find(participant => participant.id === userId)?.username ?? 'Someone'
+  })
+
+  if (names.length === 1) {
+    return `${names[0]} is typing...`
+  }
+
+  if (names.length === 2) {
+    return `${names[0]} and ${names[1]} are typing...`
+  }
+
+  return `${names[0]} and ${names.length - 1} others are typing...`
 })
 
 watch(() => [chatStore.selectedChatId, chatStore.messagesLoading] as const, ([chatId, loading]) => {
@@ -69,7 +101,10 @@ function retryLoadMessages() {
 <template>
   <main :class="['chat']">
     <template v-if="chat">
-      <ChatTitle :chat="chat" />
+      <ChatTitle
+        :chat="chat"
+        :typing-text="typingText"
+      />
 
       <p
         v-if="realtimeStatus"

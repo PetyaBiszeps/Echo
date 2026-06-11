@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import useChatStore from '@/stores/chats'
+import useRealtimeStore from '@/stores/realtime'
 import {
   nextTick,
+  onBeforeUnmount,
   ref,
   watch
 } from 'vue'
@@ -21,12 +23,16 @@ const props = withDefaults(defineProps<{
 
 // Init
 const chatStore = useChatStore()
+const realtimeStore = useRealtimeStore()
 
 // Constants
+const STOP_TYPING_DELAY_MS = 2000
 const textarea = ref<HTMLTextAreaElement | null>(null)
 const model = defineModel<string | number>({
   required: true
 })
+let typingStopTimer: ReturnType<typeof setTimeout> | null = null
+let activeTypingChatId: string | null = null
 
 // Methods
 function resizeTextarea() {
@@ -55,6 +61,11 @@ function handleKeydown(event: KeyboardEvent) {
   void sendMessage()
 }
 
+function handleInput() {
+  resizeTextarea()
+  updateTypingState()
+}
+
 async function sendMessage() {
   const content = model.value.toString().trim()
 
@@ -65,6 +76,7 @@ async function sendMessage() {
   const message = await chatStore.sendMessage(props.chatId, content)
 
   if (message) {
+    stopTypingNow(props.chatId)
     model.value = ''
     await nextTick()
     resizeTextarea()
@@ -72,8 +84,100 @@ async function sendMessage() {
   }
 }
 
+function updateTypingState() {
+  const content = model.value.toString().trim()
+
+  if (!content || props.disabled) {
+    stopTypingNow()
+    return
+  }
+
+  startTyping()
+  scheduleTypingStop()
+}
+
+function startTyping() {
+  if (activeTypingChatId === props.chatId) {
+    return
+  }
+
+  if (activeTypingChatId) {
+    stopTypingNow(activeTypingChatId)
+  }
+
+  if (realtimeStore.startTyping(props.chatId)) {
+    activeTypingChatId = props.chatId
+  }
+}
+
+function scheduleTypingStop() {
+  clearTypingStopTimer()
+
+  typingStopTimer = setTimeout(() => {
+    stopTypingNow()
+  }, STOP_TYPING_DELAY_MS)
+}
+
+function stopTypingNow(chatId = activeTypingChatId) {
+  clearTypingStopTimer()
+
+  if (!chatId) {
+    return
+  }
+
+  realtimeStore.stopTyping(chatId)
+
+  if (activeTypingChatId === chatId) {
+    activeTypingChatId = null
+  }
+}
+
+function clearTypingStopTimer() {
+  if (!typingStopTimer) {
+    return
+  }
+
+  clearTimeout(typingStopTimer)
+  typingStopTimer = null
+}
+
 watch(() => model.value, () => {
   void nextTick(resizeTextarea)
+
+  if (!model.value.toString().trim()) {
+    stopTypingNow()
+  }
+})
+
+watch(() => props.chatId, (chatId, previousChatId) => {
+  if (previousChatId) {
+    stopTypingNow(previousChatId)
+  }
+
+  if (chatId && model.value.toString().trim()) {
+    updateTypingState()
+  }
+})
+
+watch(() => props.disabled, (disabled) => {
+  if (disabled) {
+    stopTypingNow()
+  }
+})
+
+watch(() => realtimeStore.isConnected, (isConnected) => {
+  if (!isConnected) {
+    stopTypingNow()
+    return
+  }
+
+  if (model.value.toString().trim() && !props.disabled) {
+    updateTypingState()
+  }
+})
+
+onBeforeUnmount(() => {
+  stopTypingNow()
 })
 
 defineExpose({
@@ -95,7 +199,7 @@ defineExpose({
       :disabled="props.disabled || chatStore.sendingMessage"
       :rows="1"
 
-      @input="resizeTextarea"
+      @input="handleInput"
       @keydown="handleKeydown"
     />
   </div>
