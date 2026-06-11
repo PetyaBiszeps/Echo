@@ -15,6 +15,8 @@ type ChatWithMembersAndMessages = {
   createdAt: Date
   updatedAt: Date
   members: Array<{
+    userId: string
+    lastReadAt: Date | null
     user: {
       id: string
       username: string
@@ -83,7 +85,7 @@ export class ChatService {
       }
     })
 
-    return chats.map(chat => this.toChat(chat, userId))
+    return Promise.all(chats.map(chat => this.toChat(chat, userId)))
   }
 
   async getChatUpdates(chatId: string): Promise<IChatUpdate[]> {
@@ -93,10 +95,10 @@ export class ChatService {
       return []
     }
 
-    return chat.members.map(member => ({
+    return Promise.all(chat.members.map(async member => ({
       userId: member.user.id,
-      chat: this.toChat(chat, member.user.id)
-    }))
+      chat: await this.toChat(chat, member.user.id)
+    })))
   }
 
   async createDirectChat(userId: string, username: unknown): Promise<IChat> {
@@ -210,6 +212,30 @@ export class ChatService {
     return this.toChat(chat, userId)
   }
 
+  async markChatRead(userId: string, chatId: string): Promise<IChat> {
+    await this.assertMember(userId, chatId)
+
+    await prisma.chatMember.update({
+      where: {
+        chatId_userId: {
+          chatId,
+          userId
+        }
+      },
+      data: {
+        lastReadAt: new Date()
+      }
+    })
+
+    const chat = await this.getChatById(chatId)
+
+    if (!chat) {
+      throw new UnauthorizedException('Chat not found or access denied')
+    }
+
+    return this.toChat(chat, userId)
+  }
+
   async getMessages(userId: string, chatId: string): Promise<IMessage[]> {
     await this.assertMember(userId, chatId)
 
@@ -236,6 +262,7 @@ export class ChatService {
 
     await this.assertMember(userId, chatId)
 
+    const now = new Date()
     const [message] = await prisma.$transaction([
       prisma.message.create({
         data: {
@@ -249,7 +276,18 @@ export class ChatService {
           id: chatId
         },
         data: {
-          updatedAt: new Date()
+          updatedAt: now
+        }
+      }),
+      prisma.chatMember.update({
+        where: {
+          chatId_userId: {
+            chatId,
+            userId
+          }
+        },
+        data: {
+          lastReadAt: now
         }
       })
     ])
@@ -303,7 +341,7 @@ export class ChatService {
     })
   }
 
-  private toChat(chat: ChatWithMembersAndMessages, userId: string): IChat {
+  private async toChat(chat: ChatWithMembersAndMessages, userId: string): Promise<IChat> {
     const participants: IUser[] = chat.members.map(member => ({
       id: member.user.id,
       username: member.user.username
@@ -312,6 +350,7 @@ export class ChatService {
       ? this.toMessage(chat.messages[0])
       : null
     const fallbackTitle = participants.find(participant => participant.id !== userId)?.username ?? null
+    const unreadCount = await this.getUnreadCount(chat, userId)
 
     return {
       id: chat.id,
@@ -320,10 +359,34 @@ export class ChatService {
       participants,
       lastMessage: latestMessage,
       latestMessage,
-      unreadCount: 0,
+      unreadCount,
       createdAt: chat.createdAt.toISOString(),
       updatedAt: chat.updatedAt.toISOString()
     }
+  }
+
+  private async getUnreadCount(chat: ChatWithMembersAndMessages, userId: string) {
+    const member = chat.members.find(item => item.userId === userId)
+
+    if (!member) {
+      return 0
+    }
+
+    return prisma.message.count({
+      where: {
+        chatId: chat.id,
+        senderId: {
+          not: userId
+        },
+        ...(member.lastReadAt
+          ? {
+            createdAt: {
+              gt: member.lastReadAt
+            }
+          }
+          : {})
+      }
+    })
   }
 
   private toMessage(message: {

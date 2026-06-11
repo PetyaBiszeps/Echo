@@ -54,7 +54,10 @@ async function syncChatFromRoute(chatId: string | null) {
     await router.replace({
       name: 'chat-empty'
     })
+    return
   }
+
+  await chatStore.markChatRead(chatId)
 }
 
 watch(() => route.params.chatId, (value) => {

@@ -88,6 +88,28 @@ export async function PostChatMessageController(req: Request, res: Response, nex
   }
 }
 
+export async function PostChatReadController(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userId = requireUserId(req, res)
+
+    if (!userId) {
+      return undefined
+    }
+
+    const chatId = getChatId(req)
+    const chat = await service.markChatRead(userId, chatId)
+
+    await emitChatUpdated(chat.id)
+
+    return res.status(200).json({
+      success: true,
+      data: chat
+    })
+  } catch (err) {
+    return next(err)
+  }
+}
+
 function requireUserId(req: Request, res: Response) {
   const userId = req.user?.id
 

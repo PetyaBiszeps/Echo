@@ -144,6 +144,19 @@ const useChatStore = defineStore('chats', () => {
     }
   }
 
+  async function markChatRead(chatId: string) {
+    try {
+      const { data } = await http.post(`/chats/${chatId}/read`)
+      const chat = normalizeChat(data.data as IChat)
+
+      upsertChat(chat)
+
+      return chat
+    } catch {
+      return null
+    }
+  }
+
   async function sendMessage(chatId: string, content: string) {
     const normalizedContent = content.trim()
 
@@ -215,17 +228,22 @@ const useChatStore = defineStore('chats', () => {
 
     updateChatLastMessage(message.chatId, normalizedMessage)
 
+    if (message.chatId === selectedChatId.value) {
+      updateChatUnreadCount(message.chatId, 0)
+      void markChatRead(message.chatId)
+    }
+
     return normalizedMessage
   }
 
   function receiveChatUpdate(chat: IChat) {
     const normalizedChat = normalizeChat(chat)
-    const exists = chatList.value.some(item => item.id === normalizedChat.id)
+    const exists = upsertChat(normalizedChat)
 
-    chatList.value = sortChats([
-      normalizedChat,
-      ...chatList.value.filter(item => item.id !== normalizedChat.id)
-    ])
+    if (normalizedChat.id === selectedChatId.value && normalizedChat.unreadCount > 0) {
+      updateChatUnreadCount(normalizedChat.id, 0)
+      void markChatRead(normalizedChat.id)
+    }
 
     if (!exists) {
       void useRealtimeStore().joinChat(normalizedChat.id)
@@ -255,6 +273,7 @@ const useChatStore = defineStore('chats', () => {
       ...chat,
       createdAt: new Date(chat.createdAt).toISOString(),
       updatedAt: new Date(chat.updatedAt).toISOString(),
+      unreadCount: chat.unreadCount ?? 0,
       lastMessage,
       latestMessage: chat.latestMessage
         ? normalizeMessage(chat.latestMessage)
@@ -275,6 +294,30 @@ const useChatStore = defineStore('chats', () => {
         updatedAt: message.createdAt ?? message.timestamp
       }
     }))
+  }
+
+  function updateChatUnreadCount(chatId: string, unreadCount: number) {
+    chatList.value = chatList.value.map(chat => {
+      if (chat.id !== chatId) {
+        return chat
+      }
+
+      return {
+        ...chat,
+        unreadCount
+      }
+    })
+  }
+
+  function upsertChat(chat: IChat) {
+    const exists = chatList.value.some(item => item.id === chat.id)
+
+    chatList.value = sortChats([
+      chat,
+      ...chatList.value.filter(item => item.id !== chat.id)
+    ])
+
+    return exists
   }
 
   function sortChats(chats: IChat[]) {
@@ -311,6 +354,7 @@ const useChatStore = defineStore('chats', () => {
     createChat,
     loadChats,
     loadMessages,
+    markChatRead,
     receiveChatUpdate,
     receiveMessage,
     sendMessage

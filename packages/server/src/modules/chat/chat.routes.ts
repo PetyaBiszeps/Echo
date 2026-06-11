@@ -2,6 +2,7 @@ import {
   GetChatController,
   GetChatMessagesController,
   PostChatController,
+  PostChatReadController,
   PostChatMessageController
 } from '@/modules/chat/chat.controller.ts'
 import { AuthGuard } from '@/middleware/authGuard.ts'
@@ -26,5 +27,9 @@ router.get('/:chatId/messages',
 router.post('/:chatId/messages',
   AuthGuard,
   PostChatMessageController)
+
+router.post('/:chatId/read',
+  AuthGuard,
+  PostChatReadController)
 
 export default router

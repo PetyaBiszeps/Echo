@@ -67,6 +67,13 @@ function formatActivityTime(message: IMessage | null, updatedAt: string) {
 
       <p>
         <span :class="['message']">{{ preview }}</span>
+
+        <span
+          v-if="chat.unreadCount > 0"
+          :class="['unread']"
+        >
+          {{ chat.unreadCount }}
+        </span>
       </p>
     </section>
   </li>
