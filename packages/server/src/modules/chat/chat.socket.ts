@@ -43,6 +43,11 @@ interface TypingUpdatePayload {
   isTyping: boolean
 }
 
+interface PresenceUpdatePayload {
+  userId: string
+  isOnline: boolean
+}
+
 interface SocketErrorPayload {
   code: string
   message: string
@@ -66,6 +71,7 @@ const service = new ChatService()
 let socketServer: Server | null = null
 const typingByChatUser = new Map<string, TypingState>()
 const typingKeysBySocket = new Map<string, Set<string>>()
+const socketIdsByUser = new Map<string, Set<string>>()
 
 function initChatSocket(io: Server) {
   socketServer = io
@@ -110,10 +116,18 @@ function initChatSocket(io: Server) {
 
     socket.join(getUserRoom(userId))
 
+    const becameOnline = addPresenceSocket(userId, socket.id)
+
     try {
       const chatIds = await service.getChatIds(userId)
+      const peerUserIds = await service.getPeerUserIds(userId)
 
       await Promise.all(chatIds.map(chatId => socket.join(getChatRoom(chatId))))
+      emitInitialPresence(socket, peerUserIds)
+
+      if (becameOnline) {
+        emitPresenceToUsers(io, peerUserIds, userId, true)
+      }
     } catch {
       emitSocketError(socket, 'CHAT_ROOM_INIT_FAILED', 'Unable to join chat rooms')
     }
@@ -128,6 +142,7 @@ function initChatSocket(io: Server) {
 
         await service.assertMember(userId, data.chatId)
         await socket.join(getChatRoom(data.chatId))
+        emitInitialPresence(socket, await service.getChatPeerUserIds(data.chatId, userId))
 
         return sendSuccess(ack)
       } catch (error) {
@@ -168,6 +183,10 @@ function initChatSocket(io: Server) {
 
     socket.on('disconnecting', () => {
       clearSocketTyping(io, socket)
+    })
+
+    socket.on('disconnect', () => {
+      void handlePresenceDisconnect(io, socket, userId)
     })
   })
 }
@@ -332,6 +351,83 @@ function emitTypingUpdate(io: Server, socketId: string, chatId: string, userId: 
   }
 
   io.to(getChatRoom(chatId)).except(socketId).emit('typing:update', data)
+}
+
+async function handlePresenceDisconnect(io: Server, socket: Socket, userId: string) {
+  const becameOffline = removePresenceSocket(userId, socket.id)
+
+  if (!becameOffline) {
+    return
+  }
+
+  try {
+    emitPresenceToUsers(io, await service.getPeerUserIds(userId), userId, false)
+  } catch {
+    // Presence is best-effort process-local state; avoid surfacing disconnect cleanup failures.
+  }
+}
+
+function addPresenceSocket(userId: string, socketId: string) {
+  const socketIds = socketIdsByUser.get(userId) ?? new Set<string>()
+  const wasOffline = socketIds.size === 0
+
+  socketIds.add(socketId)
+  socketIdsByUser.set(userId, socketIds)
+
+  return wasOffline
+}
+
+function removePresenceSocket(userId: string, socketId: string) {
+  const socketIds = socketIdsByUser.get(userId)
+
+  if (!socketIds?.has(socketId)) {
+    return false
+  }
+
+  socketIds.delete(socketId)
+
+  if (socketIds.size > 0) {
+    return false
+  }
+
+  socketIdsByUser.delete(userId)
+
+  return true
+}
+
+function emitInitialPresence(socket: Socket, userIds: string[]) {
+  getUniqueUserIds(userIds).forEach(userId => {
+    if (isUserOnline(userId)) {
+      emitPresence(socket, userId, true)
+    }
+  })
+}
+
+function emitPresenceToUsers(io: Server, recipientUserIds: string[], userId: string, isOnline: boolean) {
+  const data = getPresenceUpdatePayload(userId, isOnline)
+
+  getUniqueUserIds(recipientUserIds).forEach(recipientUserId => {
+    io.to(getUserRoom(recipientUserId)).emit('presence:update', data)
+  })
+}
+
+function emitPresence(socket: Socket, userId: string, isOnline: boolean) {
+  socket.emit('presence:update', getPresenceUpdatePayload(userId, isOnline))
+}
+
+function getPresenceUpdatePayload(userId: string, isOnline: boolean): PresenceUpdatePayload {
+  return {
+    userId,
+    isOnline
+  }
+}
+
+function isUserOnline(userId: string) {
+  return Boolean(socketIdsByUser.get(userId)?.size)
+}
+
+function getUniqueUserIds(userIds: string[]) {
+  return Array.from(new Set(userIds))
 }
 
 function isJwtPayload(payload: string | JwtPayload): payload is IJWTPayload {

@@ -3,9 +3,10 @@ import type {
   IChat
 } from '@echo/shared'
 
-const { chat, typingText = null } = defineProps<{
+const { chat, typingText = null, presenceText = null } = defineProps<{
   chat: IChat
   typingText?: string | null
+  presenceText?: string | null
 }>()
 </script>
 
@@ -18,6 +19,13 @@ const { chat, typingText = null } = defineProps<{
       :class="['chatTitleTyping']"
     >
       {{ typingText }}
+    </p>
+
+    <p
+      v-else-if="presenceText"
+      :class="['chatTitlePresence']"
+    >
+      {{ presenceText }}
     </p>
   </header>
 </template>

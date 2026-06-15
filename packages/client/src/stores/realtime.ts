@@ -21,6 +21,11 @@ interface TypingUpdatePayload {
   isTyping?: boolean
 }
 
+interface PresenceUpdatePayload {
+  userId?: string
+  isOnline?: boolean
+}
+
 interface SocketAckResponse {
   ok: boolean
   error?: {
@@ -40,6 +45,7 @@ const useRealtimeStore = defineStore('realtime', () => {
   const isConnected = ref(false)
   const connectionError = ref<string | null>(null)
   const typingByChat = ref<Record<string, string[]>>({})
+  const presenceByUserId = ref<Record<string, boolean>>({})
   const typingExpiryTimers = new Map<string, ReturnType<typeof setTimeout>>()
   const localTypingChatIds = new Set<string>()
   let messageHandler: MessageHandler | null = null
@@ -87,6 +93,7 @@ const useRealtimeStore = defineStore('realtime', () => {
       isConnected.value = false
       localTypingChatIds.clear()
       clearAllTypingState()
+      clearPresenceState()
     })
 
     nextSocket.on('connect_error', (error) => {
@@ -94,6 +101,7 @@ const useRealtimeStore = defineStore('realtime', () => {
       connectionError.value = error.message
       localTypingChatIds.clear()
       clearAllTypingState()
+      clearPresenceState()
 
       if (isAuthConnectionError(error.message)) {
         authErrorHandler?.()
@@ -125,12 +133,24 @@ const useRealtimeStore = defineStore('realtime', () => {
       clearTypingUser(payload.chatId, payload.userId)
     })
 
+    nextSocket.on('presence:update', (payload: PresenceUpdatePayload) => {
+      if (!isPresenceUpdatePayload(payload)) {
+        return
+      }
+
+      presenceByUserId.value = {
+        ...presenceByUserId.value,
+        [payload.userId]: payload.isOnline
+      }
+    })
+
     socket.value = nextSocket
   }
 
   function disconnect() {
     stopAllTyping()
     clearAllTypingState()
+    clearPresenceState()
     socket.value?.removeAllListeners()
     socket.value?.disconnect()
     socket.value = null
@@ -229,6 +249,10 @@ const useRealtimeStore = defineStore('realtime', () => {
     return typingByChat.value[chatId.trim()] ?? []
   }
 
+  function isUserOnline(userId: string) {
+    return Boolean(presenceByUserId.value[userId.trim()])
+  }
+
   function emitTypingEvent(event: 'typing:start' | 'typing:stop', chatId: string) {
     const activeSocket = socket.value
 
@@ -312,10 +336,15 @@ const useRealtimeStore = defineStore('realtime', () => {
     typingByChat.value = {}
   }
 
+  function clearPresenceState() {
+    presenceByUserId.value = {}
+  }
+
   return {
     isConnected,
     connectionError,
     typingByChat,
+    presenceByUserId,
     setMessageHandler,
     setChatUpdatedHandler,
     setAuthErrorHandler,
@@ -326,7 +355,9 @@ const useRealtimeStore = defineStore('realtime', () => {
     startTyping,
     stopTyping,
     stopAllTyping,
-    getTypingUserIds
+    getTypingUserIds,
+    isUserOnline,
+    clearPresenceState
   }
 })
 
@@ -378,6 +409,14 @@ function isTypingUpdatePayload(payload: unknown): payload is Required<TypingUpda
     && typeof (payload as TypingUpdatePayload).userId === 'string'
     && Boolean((payload as TypingUpdatePayload).userId?.trim())
     && typeof (payload as TypingUpdatePayload).isTyping === 'boolean'
+}
+
+function isPresenceUpdatePayload(payload: unknown): payload is Required<PresenceUpdatePayload> {
+  return typeof payload === 'object'
+    && payload !== null
+    && typeof (payload as PresenceUpdatePayload).userId === 'string'
+    && Boolean((payload as PresenceUpdatePayload).userId?.trim())
+    && typeof (payload as PresenceUpdatePayload).isOnline === 'boolean'
 }
 
 function getTypingKey(chatId: string, userId: string) {

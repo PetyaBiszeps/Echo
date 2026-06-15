@@ -73,6 +73,27 @@ const typingText = computed(() => {
 
   return `${names[0]} and ${names.length - 1} others are typing...`
 })
+const directChatParticipant = computed(() => {
+  const activeChat = chat.value
+  const currentUserId = authStore.user?.id
+
+  if (!activeChat || activeChat.participants.length !== 2 || !currentUserId) {
+    return null
+  }
+
+  return activeChat.participants.find(participant => participant.id !== currentUserId) ?? null
+})
+const presenceText = computed(() => {
+  const participant = directChatParticipant.value
+
+  if (!participant) {
+    return null
+  }
+
+  return realtimeStore.isUserOnline(participant.id)
+    ? 'Online'
+    : 'Offline'
+})
 
 watch(() => [chatStore.selectedChatId, chatStore.messagesLoading] as const, ([chatId, loading]) => {
   if (!chatId || loading) {
@@ -104,6 +125,7 @@ function retryLoadMessages() {
       <ChatTitle
         :chat="chat"
         :typing-text="typingText"
+        :presence-text="presenceText"
       />
 
       <p

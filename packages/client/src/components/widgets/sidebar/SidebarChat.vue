@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import useAuthStore from '@/stores/auth'
+import useRealtimeStore from '@/stores/realtime'
 import {
   computed
 } from 'vue'
@@ -14,10 +15,27 @@ const { chat } = defineProps<{
 
 // Init
 const authStore = useAuthStore()
+const realtimeStore = useRealtimeStore()
 
 // Constants
 const chatName = computed(() => chat.name ?? chat.title ?? chat.participants[1]?.username ?? 'Chat')
 const latestMessage = computed(() => chat.latestMessage ?? chat.lastMessage ?? null)
+const directChatParticipant = computed(() => {
+  const currentUserId = authStore.user?.id
+
+  if (chat.participants.length !== 2 || !currentUserId) {
+    return null
+  }
+
+  return chat.participants.find(participant => participant.id !== currentUserId) ?? null
+})
+const isParticipantOnline = computed(() => {
+  const participant = directChatParticipant.value
+
+  return participant
+    ? realtimeStore.isUserOnline(participant.id)
+    : false
+})
 const preview = computed(() => {
   const message = latestMessage.value
 
@@ -58,7 +76,15 @@ function formatActivityTime(message: IMessage | null, updatedAt: string) {
 
     <section>
       <header>
-        <h4>{{ chatName }}</h4>
+        <h4>
+          <span
+            v-if="isParticipantOnline"
+            :class="['presenceDot']"
+            aria-label="Online"
+          />
+
+          {{ chatName }}
+        </h4>
 
         <time :datetime="latestMessage?.timestamp ?? latestMessage?.createdAt ?? chat.updatedAt">
           {{ activityTime }}
