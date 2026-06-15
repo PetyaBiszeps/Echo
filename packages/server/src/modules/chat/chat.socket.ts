@@ -37,6 +37,12 @@ interface ChatUpdatedPayload {
   chat: IChat
 }
 
+interface ChatReadPayload {
+  chatId: string
+  userId: string
+  readAt: string
+}
+
 interface TypingUpdatePayload {
   chatId: string
   userId: string
@@ -217,6 +223,20 @@ export async function emitChatUpdated(chatId: string) {
 
     socketServer?.to(getUserRoom(userId)).emit('chat:updated', data)
   })
+}
+
+export function emitChatRead(chatId: string, userId: string, readAt: string) {
+  if (!socketServer) {
+    return
+  }
+
+  const data: ChatReadPayload = {
+    chatId,
+    userId,
+    readAt
+  }
+
+  socketServer.to(getChatRoom(chatId)).emit('chat:read', data)
 }
 
 async function handleTypingEvent(

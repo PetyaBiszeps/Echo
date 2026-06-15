@@ -21,6 +21,7 @@ export interface IMessage {
   chatId?: string
   content: string
   senderId: string
+  isReadByPeer?: boolean
   createdAt?: string
   timestamp: string
 }

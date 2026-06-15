@@ -1,5 +1,6 @@
 import { ChatService } from '@/modules/chat/chat.service.ts'
 import {
+  emitChatRead,
   emitChatUpdated,
   emitMessageNew
 } from '@/modules/chat/chat.socket.ts'
@@ -103,8 +104,9 @@ export async function PostChatReadController(req: Request, res: Response, next: 
     }
 
     const chatId = getChatId(req)
-    const chat = await service.markChatRead(userId, chatId)
+    const { chat, readAt } = await service.markChatRead(userId, chatId)
 
+    emitChatRead(chat.id, userId, readAt)
     await emitChatUpdated(chat.id)
 
     return res.status(200).json({

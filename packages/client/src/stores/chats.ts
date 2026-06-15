@@ -9,6 +9,12 @@ import type {
   IMessage
 } from '@echo/shared'
 
+interface ChatReadPayload {
+  chatId: string
+  userId: string
+  readAt: string
+}
+
 const useChatStore = defineStore('chats', () => {
   const toaster = useToastStore()
   const chatList = ref<IChat[]>([])
@@ -305,6 +311,43 @@ const useChatStore = defineStore('chats', () => {
     return normalizedChat
   }
 
+  function receiveChatRead(payload: ChatReadPayload, currentUserId: string | null | undefined) {
+    if (!currentUserId || payload.userId === currentUserId) {
+      return
+    }
+
+    const messages = messagesByChat.value[payload.chatId]
+    const readTime = new Date(payload.readAt).getTime()
+
+    if (!messages || Number.isNaN(readTime)) {
+      return
+    }
+
+    let changed = false
+    const nextMessages = messages.map(message => {
+      if (message.senderId !== currentUserId || message.isReadByPeer) {
+        return message
+      }
+
+      const messageTime = new Date(message.createdAt ?? message.timestamp).getTime()
+
+      if (Number.isNaN(messageTime) || messageTime > readTime) {
+        return message
+      }
+
+      changed = true
+
+      return {
+        ...message,
+        isReadByPeer: true
+      }
+    })
+
+    if (changed) {
+      setMessages(payload.chatId, nextMessages)
+    }
+  }
+
   function normalizeMessage(message: IMessage): IMessage {
     const timestamp = new Date(message.timestamp).toISOString()
 
@@ -417,6 +460,7 @@ const useChatStore = defineStore('chats', () => {
     loadMessages,
     markChatRead,
     receiveChatUpdate,
+    receiveChatRead,
     receiveMessage,
     sendMessage
   }

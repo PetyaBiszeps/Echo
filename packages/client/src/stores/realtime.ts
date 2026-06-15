@@ -15,6 +15,12 @@ interface ChatUpdatedPayload {
   chat?: IChat
 }
 
+interface ChatReadPayload {
+  chatId?: string
+  userId?: string
+  readAt?: string
+}
+
 interface TypingUpdatePayload {
   chatId?: string
   userId?: string
@@ -36,6 +42,7 @@ interface SocketAckResponse {
 
 type MessageHandler = (message: IMessage) => void
 type ChatHandler = (chat: IChat) => void
+type ChatReadHandler = (payload: Required<ChatReadPayload>) => void
 type AuthErrorHandler = () => void
 
 const TYPING_EXPIRY_MS = 5000
@@ -50,6 +57,7 @@ const useRealtimeStore = defineStore('realtime', () => {
   const localTypingChatIds = new Set<string>()
   let messageHandler: MessageHandler | null = null
   let chatUpdatedHandler: ChatHandler | null = null
+  let chatReadHandler: ChatReadHandler | null = null
   let authErrorHandler: AuthErrorHandler | null = null
 
   function setMessageHandler(handler: MessageHandler) {
@@ -58,6 +66,10 @@ const useRealtimeStore = defineStore('realtime', () => {
 
   function setChatUpdatedHandler(handler: ChatHandler) {
     chatUpdatedHandler = handler
+  }
+
+  function setChatReadHandler(handler: ChatReadHandler) {
+    chatReadHandler = handler
   }
 
   function setAuthErrorHandler(handler: AuthErrorHandler) {
@@ -117,6 +129,12 @@ const useRealtimeStore = defineStore('realtime', () => {
     nextSocket.on('chat:updated', (payload: ChatUpdatedPayload) => {
       if (isChat(payload?.chat)) {
         chatUpdatedHandler?.(payload.chat)
+      }
+    })
+
+    nextSocket.on('chat:read', (payload: ChatReadPayload) => {
+      if (isChatReadPayload(payload)) {
+        chatReadHandler?.(payload)
       }
     })
 
@@ -347,6 +365,7 @@ const useRealtimeStore = defineStore('realtime', () => {
     presenceByUserId,
     setMessageHandler,
     setChatUpdatedHandler,
+    setChatReadHandler,
     setAuthErrorHandler,
     connect,
     disconnect,
@@ -399,6 +418,17 @@ function isMessage(message: unknown): message is IMessage {
     && typeof (message as IMessage).chatId === 'string'
     && typeof (message as IMessage).senderId === 'string'
     && typeof (message as IMessage).content === 'string'
+}
+
+function isChatReadPayload(payload: unknown): payload is Required<ChatReadPayload> {
+  return typeof payload === 'object'
+    && payload !== null
+    && typeof (payload as ChatReadPayload).chatId === 'string'
+    && Boolean((payload as ChatReadPayload).chatId?.trim())
+    && typeof (payload as ChatReadPayload).userId === 'string'
+    && Boolean((payload as ChatReadPayload).userId?.trim())
+    && typeof (payload as ChatReadPayload).readAt === 'string'
+    && Boolean((payload as ChatReadPayload).readAt?.trim())
 }
 
 function isTypingUpdatePayload(payload: unknown): payload is Required<TypingUpdatePayload> {

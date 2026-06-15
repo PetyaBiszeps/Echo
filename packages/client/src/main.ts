@@ -23,6 +23,9 @@ const realtimeStore = useRealtimeStore()
 
 realtimeStore.setMessageHandler(chatStore.receiveMessage)
 realtimeStore.setChatUpdatedHandler(chatStore.receiveChatUpdate)
+realtimeStore.setChatReadHandler((payload) => {
+  chatStore.receiveChatRead(payload, authStore.user?.id)
+})
 realtimeStore.setAuthErrorHandler(() => {
   authStore.logout(false)
 })

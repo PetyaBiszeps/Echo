@@ -4,8 +4,9 @@ import type {
   IMessage
 } from '@echo/shared'
 
-const { messages } = defineProps<{
+const { messages, showReadReceipts = false } = defineProps<{
   messages: IMessage[]
+  showReadReceipts?: boolean
 }>()
 
 // Init
@@ -14,6 +15,14 @@ const authStore = useAuthStore()
 // Methods
 function isOwnMessage(message: IMessage) {
   return message.senderId === authStore.user?.id
+}
+
+function showReadReceipt(message: IMessage) {
+  return showReadReceipts && isOwnMessage(message)
+}
+
+function getReadReceiptLabel(message: IMessage) {
+  return message.isReadByPeer ? 'Read' : 'Sent'
 }
 
 function isGroupedMessage(message: IMessage, index: number) {
@@ -46,8 +55,24 @@ function formatMessageTime(message: IMessage) {
   >
     <p>{{ message.content }}</p>
 
-    <time :datetime="message.timestamp ?? message.createdAt">
-      {{ formatMessageTime(message) }}
-    </time>
+    <footer>
+      <time :datetime="message.timestamp ?? message.createdAt">
+        {{ formatMessageTime(message) }}
+      </time>
+
+      <span
+        v-if="showReadReceipt(message)"
+        :class="['readReceipt', {
+          read: message.isReadByPeer
+        }]"
+        :aria-label="getReadReceiptLabel(message)"
+      >
+        <span aria-hidden="true">&#10003;</span>
+        <span
+          v-if="message.isReadByPeer"
+          aria-hidden="true"
+        >&#10003;</span>
+      </span>
+    </footer>
   </li>
 </template>

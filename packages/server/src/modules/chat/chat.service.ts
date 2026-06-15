@@ -36,6 +36,11 @@ export interface IChatUpdate {
   chat: IChat
 }
 
+export interface IChatReadUpdate {
+  chat: IChat
+  readAt: string
+}
+
 export class ChatService {
   async getChatIds(userId: string): Promise<string[]> {
     const members = await prisma.chatMember.findMany({
@@ -254,8 +259,9 @@ export class ChatService {
     return this.toChat(chat, userId)
   }
 
-  async markChatRead(userId: string, chatId: string): Promise<IChat> {
+  async markChatRead(userId: string, chatId: string): Promise<IChatReadUpdate> {
     await this.assertMember(userId, chatId)
+    const readAt = new Date()
 
     await prisma.chatMember.update({
       where: {
@@ -265,7 +271,7 @@ export class ChatService {
         }
       },
       data: {
-        lastReadAt: new Date()
+        lastReadAt: readAt
       }
     })
 
@@ -275,7 +281,10 @@ export class ChatService {
       throw new UnauthorizedException('Chat not found or access denied')
     }
 
-    return this.toChat(chat, userId)
+    return {
+      chat: await this.toChat(chat, userId),
+      readAt: readAt.toISOString()
+    }
   }
 
   async getMessages(userId: string, chatId: string): Promise<IMessage[]> {
@@ -289,8 +298,25 @@ export class ChatService {
         createdAt: 'asc'
       }
     })
+    const members = await prisma.chatMember.findMany({
+      where: {
+        chatId
+      },
+      select: {
+        userId: true,
+        lastReadAt: true
+      }
+    })
+    const peer = members.length === 2
+      ? members.find(member => member.userId !== userId)
+      : null
 
-    return messages.map(message => this.toMessage(message))
+    return messages.map(message => this.toMessage(
+      message,
+      message.senderId === userId
+        ? Boolean(peer?.lastReadAt && peer.lastReadAt >= message.createdAt)
+        : undefined
+    ))
   }
 
   async createMessage(userId: string, chatId: string, content: unknown): Promise<IMessage> {
@@ -334,7 +360,7 @@ export class ChatService {
       })
     ])
 
-    return this.toMessage(message)
+    return this.toMessage(message, false)
   }
 
   async assertMember(userId: string, chatId: string) {
@@ -437,7 +463,7 @@ export class ChatService {
     senderId: string
     content: string
     createdAt: Date
-  }): IMessage {
+  }, isReadByPeer?: boolean): IMessage {
     const createdAt = message.createdAt.toISOString()
 
     return {
@@ -445,6 +471,9 @@ export class ChatService {
       chatId: message.chatId,
       senderId: message.senderId,
       content: message.content,
+      ...(typeof isReadByPeer === 'boolean'
+        ? { isReadByPeer }
+        : {}),
       createdAt,
       timestamp: createdAt
     }

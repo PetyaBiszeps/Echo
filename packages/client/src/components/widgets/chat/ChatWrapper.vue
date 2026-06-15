@@ -77,6 +77,7 @@ onMounted(() => {
   >
     <ChatMessage
       :messages="messages"
+      :show-read-receipts="chat.participants.length === 2"
     />
   </ul>
 </template>
