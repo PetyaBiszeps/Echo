@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import UserAvatar from '@/components/ui/UserAvatar.vue'
 import useAuthStore from '@/stores/auth'
 import useRealtimeStore from '@/stores/realtime'
 import {
@@ -29,6 +30,7 @@ const directChatParticipant = computed(() => {
 
   return chat.participants.find(participant => participant.id !== currentUserId) ?? null
 })
+const avatarUser = computed(() => directChatParticipant.value ?? chat.participants[0] ?? null)
 const isParticipantOnline = computed(() => {
   const participant = directChatParticipant.value
 
@@ -69,22 +71,18 @@ function formatActivityTime(message: IMessage | null, updatedAt: string) {
 
 <template>
   <li :class="['sidebarChat']">
-    <img
-      src="@/assets/icons/avatar.svg"
-      :alt="chatName"
-    >
+    <UserAvatar
+      :class="['sidebarChatAvatar']"
+      :username="avatarUser?.username ?? chatName"
+      :avatar="avatarUser?.avatar ?? null"
+      :size="'lg'"
+      :show-presence="Boolean(directChatParticipant)"
+      :is-online="isParticipantOnline"
+    />
 
     <section>
       <header>
-        <h4>
-          <span
-            v-if="isParticipantOnline"
-            :class="['presenceDot']"
-            aria-label="Online"
-          />
-
-          {{ chatName }}
-        </h4>
+        <h4>{{ chatName }}</h4>
 
         <time :datetime="latestMessage?.timestamp ?? latestMessage?.createdAt ?? chat.updatedAt">
           {{ activityTime }}

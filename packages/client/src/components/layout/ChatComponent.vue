@@ -94,6 +94,13 @@ const presenceText = computed(() => {
     ? 'Online'
     : formatPresenceText(realtimeStore.getLastSeenAt(participant.id) ?? participant.lastSeenAt ?? null)
 })
+const isDirectParticipantOnline = computed(() => {
+  const participant = directChatParticipant.value
+
+  return participant
+    ? realtimeStore.isUserOnline(participant.id)
+    : false
+})
 
 watch(() => [chatStore.selectedChatId, chatStore.messagesLoading] as const, ([chatId, loading]) => {
   if (!chatId || loading) {
@@ -159,8 +166,10 @@ function isSameDay(a: Date, b: Date) {
     <template v-if="chat">
       <ChatTitle
         :chat="chat"
+        :participant="directChatParticipant"
         :typing-text="typingText"
         :presence-text="presenceText"
+        :is-online="isDirectParticipantOnline"
       />
 
       <p

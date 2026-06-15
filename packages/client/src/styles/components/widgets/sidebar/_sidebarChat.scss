@@ -7,9 +7,7 @@
   border-radius: 0.5rem;
   transition: background 0.2s ease;
 
-  img {
-    width: 3.5rem;
-    height: 3.5rem;
+  .sidebarChatAvatar {
     margin-right: 0.5rem;
   }
 
@@ -25,20 +23,9 @@
       justify-content: space-between;
 
       h4 {
-        gap: 0.35rem;
-        display: flex;
-        align-items: center;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-
-        .presenceDot {
-          width: 0.5rem;
-          height: 0.5rem;
-          flex: 0 0 auto;
-          border-radius: 999px;
-          background: theme.$accent;
-        }
       }
 
       time {

@@ -2,6 +2,7 @@
 import SidebarSearch from '@/components/widgets/sidebar/SidebarSearch.vue'
 import SidebarList from '@/components/widgets/sidebar/SidebarList.vue'
 import SidebarTab from '@/components/widgets/sidebar/SidebarTab.vue'
+import UserAvatar from '@/components/ui/UserAvatar.vue'
 import getErrorMessage from '@/utils/getErrorMessage'
 import useChatStore from '@/stores/chats'
 import http from '@/constants/http'
@@ -227,10 +228,12 @@ onBeforeUnmount(() => {
             @mouseenter="highlightedIndex = index"
             @click="chooseUser(user)"
           >
-            <img
-              src="@/assets/icons/avatar.svg"
-              :alt="user.username"
-            >
+            <UserAvatar
+              :class="['sidebarChatAvatar']"
+              :username="user.username"
+              :avatar="user.avatar ?? null"
+              :size="'lg'"
+            />
 
             <section>
               <h4>{{ user.username }}</h4>
