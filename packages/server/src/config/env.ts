@@ -1,9 +1,14 @@
 import path from 'node:path'
 import dotenv from 'dotenv'
 import { z } from 'zod'
+import {
+  fileURLToPath
+} from 'node:url'
+
+const dirname = path.dirname(fileURLToPath(import.meta.url))
 
 dotenv.config({
-  path: path.resolve(process.cwd(), 'packages/server/.env')
+  path: path.resolve(dirname, '../../.env')
 })
 
 const EnvSchema = z.object({
