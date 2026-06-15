@@ -3,6 +3,9 @@ import useToastStore from '@/stores/toast'
 import {
   computed
 } from 'vue'
+import type {
+  IToast
+} from '@/types'
 
 // Init
 const toaster = useToastStore()
@@ -23,7 +26,8 @@ const payload = computed(() => {
     ...message,
 
     idx: index,
-    title: message.type,
+    toast: message,
+    title: message.title ?? message.type,
     type: message.type,
     source: index < errors.length
       ? 'error' : index < errors.length + warnings.length
@@ -47,6 +51,15 @@ function getIcon(type: string) {
       return '?'
   }
 }
+
+function handleToastClick(toast: IToast) {
+  if (!toast.onClick) {
+    return
+  }
+
+  toast.onClick()
+  toaster.removeToaster(toast)
+}
 </script>
 
 <template>
@@ -54,9 +67,20 @@ function getIcon(type: string) {
     <div
       v-for="(data, index) in payload"
       :key="index"
-      :class="['message', data.type]"
+      :class="['message', data.type, {
+        clickable: data.onClick
+      }]"
+      :role="data.onClick ? 'button' : undefined"
+      :tabindex="data.onClick ? 0 : undefined"
+      @click="handleToastClick(data.toast)"
+      @keydown.enter="handleToastClick(data.toast)"
+      @keydown.space.prevent="handleToastClick(data.toast)"
     >
-      <strong>{{ getIcon(data.type) }} | {{ data.message }}</strong>
+      <strong>{{ getIcon(data.type) }} | {{ data.title }}</strong>
+
+      <p v-if="data.message">
+        {{ data.message }}
+      </p>
     </div>
   </div>
 </template>

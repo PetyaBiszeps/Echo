@@ -78,12 +78,28 @@ const useToastStore = defineStore('toast', () => {
     return addNeutralMessage(payload)
   }
 
+  function removeToaster(payload: IToast) {
+    removeMessage(errorMessages.value, payload)
+    removeMessage(warningMessages.value, payload)
+    removeMessage(successMessages.value, payload)
+    removeMessage(neutralMessages.value, payload)
+  }
+
+  function removeMessage(messages: IToast[], payload: IToast) {
+    const idx = messages.indexOf(payload)
+
+    if (idx !== -1) {
+      messages.splice(idx, 1)
+    }
+  }
+
   return {
     errorMessages, getErrorMessages,
     warningMessages, getWarningMessages,
     successMessages, getSuccessMessages,
     neutralMessages, getNeutralMessages,
-    addToaster
+    addToaster,
+    removeToaster
   }
 })
 
