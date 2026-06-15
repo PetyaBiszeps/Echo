@@ -52,6 +52,7 @@ interface TypingUpdatePayload {
 interface PresenceUpdatePayload {
   userId: string
   isOnline: boolean
+  lastSeenAt?: string | null
 }
 
 interface SocketErrorPayload {
@@ -129,7 +130,7 @@ function initChatSocket(io: Server) {
       const peerUserIds = await service.getPeerUserIds(userId)
 
       await Promise.all(chatIds.map(chatId => socket.join(getChatRoom(chatId))))
-      emitInitialPresence(socket, peerUserIds)
+      await emitInitialPresence(socket, peerUserIds)
 
       if (becameOnline) {
         emitPresenceToUsers(io, peerUserIds, userId, true)
@@ -148,7 +149,7 @@ function initChatSocket(io: Server) {
 
         await service.assertMember(userId, data.chatId)
         await socket.join(getChatRoom(data.chatId))
-        emitInitialPresence(socket, await service.getChatPeerUserIds(data.chatId, userId))
+        await emitInitialPresence(socket, await service.getChatPeerUserIds(data.chatId, userId))
 
         return sendSuccess(ack)
       } catch (error) {
@@ -381,7 +382,9 @@ async function handlePresenceDisconnect(io: Server, socket: Socket, userId: stri
   }
 
   try {
-    emitPresenceToUsers(io, await service.getPeerUserIds(userId), userId, false)
+    const lastSeenAt = await service.updateUserLastSeen(userId, new Date())
+
+    emitPresenceToUsers(io, await service.getPeerUserIds(userId), userId, false, lastSeenAt)
   } catch {
     // Presence is best-effort process-local state; avoid surfacing disconnect cleanup failures.
   }
@@ -415,30 +418,43 @@ function removePresenceSocket(userId: string, socketId: string) {
   return true
 }
 
-function emitInitialPresence(socket: Socket, userIds: string[]) {
-  getUniqueUserIds(userIds).forEach(userId => {
-    if (isUserOnline(userId)) {
-      emitPresence(socket, userId, true)
-    }
+async function emitInitialPresence(socket: Socket, userIds: string[]) {
+  const users = await service.getUsersLastSeen(getUniqueUserIds(userIds))
+
+  users.forEach(user => {
+    emitPresence(socket, user.userId, isUserOnline(user.userId), user.lastSeenAt)
   })
 }
 
-function emitPresenceToUsers(io: Server, recipientUserIds: string[], userId: string, isOnline: boolean) {
-  const data = getPresenceUpdatePayload(userId, isOnline)
+function emitPresenceToUsers(
+  io: Server,
+  recipientUserIds: string[],
+  userId: string,
+  isOnline: boolean,
+  lastSeenAt?: string | null
+) {
+  const data = getPresenceUpdatePayload(userId, isOnline, lastSeenAt)
 
   getUniqueUserIds(recipientUserIds).forEach(recipientUserId => {
     io.to(getUserRoom(recipientUserId)).emit('presence:update', data)
   })
 }
 
-function emitPresence(socket: Socket, userId: string, isOnline: boolean) {
-  socket.emit('presence:update', getPresenceUpdatePayload(userId, isOnline))
+function emitPresence(socket: Socket, userId: string, isOnline: boolean, lastSeenAt?: string | null) {
+  socket.emit('presence:update', getPresenceUpdatePayload(userId, isOnline, lastSeenAt))
 }
 
-function getPresenceUpdatePayload(userId: string, isOnline: boolean): PresenceUpdatePayload {
+function getPresenceUpdatePayload(
+  userId: string,
+  isOnline: boolean,
+  lastSeenAt?: string | null
+): PresenceUpdatePayload {
   return {
     userId,
-    isOnline
+    isOnline,
+    ...(lastSeenAt !== undefined
+      ? { lastSeenAt }
+      : {})
   }
 }
 

@@ -92,7 +92,7 @@ const presenceText = computed(() => {
 
   return realtimeStore.isUserOnline(participant.id)
     ? 'Online'
-    : 'Offline'
+    : formatPresenceText(realtimeStore.getLastSeenAt(participant.id) ?? participant.lastSeenAt ?? null)
 })
 
 watch(() => [chatStore.selectedChatId, chatStore.messagesLoading] as const, ([chatId, loading]) => {
@@ -116,6 +116,41 @@ function retryLoadMessages() {
       void focusMessageInput()
     })
   }
+}
+
+function formatPresenceText(lastSeenAt: string | null) {
+  if (!lastSeenAt) {
+    return 'Offline'
+  }
+
+  const date = new Date(lastSeenAt)
+
+  if (Number.isNaN(date.getTime())) {
+    return 'Offline'
+  }
+
+  if (isSameDay(date, new Date())) {
+    return `last seen ${date.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    })}`
+  }
+
+  const yesterday = new Date()
+
+  yesterday.setDate(yesterday.getDate() - 1)
+
+  if (isSameDay(date, yesterday)) {
+    return 'last seen yesterday'
+  }
+
+  return `last seen ${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`
+}
+
+function isSameDay(a: Date, b: Date) {
+  return a.getFullYear() === b.getFullYear()
+    && a.getMonth() === b.getMonth()
+    && a.getDate() === b.getDate()
 }
 </script>
 

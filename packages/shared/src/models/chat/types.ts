@@ -2,6 +2,7 @@ export interface IUser {
   id: string
   username: string
   avatar?: string | null
+  lastSeenAt?: string | null
 }
 
 export interface IChat {

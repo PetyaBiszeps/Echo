@@ -11,6 +11,7 @@ model User {
   username String @unique @db.VarChar(50)
   password String
   createdAt DateTime @default(now()) @db.Timestamptz
+  lastSeenAt DateTime? @db.Timestamptz
 
   chatMembers ChatMember[]
   messages Message[] @relation("MessageSender")

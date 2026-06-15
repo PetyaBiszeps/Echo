@@ -20,6 +20,7 @@ type ChatWithMembersAndMessages = {
     user: {
       id: string
       username: string
+      lastSeenAt: Date | null
     }
   }>
   messages: Array<{
@@ -39,6 +40,11 @@ export interface IChatUpdate {
 export interface IChatReadUpdate {
   chat: IChat
   readAt: string
+}
+
+export interface IUserLastSeen {
+  userId: string
+  lastSeenAt: string | null
 }
 
 export class ChatService {
@@ -97,6 +103,47 @@ export class ChatService {
     return members.map(member => member.userId)
   }
 
+  async getUsersLastSeen(userIds: string[]): Promise<IUserLastSeen[]> {
+    const uniqueUserIds = Array.from(new Set(userIds))
+
+    if (uniqueUserIds.length === 0) {
+      return []
+    }
+
+    const users = await prisma.user.findMany({
+      where: {
+        id: {
+          in: uniqueUserIds
+        }
+      },
+      select: {
+        id: true,
+        lastSeenAt: true
+      }
+    })
+
+    return users.map(user => ({
+      userId: user.id,
+      lastSeenAt: user.lastSeenAt?.toISOString() ?? null
+    }))
+  }
+
+  async updateUserLastSeen(userId: string, lastSeenAt: Date): Promise<string> {
+    const user = await prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        lastSeenAt
+      },
+      select: {
+        lastSeenAt: true
+      }
+    })
+
+    return user.lastSeenAt?.toISOString() ?? lastSeenAt.toISOString()
+  }
+
   async getChats(userId: string): Promise<IChat[]> {
     const chats = await prisma.chat.findMany({
       where: {
@@ -112,7 +159,8 @@ export class ChatService {
             user: {
               select: {
                 id: true,
-                username: true
+                username: true,
+                lastSeenAt: true
               }
             }
           },
@@ -202,7 +250,8 @@ export class ChatService {
             user: {
               select: {
                 id: true,
-                username: true
+                username: true,
+                lastSeenAt: true
               }
             }
           },
@@ -239,7 +288,8 @@ export class ChatService {
             user: {
               select: {
                 id: true,
-                username: true
+                username: true,
+                lastSeenAt: true
               }
             }
           },
@@ -391,7 +441,8 @@ export class ChatService {
             user: {
               select: {
                 id: true,
-                username: true
+                username: true,
+                lastSeenAt: true
               }
             }
           },
@@ -412,7 +463,8 @@ export class ChatService {
   private async toChat(chat: ChatWithMembersAndMessages, userId: string): Promise<IChat> {
     const participants: IUser[] = chat.members.map(member => ({
       id: member.user.id,
-      username: member.user.username
+      username: member.user.username,
+      lastSeenAt: member.user.lastSeenAt?.toISOString() ?? null
     }))
     const latestMessage = chat.messages[0]
       ? this.toMessage(chat.messages[0])

@@ -28,8 +28,9 @@ interface TypingUpdatePayload {
 }
 
 interface PresenceUpdatePayload {
-  userId?: string
-  isOnline?: boolean
+  userId: string
+  isOnline: boolean
+  lastSeenAt?: string | null
 }
 
 interface SocketAckResponse {
@@ -53,6 +54,7 @@ const useRealtimeStore = defineStore('realtime', () => {
   const connectionError = ref<string | null>(null)
   const typingByChat = ref<Record<string, string[]>>({})
   const presenceByUserId = ref<Record<string, boolean>>({})
+  const lastSeenByUserId = ref<Record<string, string | null>>({})
   const typingExpiryTimers = new Map<string, ReturnType<typeof setTimeout>>()
   const localTypingChatIds = new Set<string>()
   let messageHandler: MessageHandler | null = null
@@ -151,7 +153,7 @@ const useRealtimeStore = defineStore('realtime', () => {
       clearTypingUser(payload.chatId, payload.userId)
     })
 
-    nextSocket.on('presence:update', (payload: PresenceUpdatePayload) => {
+    nextSocket.on('presence:update', (payload: unknown) => {
       if (!isPresenceUpdatePayload(payload)) {
         return
       }
@@ -159,6 +161,13 @@ const useRealtimeStore = defineStore('realtime', () => {
       presenceByUserId.value = {
         ...presenceByUserId.value,
         [payload.userId]: payload.isOnline
+      }
+
+      if ('lastSeenAt' in payload) {
+        lastSeenByUserId.value = {
+          ...lastSeenByUserId.value,
+          [payload.userId]: payload.lastSeenAt ?? null
+        }
       }
     })
 
@@ -271,6 +280,10 @@ const useRealtimeStore = defineStore('realtime', () => {
     return Boolean(presenceByUserId.value[userId.trim()])
   }
 
+  function getLastSeenAt(userId: string) {
+    return lastSeenByUserId.value[userId.trim()] ?? null
+  }
+
   function emitTypingEvent(event: 'typing:start' | 'typing:stop', chatId: string) {
     const activeSocket = socket.value
 
@@ -363,6 +376,7 @@ const useRealtimeStore = defineStore('realtime', () => {
     connectionError,
     typingByChat,
     presenceByUserId,
+    lastSeenByUserId,
     setMessageHandler,
     setChatUpdatedHandler,
     setChatReadHandler,
@@ -376,6 +390,7 @@ const useRealtimeStore = defineStore('realtime', () => {
     stopAllTyping,
     getTypingUserIds,
     isUserOnline,
+    getLastSeenAt,
     clearPresenceState
   }
 })
@@ -441,12 +456,17 @@ function isTypingUpdatePayload(payload: unknown): payload is Required<TypingUpda
     && typeof (payload as TypingUpdatePayload).isTyping === 'boolean'
 }
 
-function isPresenceUpdatePayload(payload: unknown): payload is Required<PresenceUpdatePayload> {
-  return typeof payload === 'object'
-    && payload !== null
-    && typeof (payload as PresenceUpdatePayload).userId === 'string'
+function isPresenceUpdatePayload(payload: unknown): payload is PresenceUpdatePayload {
+  if (typeof payload !== 'object' || payload === null) {
+    return false
+  }
+
+  const lastSeenAt = (payload as PresenceUpdatePayload).lastSeenAt
+
+  return typeof (payload as PresenceUpdatePayload).userId === 'string'
     && Boolean((payload as PresenceUpdatePayload).userId?.trim())
     && typeof (payload as PresenceUpdatePayload).isOnline === 'boolean'
+    && (lastSeenAt === undefined || lastSeenAt === null || typeof lastSeenAt === 'string')
 }
 
 function getTypingKey(chatId: string, userId: string) {

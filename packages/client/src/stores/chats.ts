@@ -367,6 +367,12 @@ const useChatStore = defineStore('chats', () => {
 
     return {
       ...chat,
+      participants: chat.participants.map(participant => ({
+        ...participant,
+        lastSeenAt: participant.lastSeenAt
+          ? new Date(participant.lastSeenAt).toISOString()
+          : null
+      })),
       createdAt: new Date(chat.createdAt).toISOString(),
       updatedAt: new Date(chat.updatedAt).toISOString(),
       unreadCount: chat.unreadCount ?? 0,
