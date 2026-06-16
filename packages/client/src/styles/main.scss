@@ -1,4 +1,5 @@
 @forward "@/styles/root.scss";
+@forward "@/styles/variables.scss" as token-*;
 @forward "@/styles/theme.scss";
 @forward "@/styles/mixins.scss";
 
