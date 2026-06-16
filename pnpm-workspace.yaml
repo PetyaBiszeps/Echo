@@ -5,8 +5,8 @@ packages:
 # Allowed dependency scripts
 allowBuilds:
   argon2: true
-  esbuild: true
   prisma: true
+  esbuild: true
   '@prisma/client': true
   '@prisma/engines': true
   '@parcel/watcher': true
