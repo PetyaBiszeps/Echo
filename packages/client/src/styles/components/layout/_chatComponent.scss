@@ -1,9 +1,10 @@
-@use "@/styles/theme.scss" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 .chat {
   width: 100%;
   height: 100%;
   z-index: 1;
+  color: tokens.$foreground;
   display: flex;
   place-items: center;
   box-sizing: border-box;
@@ -20,6 +21,7 @@
 
   .chatState {
     gap: 0.75rem;
+    color: tokens.$foreground;
     display: flex;
     padding: 1rem;
     text-align: center;
@@ -27,21 +29,31 @@
     flex-direction: column;
     justify-content: center;
 
+    p {
+      color: tokens.$muted-foreground;
+    }
+
     &.empty {
       height: 100%;
+      margin: 1.5rem;
+      padding: 1.5rem;
+      background: tokens.$card;
+      border: 1px solid tokens.$border;
+      border-radius: tokens.$radius;
     }
   }
 
   .chatSendError {
     width: 100%;
+    color: tokens.$foreground;
     max-width: 800px;
     padding: 0 1.5rem;
     box-sizing: border-box;
   }
 
   .chatRealtimeStatus {
-    opacity: 0.75;
     width: 100%;
+    color: tokens.$muted-foreground;
     max-width: 800px;
     padding: 0.35rem 1.5rem 0;
     font-size: 0.85rem;

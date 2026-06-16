@@ -1,10 +1,12 @@
-@use "@/styles/theme.scss" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 .sidebarList {
   gap: 1rem;
   height: 100%;
+  color: tokens.$foreground;
   display: flex;
   overflow: scroll;
   padding: 0.15rem 0.3rem;
+  scrollbar-color: tokens.$border transparent;
   flex-direction: column;
 }

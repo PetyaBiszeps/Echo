@@ -1,17 +1,22 @@
-@use "@/styles/theme.scss" as theme;
 @use "@/styles/mixins.scss" as mixins;
+@use "@/styles/variables.scss" as tokens;
 
 .loginView {
   @include mixins.echoCard;
 
   gap: 2.5rem;
   width: fit-content;
+  color: tokens.$foreground;
   display: flex;
+  border: 1px solid tokens.$border;
   transform: rotate(-8deg);
+  background: tokens.$card;
+  box-shadow: 0 14px 36px color-mix(in srgb, tokens.$background 80%, transparent);
   flex-direction: column;
 
   header {
     h1 {
+      color: tokens.$primary;
       text-align: center;
     }
   }
@@ -20,10 +25,15 @@
     gap: 1.5rem;
     display: flex;
     flex-direction: column;
+
+    p {
+      color: tokens.$destructive;
+    }
   }
 
   footer {
     p {
+      color: tokens.$muted-foreground;
       text-align: center;
     }
   }

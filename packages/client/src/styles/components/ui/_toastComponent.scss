@@ -1,5 +1,4 @@
-@use "sass:color";
-@use "@/styles/theme.scss" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 .messageWrapper {
   top: 10%;
@@ -14,33 +13,42 @@
   flex-direction: column-reverse;
 
   .message {
+    color: tokens.$foreground;
     margin: 0 0.5rem;
-    border: 1px solid theme.$toastBorder;
-    padding: 0 0.5rem;
+    border: 1px solid tokens.$border;
+    padding: 0.45rem 0.65rem;
     box-sizing: border-box;
-    background: color-mix(in srgb, theme.$toastBG 15%, transparent);
-    border-radius: 0.5rem;
-    backdrop-filter: blur(1px);
+    background: tokens.$toast;
+    border-radius: tokens.$radius;
+    backdrop-filter: blur(10px);
 
     &.clickable {
       cursor: pointer;
     }
 
+    strong {
+      color: tokens.$foreground;
+    }
+
     p {
-      opacity: 0.8;
+      color: tokens.$muted-foreground;
       font-size: 0.85rem;
     }
 
     &.error {
-      border-color: theme.$toastErrorBorder;
+      border-color: tokens.$destructive;
     }
 
     &.warning {
-      border-color: theme.$toastWarningBorder;
+      border-color: tokens.$warning;
     }
 
     &.success {
-      border-color: theme.$toastSuccessBorder;
+      border-color: tokens.$success;
+    }
+
+    &.neutral {
+      border-color: tokens.$primary;
     }
   }
 }

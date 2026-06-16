@@ -1,11 +1,13 @@
-@use "@/styles/theme.scss" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 input {
   width: 100%;
   height: 100%;
   border: none;
+  color: tokens.$foreground;
   outline: 1px solid transparent;
   position: relative;
+  background: tokens.$input;
   transition: all 0.25s ease;
   border-radius: 0.5rem;
 
@@ -22,10 +24,25 @@ input {
   }
 
   &[data-variant='default'] {
-    outline: 1px solid theme.$inputBorder;
+    outline-color: tokens.$border;
   }
 
   &:focus:not(:disabled) {
-    outline: 1px solid theme.$inputHoverBorder;
+    outline-color: tokens.$ring;
+  }
+
+  &[aria-invalid='true'],
+  &.error {
+    outline-color: tokens.$destructive;
+  }
+
+  &::placeholder {
+    color: tokens.$muted-foreground;
+  }
+
+  &:disabled {
+    color: tokens.$muted-foreground;
+    cursor: not-allowed;
+    background: tokens.$muted;
   }
 }

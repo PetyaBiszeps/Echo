@@ -1,12 +1,14 @@
-@use "@/styles/theme" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 .chatMessage {
   width: fit-content;
+  color: tokens.$message-incoming-foreground;
   padding: 0.35rem 0.5rem;
   display: flex;
   max-width: min(75%, 32rem);
   margin-top: 0.75rem;
-  background: theme.$accent;
+  background: tokens.$message-incoming;
+  border: 1px solid tokens.$border;
   box-sizing: border-box;
   border-radius: 0.4rem;
   flex-direction: column;
@@ -25,7 +27,7 @@
 
   time,
   .readReceipt {
-    opacity: 0.7;
+    color: tokens.$muted-foreground;
     font-size: 0.75rem;
   }
 
@@ -35,12 +37,27 @@
     letter-spacing: -0.15rem;
 
     &.read {
-      opacity: 0.9;
+      color: tokens.$message-outgoing-foreground;
     }
   }
 
   &.grouped {
     margin-top: 0.25rem;
+  }
+
+  &.own {
+    color: tokens.$message-outgoing-foreground;
+    background: tokens.$message-outgoing;
+
+    time,
+    .readReceipt {
+      color: tokens.$message-outgoing-foreground;
+      opacity: 0.75;
+    }
+
+    .readReceipt.read {
+      opacity: 0.95;
+    }
   }
 
   &.own,

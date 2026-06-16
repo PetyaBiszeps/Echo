@@ -1,9 +1,10 @@
-@use "@/styles/theme.scss" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 body {
   height: 100dvh;
   overflow: hidden;
-  background: theme.$globalBG;
+  color: tokens.$foreground;
+  background: tokens.$background;
 
   #app {
     font-size: 1rem;

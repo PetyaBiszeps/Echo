@@ -1,25 +1,26 @@
-@use "@/styles/theme" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 @mixin echoCard {
-  border: 0.15rem solid white;
+  color: tokens.$card-foreground;
+  border: 0.15rem solid tokens.$border;
   padding: 2.5rem;
   position: relative;
-  background: theme.$loginBG;
-  box-shadow: 0 14px 36px #00000026, inset 0 1px 0 #FFFFFF59;
-  border-radius: 1rem;
+  background: tokens.$card;
+  box-shadow: 0 14px 36px color-mix(in srgb, tokens.$background 72%, transparent), inset 0 1px 0 color-mix(in srgb, tokens.$card-foreground 16%, transparent);
+  border-radius: tokens.$radius;
   backdrop-filter: blur(16px) saturate(140%);
 
   &::before,
   &::after {
     inset: -0.15rem;
-    border: 2px solid theme.$accent;
+    border: 2px solid tokens.$primary;
     content: "";
     z-index: -1;
     opacity: 0.45;
     position: absolute;
     transform: scale(1);
     animation: echo 3.6s ease-out infinite;
-    border-radius: 1rem;
+    border-radius: tokens.$radius;
     pointer-events: none;
     transform-origin: center;
   }

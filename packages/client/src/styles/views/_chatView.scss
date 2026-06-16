@@ -1,10 +1,9 @@
-@use "@/styles/theme.scss" as theme;
-@use "@/styles/mixins.scss" as mixins;
+@use "@/styles/variables.scss" as tokens;
 
 .chatView {
   display: grid;
   position: relative;
-  background: theme.$chatBG;
+  background: tokens.$background;
   place-items: center;
 
   &::after {

@@ -1,4 +1,4 @@
-@use "@/styles/theme.scss" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 .userAvatar {
   width: 2.75rem;
@@ -7,11 +7,12 @@
   overflow: hidden;
   position: relative;
   flex: 0 0 auto;
+  color: tokens.$secondary-foreground;
   align-items: center;
   border-radius: 999px;
   justify-content: center;
-  background: theme.$inputBG;
-  border: 1px solid theme.$inputBorder;
+  background: tokens.$secondary;
+  border: 1px solid tokens.$border;
   box-sizing: border-box;
 
   &.sm {
@@ -32,7 +33,6 @@
   }
 
   .userAvatarInitials {
-    opacity: 0.85;
     font-size: 0.9rem;
     font-weight: 700;
     letter-spacing: 0.02em;
@@ -53,8 +53,8 @@
     height: 0.65rem;
     position: absolute;
     border-radius: 999px;
-    background: theme.$accent;
-    border: 2px solid theme.$globalBG;
+    background: tokens.$online;
+    border: 2px solid tokens.$background;
     box-sizing: border-box;
   }
 }

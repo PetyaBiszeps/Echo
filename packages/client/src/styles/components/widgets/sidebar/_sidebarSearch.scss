@@ -1,5 +1,22 @@
-@use "@/styles/theme.scss" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 .search {
+  color: tokens.$foreground;
 
+  input {
+    color: tokens.$foreground;
+    background: tokens.$input;
+
+    &[data-variant='default'] {
+      outline-color: tokens.$border;
+    }
+
+    &:focus:not(:disabled) {
+      outline-color: tokens.$ring;
+    }
+
+    &::placeholder {
+      color: tokens.$muted-foreground;
+    }
+  }
 }

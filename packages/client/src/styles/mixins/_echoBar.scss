@@ -1,9 +1,9 @@
-@use "@/styles/theme.scss" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 @mixin echoBar {
   width: 0.8rem;
   animation: signal 2s ease-in-out infinite;
-  background: theme.$accent;
+  background: tokens.$primary;
   border-radius: 2px;
 
   &:nth-child(1) {

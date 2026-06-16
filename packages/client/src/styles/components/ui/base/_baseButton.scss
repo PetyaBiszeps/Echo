@@ -1,12 +1,17 @@
-@use "@/styles/theme.scss" as theme;
+@use "@/styles/variables.scss" as tokens;
 
 button {
   width: 100%;
+  color: tokens.$primary-foreground;
   cursor: pointer;
+  border: 1px solid transparent;
   position: relative;
+  background: tokens.$primary;
   transition: all 0.25s ease;
+  border-radius: 0.5rem;
 
   span {
+    color: inherit;
     font-weight: bold;
   }
 
@@ -23,18 +28,17 @@ button {
   }
 
   &[data-variant='default'] {
-    border: 1px solid theme.$buttonBorder;
-    background: theme.$buttonBG;
-    border-radius: 0.5rem;
+    border-color: tokens.$primary;
   }
 
   &:hover:not(:disabled) {
-    border: 1px solid theme.$buttonHoverBorder;
-    background: theme.$buttonHover;
+    background: color-mix(in srgb, tokens.$primary 85%, tokens.$background);
   }
 
   &:disabled {
+    color: tokens.$muted-foreground;
     cursor: not-allowed;
-    background: theme.$buttonDisabledBG;
+    border-color: tokens.$border;
+    background: tokens.$muted;
   }
 }
