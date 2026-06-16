@@ -1,5 +1,7 @@
 <template>
-  <div>
-    <h1>Welcome template!</h1>
-  </div>
+  <section>
+    <header>
+      <h1>Welcome template!</h1>
+    </header>
+  </section>
 </template>

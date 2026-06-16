@@ -2,6 +2,7 @@ import plugins from '@/plugins/plugins.ts'
 import router from '@/router/router.ts'
 import store from '@/store/store.ts'
 import App from '@/App.vue'
+import '@/styles/main.css'
 import {
   createApp
 } from 'vue'
