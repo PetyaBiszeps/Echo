@@ -1,13 +1,11 @@
+import { BadRequestException, ConflictException, UnauthorizedException } from '@/lib/exceptions'
 import prisma from '@/db/prisma.ts'
 import env from '@/config/env.ts'
-import {
-  BadRequestException,
-  ConflictException,
-  UnauthorizedException
-} from '@/lib/exceptions'
 import jwt from 'jsonwebtoken'
 import argon2 from 'argon2'
-import type { IJWTPayload } from '@/types'
+import type {
+  IJWTPayload
+} from '@/types'
 import type {
   IRegister,
   ILogin,
@@ -15,10 +13,10 @@ import type {
 } from '@echo/shared'
 
 export class AuthService {
-  private readonly jwtSecret: string
   private argonOptions: object = {
     type: argon2.argon2id
   }
+  private readonly jwtSecret: string
 
   private signToken(payload: IJWTPayload) {
     return jwt.sign(payload, this.jwtSecret, {
