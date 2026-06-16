@@ -3,7 +3,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite-node src/app/index.ts",
-    "build": "tsc",
+    "generate": "prisma generate",
+    "build": "pnpm run generate && tsc",
     "clean": "rm -rf dist"
   },
   "dependencies": {
