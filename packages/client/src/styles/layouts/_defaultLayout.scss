@@ -1,9 +1,0 @@
-@use "@/styles/variables.scss" as tokens;
-
-.defaultLayout {
-  display: grid;
-  min-height: 100dvh;
-  color: tokens.$foreground;
-  background: tokens.$background;
-  grid-template-columns: 425px 1fr;
-}
