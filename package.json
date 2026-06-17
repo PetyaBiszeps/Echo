@@ -4,6 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "shadcn:init": "pnpm dlx shadcn-vue@latest init -c ./packages/client",
+    "shadcn:add": "pnpm dlx shadcn-vue@latest add -c ./packages/client",
+
     "dev": "node scripts/dev.js",
     "build": "pnpm --filter @echo/shared build && pnpm --filter @echo/server build && pnpm --filter @echo/client build",
     "clean": "pnpm --filter @echo/shared clean && pnpm --filter @echo/server clean && pnpm --filter @echo/client clean",
