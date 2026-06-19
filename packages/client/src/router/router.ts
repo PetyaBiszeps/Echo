@@ -6,10 +6,33 @@ import {
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [{
+    path: '/auth',
+    component: () => import('@/layouts/AuthLayout.vue'),
+    meta: {
+      guest: true
+    },
+    children: [{
+      path: '',
+      name: 'auth',
+      component: () => import('@/views/AuthView.vue')
+    }]
+  }, {
+    path: '/:pathMatch(.*)*',
+    component: () => import('@/layouts/AuthLayout.vue'),
+    meta: {
+      public: true,
+      status: 404
+    },
+    children: [{
+      path: '',
+      name: '404',
+      component: () => import('@/views/ErrorView.vue')
+    }]
+  }, {
     path: '/',
     component: () => import('@/layouts/AppLayout.vue'),
     meta: {
-      guest: true
+      requiresAuth: true
     },
     children: [{
       path: '',
@@ -18,5 +41,10 @@ const router = createRouter({
     }]
   }]
 })
+
+// Guard
+// router.beforeEach((to, _from, next) => {
+//
+// })
 
 export default router
