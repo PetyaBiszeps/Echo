@@ -1,9 +1,4 @@
-// import getErrorMessage from '@/utils/getErrorMessage'
-// import useToastStore from '@/stores/toast'
-// import useChatStore from '@/stores/chats'
-// import useRealtimeStore from '@/stores/realtime'
-
-import useAPI from '@/composables/useAPI.ts'
+// import useAPI from '@/composables/useAPI.ts'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type {
@@ -14,7 +9,7 @@ import type {
 } from '@/types'
 
 const useAuthStore = defineStore('auth', () => {
-  const http = useAPI()
+  // const http = useAPI()
 
   const user = ref<IAuthUser | null>(null)
   const token = ref<IAuthTokens | null>(null)
@@ -24,24 +19,8 @@ const useAuthStore = defineStore('auth', () => {
     return Boolean(token.value) && Boolean(user.value)
   })
 
-  async function register(data: IAuthRegister) {
-    try {
-      errorMessage.value = null
-
-      const { data: result } = await http.post<{
-        user: IAuthUser,
-        access_token: string
-      }>('/auth/register', {
-        username: data.username,
-        password: data.password
-      })
-      user.value = result.user
-      token.value = {
-        accessToken: result.access_token
-      }
-    } catch (err: unknown) {
-      return err
-    }
+  async function register(_data: IAuthRegister) {
+    return null
   }
 
   async function login(_data: IAuthLogin) {
