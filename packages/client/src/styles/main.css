@@ -3,7 +3,8 @@
 @import "tailwindcss";
 
 @import "@/styles/core/base.css";
-@import "@/styles/theme/tokens.css";
+@import "@/styles/core/tokens.css";
+@import "@/styles/core/tailwind.css";
 @import "@/styles/core/keyframes.css";
-@import "@/styles/theme/tailwind.css";
+
 @import "@/styles/components/echo.css";
