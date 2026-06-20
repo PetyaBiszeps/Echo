@@ -14,17 +14,17 @@ async function backToHome() {
 </script>
 
 <template>
-  <section class="border border-border rounded-3xl bg-card p-8 text-card-foreground shadow-sm">
+  <section class="echo-card">
     <header class="flex justify-center gap-2 mb-6">
-      <div class="h-8 w-2 rounded-full bg-primary" />
-      <div class="h-8 w-2 rounded-full bg-primary" />
-      <div class="h-8 w-2 rounded-full bg-primary" />
-      <div class="h-8 w-2 rounded-full bg-primary" />
+      <div class="echo-signal-bar" />
+      <div class="echo-signal-bar" />
+      <div class="echo-signal-bar" />
+      <div class="echo-signal-bar" />
     </header>
 
     <main>
       <h1 class="flex items-center gap-2 text-4xl font-semibold">
-        <i class="block size-3 rounded-full bg-primary" />
+        <i class="echo-dot" />
         <span>404</span>
       </h1>
 
