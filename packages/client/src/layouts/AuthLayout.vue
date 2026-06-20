@@ -1,5 +1,5 @@
 <template>
-  <div class="grid overflow-hidden min-h-dvh place-items-center">
+  <div class="echo-auth-screen">
     <RouterView />
   </div>
 </template>
