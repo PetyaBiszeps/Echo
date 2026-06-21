@@ -40,6 +40,8 @@ import {
 
             <Input
               id="username"
+              name="username"
+              autocomplete="username"
               placeholder="admin"
               class="h-full px-0 bg-transparent border-0 shadow-none font-semibold text-foreground placeholder:text-muted-foreground placeholder:font-normal focus-visible:border-0 focus-visible:ring-0"
             />
@@ -59,7 +61,9 @@ import {
 
             <Input
               id="password"
+              name="password"
               type="password"
+              autocomplete="current-password"
               placeholder="password"
               class="h-full border-0 bg-transparent px-0 font-semibold text-foreground shadow-none placeholder:text-muted-foreground placeholder:font-normal focus-visible:border-0 focus-visible:ring-0"
             />
