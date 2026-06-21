@@ -1,9 +1,12 @@
 <script setup lang="ts">
-// import { Button } from '@/components/ui/button'
-// import { Input } from '@/components/ui/input'
-// import {
-//   Label
-// } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import {
+  Eye,
+  Lock,
+  User
+} from '@lucide/vue'
 </script>
 
 <template>
@@ -23,28 +26,7 @@
     </header>
 
     <main>
-      <form class="mt-8 space-y-6" />
-    </main>
-
-    <footer class="text-center mt-4">
-      <a
-        class="text-primary text-sm font-bold no-underline hover:underline underline-offset-4"
-        href="/auth"
-      >
-        Create an account
-      </a>
-
-      <p class="text-xs text-muted-foreground mx-auto mt-6">
-        Use your Echo username and password to return to your message history.
-      </p>
-    </footer>
-  </section>
-
-
-  <!--
-    <section>
-    <main>
-      <form>
+      <form class="mt-8 space-y-6">
         <div class="space-y-2">
           <Label
             for="username"
@@ -54,17 +36,7 @@
           </Label>
 
           <div class="echo-auth-field">
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-            >
-              <path d="M20 21a8 8 0 0 0-16 0" />
-              <circle
-                cx="12"
-                cy="7"
-                r="4"
-              />
-            </svg>
+            <User class="size-4 shrink-0 stroke-current" />
 
             <Input
               id="username"
@@ -83,19 +55,7 @@
           </Label>
 
           <div class="echo-auth-field">
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-            >
-              <rect
-                width="18"
-                height="11"
-                x="3"
-                y="11"
-                rx="2"
-              />
-              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-            </svg>
+            <Lock class="size-4 shrink-0 stroke-current" />
 
             <Input
               id="password"
@@ -107,32 +67,32 @@
             <button
               class="echo-auth-icon-button"
               type="button"
-              aria-label="Show password"
-              tabindex="-1"
             >
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-              >
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
-                <circle
-                  cx="12"
-                  cy="12"
-                  r="3"
-                />
-              </svg>
+              <Eye class="size-4 shrink-0 stroke-current" />
             </button>
           </div>
         </div>
 
         <Button
           type="button"
-          class="h-11 w-full rounded-xl text-sm font-extrabold"
+          class="w-full h-11 rounded-xl text-sm font-extrabold"
         >
           Sign in
         </Button>
       </form>
     </main>
+
+    <footer class="text-center mt-4">
+      <a
+        class="text-primary text-sm font-bold no-underline hover:underline underline-offset-4"
+        href="/auth"
+      >
+        Create an account
+      </a>
+
+      <p class="text-xs text-muted-foreground mx-auto mt-6">
+        Use your Echo username and password to return to your message history.
+      </p>
+    </footer>
   </section>
-  -->
 </template>
