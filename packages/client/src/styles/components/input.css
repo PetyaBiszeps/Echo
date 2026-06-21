@@ -1,0 +1,24 @@
+@layer components {
+  .echo-input {
+    display: flex;
+    height: 2.75rem;
+    align-items: center;
+    gap: 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--input);
+    padding: 0 0.75rem;
+    color: var(--muted-foreground);
+    transition: border-color 160ms ease, color 160ms ease;
+
+    &:focus-within {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    &:has([aria-invalid="true"]), &[aria-invalid="true"] {
+      color: var(--destructive);
+      border-color: var(--destructive);
+    }
+  }
+}

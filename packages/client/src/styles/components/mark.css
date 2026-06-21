@@ -1,0 +1,31 @@
+@layer components {
+  .echo-mark {
+    flex: none;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--border-echo-mark);
+    display: grid;
+    position: relative;
+    background: var(--surface-echo-mark);
+    place-items: center;
+    border-radius: 0.625rem;
+
+    & > span {
+      width: 12%;
+      position: absolute;
+      background: var(--primary);
+      aspect-ratio: 1 / 1;
+      border-radius: var(--border-radius-max);
+    }
+
+    &::before {
+      content: '';
+
+      width: 56%;
+      border: 1px solid var(--border-echo-mark-core);
+      background: var(--surface-echo-mark-core);
+      aspect-ratio: 1 / 1;
+      border-radius: var(--border-radius-max);
+    }
+  }
+}

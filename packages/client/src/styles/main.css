@@ -10,8 +10,6 @@
 @import "@/styles/layouts/app.css";
 @import "@/styles/layouts/auth.css";
 
-@import "@/styles/views/app.css";
-@import "@/styles/views/auth.css";
-@import "@/styles/views/error.css";
-
+@import "@/styles/components/mark.css";
 @import "@/styles/components/card.css";
+@import "@/styles/components/input.css";

@@ -35,13 +35,13 @@ import {
             Username
           </Label>
 
-          <div class="echo-auth-field">
+          <div class="echo-input">
             <User class="size-4 shrink-0 stroke-current" />
 
             <Input
               id="username"
               placeholder="admin"
-              class="border-0 bg-transparent px-0 shadow-none focus-visible:border-0 focus-visible:ring-0"
+              class="h-full px-0 bg-transparent border-0 shadow-none font-semibold text-foreground placeholder:text-muted-foreground placeholder:font-normal focus-visible:border-0 focus-visible:ring-0"
             />
           </div>
         </div>
@@ -54,18 +54,18 @@ import {
             Password
           </Label>
 
-          <div class="echo-auth-field">
+          <div class="echo-input">
             <Lock class="size-4 shrink-0 stroke-current" />
 
             <Input
               id="password"
               type="password"
               placeholder="password"
-              class="border-0 bg-transparent px-0 shadow-none focus-visible:border-0 focus-visible:ring-0"
+              class="h-full border-0 bg-transparent px-0 font-semibold text-foreground shadow-none placeholder:text-muted-foreground placeholder:font-normal focus-visible:border-0 focus-visible:ring-0"
             />
 
             <button
-              class="echo-auth-icon-button"
+              class="grid size-6 shrink-0 place-items-center text-muted-foreground"
               type="button"
             >
               <Eye class="size-4 shrink-0 stroke-current" />
