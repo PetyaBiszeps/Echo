@@ -42,3 +42,17 @@
   --sidebar-border: #24343E;
   --sidebar-ring: #12D6DF;
 }
+
+:root {
+  --effect-auth-ring-border: color-mix(in srgb, var(--primary) 16%, transparent);
+  --effect-auth-ring-fill: color-mix(in srgb, var(--primary) 4%, transparent);
+  --effect-auth-ring-mask: color-mix(in srgb, var(--background) 72%, transparent);
+  --effect-auth-ring-inner: color-mix(in srgb, var(--primary) 9%, transparent);
+
+  --surface-auth-card: color-mix(in srgb, var(--secondary) 72%, var(--card));
+  --surface-echo-mark: color-mix(in srgb, var(--primary) 18%, var(--secondary));
+  --surface-echo-mark-core: color-mix(in srgb, var(--primary) 7%, transparent);
+
+  --border-echo-mark: color-mix(in srgb, var(--primary) 42%, var(--border));
+  --border-echo-mark-core: color-mix(in srgb, var(--primary) 46%, transparent);
+}

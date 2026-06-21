@@ -10,10 +10,10 @@
     &::before, &::after {
       content: '';
 
-      border: 1px solid color-mix(in srgb, var(--primary) 16%, transparent);
+      border: 1px solid var(--effect-auth-ring-border);
       z-index: -1;
       position: absolute;
-      background: color-mix(in srgb, var(--primary) 4%, transparent);
+      background: var(--effect-auth-ring-fill);
       aspect-ratio: 1 / 1;
       border-radius: var(--border-radius-max);
       pointer-events: none;
@@ -23,7 +23,7 @@
       top: 8.25%;
       left: 13.2%;
       width: min(36vw, 32.5rem);
-      box-shadow: inset 0 0 0 9rem color-mix(in srgb, var(--background) 72%, transparent), inset 0 0 0 9.0625rem color-mix(in srgb, var(--primary) 9%, transparent);
+      box-shadow: inset 0 0 0 9rem var(--effect-auth-ring-mask), inset 0 0 0 9.0625rem var(--effect-auth-ring-inner);
     }
 
     &::after {
