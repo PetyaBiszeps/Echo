@@ -1,56 +1,49 @@
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import {
-  Label
-} from '@/components/ui/label'
+// import { Button } from '@/components/ui/button'
+// import { Input } from '@/components/ui/input'
+// import {
+//   Label
+// } from '@/components/ui/label'
 </script>
 
 <template>
-  <section>
-    <header class="echo-auth-brand">
-      <div
-        class="echo-mark"
-        aria-hidden="true"
-      >
+  <section class="echo-auth-card">
+    <header class="text-center">
+      <div class="echo-mark mx-auto size-14 rounded-2xl">
         <span />
       </div>
 
-      <div>
-        <p class="text-xl font-extrabold leading-tight text-foreground">
-          Echo
-        </p>
+      <h1 class="text-3xl font-extrabold tracking-tight mt-6">
+        Welcome to Echo
+      </h1>
 
-        <p class="text-[11px] font-semibold leading-tight text-muted-foreground">
-          Secure messenger
-        </p>
-      </div>
+      <p class="text-sm text-muted-foreground mt-1">
+        Sign in to continue your conversations.
+      </p>
     </header>
 
-    <main
-      class="echo-auth-card"
-      aria-labelledby="auth-title"
-    >
-      <header class="text-center">
-        <div
-          class="echo-mark mx-auto size-14 rounded-2xl"
-          aria-hidden="true"
-        >
-          <span />
-        </div>
+    <main>
+      <form class="mt-8 space-y-6" />
+    </main>
 
-        <h1
-          id="auth-title"
-          class="mt-6 text-[28px] font-extrabold leading-[1.35] tracking-tight text-foreground"
-        >
-          Welcome to Echo
-        </h1>
+    <footer class="text-center mt-4">
+      <a
+        class="text-primary text-sm font-bold no-underline hover:underline underline-offset-4"
+        href="/auth"
+      >
+        Create an account
+      </a>
 
-        <p class="mt-1 text-sm leading-[1.35] text-muted-foreground">
-          Sign in to continue your conversations.
-        </p>
-      </header>
+      <p class="text-xs text-muted-foreground mx-auto mt-6">
+        Use your Echo username and password to return to your message history.
+      </p>
+    </footer>
+  </section>
 
+
+  <!--
+    <section>
+    <main>
       <form
         class="mt-8 space-y-6"
         aria-label="Sign in form"
@@ -142,20 +135,7 @@ import {
           Sign in
         </Button>
       </form>
-
-      <footer class="mt-4 text-center">
-        <a
-          class="echo-auth-link"
-          href="/auth"
-          aria-label="Create an account"
-        >
-          Create an account
-        </a>
-
-        <p class="mx-auto mt-6 max-w-100 text-xs leading-[1.35] text-muted-foreground">
-          Use your Echo username and password to return to your message history.
-        </p>
-      </footer>
     </main>
   </section>
+  -->
 </template>

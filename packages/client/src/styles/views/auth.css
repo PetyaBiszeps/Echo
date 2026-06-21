@@ -1,58 +1,48 @@
 @layer components {
-  .echo-auth-shell {
-    position: relative;
-    display: grid;
-    width: min(100%, 90rem);
-    min-height: min(100dvh, 54.375rem);
-    place-items: center;
-  }
-
-  .echo-auth-brand {
-    position: absolute;
-    top: 0.75rem;
-    left: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+  .echo-auth-card {
+    width: min(100%, 29rem);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    min-height: 34.875rem;
+    background: color-mix(in srgb, var(--secondary) 72%, var(--card));
+    border-radius: 1.5rem;
   }
 
   .echo-mark {
-    position: relative;
-    display: grid;
+    flex: none;
     width: 2.25rem;
     height: 2.25rem;
-    place-items: center;
-    flex: none;
     border: 1px solid color-mix(in srgb, var(--primary) 42%, var(--border));
-    border-radius: 0.625rem;
+    display: grid;
+    position: relative;
     background: color-mix(in srgb, var(--primary) 18%, var(--secondary));
+    place-items: center;
+    border-radius: 0.625rem;
+
+    & > span {
+      width: 12%;
+      position: absolute;
+      background: var(--primary);
+      aspect-ratio: 1 / 1;
+      border-radius: var(--border-radius-max);
+    }
+
+    &::before {
+      content: '';
+
+      width: 56%;
+      border: 1px solid color-mix(in srgb, var(--primary) 46%, transparent);
+      background: color-mix(in srgb, var(--primary) 7%, transparent);
+      aspect-ratio: 1 / 1;
+      border-radius: var(--border-radius-max);
+    }
   }
 
-  .echo-mark::before {
-    content: "";
-    width: 56%;
-    aspect-ratio: 1;
-    border: 1px solid color-mix(in srgb, var(--primary) 46%, transparent);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--primary) 7%, transparent);
-  }
 
-  .echo-mark > span {
-    position: absolute;
-    width: 12%;
-    aspect-ratio: 1;
-    border-radius: 999px;
-    background: var(--primary);
-  }
 
-  .echo-auth-card {
-    width: min(100%, 29rem);
-    min-height: 34.875rem;
-    padding: 2rem;
-    border: 1px solid var(--border);
-    border-radius: 1.5rem;
-    background: color-mix(in srgb, var(--secondary) 72%, var(--card));
-  }
+
+
+
 
   .echo-auth-field {
     display: flex;
@@ -109,18 +99,5 @@
     flex: none;
     color: var(--muted-foreground);
     cursor: default;
-  }
-
-  .echo-auth-link {
-    color: var(--primary);
-    font-size: 0.875rem;
-    font-weight: 700;
-    line-height: 1.35;
-    text-decoration: none;
-  }
-
-  .echo-auth-link:hover {
-    text-decoration: underline;
-    text-underline-offset: 0.25rem;
   }
 }
