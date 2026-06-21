@@ -16,10 +16,10 @@ async function backToHome() {
 <template>
   <section class="echo-card">
     <header class="flex justify-center gap-2 mb-6">
-      <div class="echo-signal-bar" />
-      <div class="echo-signal-bar" />
-      <div class="echo-signal-bar" />
-      <div class="echo-signal-bar" />
+      <span class="h-2.5 w-3 rounded-xs bg-primary animate-[signal_2s_ease-in-out_infinite]" />
+      <span class="h-5 w-3 rounded-xs bg-primary animate-[signal_2s_ease-in-out_infinite] [animation-delay:0.2s]" />
+      <span class="h-7.5 w-3 rounded-xs bg-primary animate-[signal_2s_ease-in-out_infinite] [animation-delay:0.4s]" />
+      <span class="h-10 w-3 rounded-xs bg-primary animate-[signal_2s_ease-in-out_infinite] [animation-delay:0.6s]" />
     </header>
 
     <main>

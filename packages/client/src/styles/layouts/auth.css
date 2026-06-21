@@ -20,16 +20,16 @@
     }
 
     &::before {
-      top: 8.25%;
-      left: 13.2%;
-      width: min(36vw, 32.5rem);
-      box-shadow: inset 0 0 0 9rem var(--effect-auth-ring-mask), inset 0 0 0 9.0625rem var(--effect-auth-ring-inner);
+      top: 8%;
+      left: 13%;
+      width: min(36vw, 520px);
+      box-shadow: inset 0 0 0 144px var(--effect-auth-ring-mask), inset 0 0 0 145px var(--effect-auth-ring-inner);
     }
 
     &::after {
-      width: min(25vw, 22.5rem);
-      right: 10.4%;
-      bottom: 11.1%;
+      width: min(25vw, 360px);
+      right: 10%;
+      bottom: 11%;
     }
   }
 }
