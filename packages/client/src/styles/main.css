@@ -6,6 +6,7 @@
 @import "@/styles/core/tokens.css";
 @import "@/styles/core/tailwind.css";
 @import "@/styles/core/keyframes.css";
+@import "@/styles/core/transitions.css";
 
 @import "@/styles/layouts/app.css";
 @import "@/styles/layouts/auth.css";

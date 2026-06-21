@@ -1,0 +1,10 @@
+.auth-card-enter-active,
+.auth-card-leave-active {
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.auth-card-enter-from,
+.auth-card-leave-to {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+}
