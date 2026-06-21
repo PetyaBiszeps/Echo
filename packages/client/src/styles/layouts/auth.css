@@ -1,7 +1,7 @@
 @layer components {
   .auth-layout {
     display: grid;
-    padding: 2rem;
+    padding: 16px;
     overflow: hidden;
     position: relative;
     min-height: 100dvh;

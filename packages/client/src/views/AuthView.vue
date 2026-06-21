@@ -44,10 +44,7 @@
   <!--
     <section>
     <main>
-      <form
-        class="mt-8 space-y-6"
-        aria-label="Sign in form"
-      >
+      <form>
         <div class="space-y-2">
           <Label
             for="username"
