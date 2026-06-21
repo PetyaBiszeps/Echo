@@ -7,11 +7,8 @@ import {
 </script>
 
 <template>
-  <section class="echo-auth-shell">
-    <header
-      class="echo-auth-brand"
-      aria-label="Echo"
-    >
+  <section>
+    <header class="echo-auth-brand">
       <div
         class="echo-mark"
         aria-hidden="true"
@@ -81,7 +78,7 @@ import {
 
             <Input
               id="username"
-              default-value="admin"
+              placeholder="admin"
               class="border-0 bg-transparent px-0 shadow-none focus-visible:border-0 focus-visible:ring-0"
             />
           </div>
@@ -113,7 +110,7 @@ import {
             <Input
               id="password"
               type="password"
-              default-value="password"
+              placeholder="password"
               class="border-0 bg-transparent px-0 shadow-none focus-visible:border-0 focus-visible:ring-0"
             />
 

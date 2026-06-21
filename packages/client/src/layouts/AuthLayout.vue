@@ -1,5 +1,5 @@
 <template>
-  <div class="echo-auth-screen">
+  <div class="auth-layout">
     <RouterView />
   </div>
 </template>

@@ -1,0 +1,35 @@
+@layer components {
+  .auth-layout {
+    display: grid;
+    padding: 2rem;
+    overflow: hidden;
+    position: relative;
+    min-height: 100dvh;
+    place-items: center;
+
+    &::before, &::after {
+      content: '';
+
+      border: 1px solid color-mix(in srgb, var(--primary) 16%, transparent);
+      z-index: -1;
+      position: absolute;
+      background: color-mix(in srgb, var(--primary) 4%, transparent);
+      aspect-ratio: 1 / 1;
+      border-radius: var(--border-radius-max);
+      pointer-events: none;
+    }
+
+    &::before {
+      top: 8.25%;
+      left: 13.2%;
+      width: min(36vw, 32.5rem);
+      box-shadow: inset 0 0 0 9rem color-mix(in srgb, var(--background) 72%, transparent), inset 0 0 0 9.0625rem color-mix(in srgb, var(--primary) 9%, transparent);
+    }
+
+    &::after {
+      width: min(25vw, 22.5rem);
+      right: 10.4%;
+      bottom: 11.1%;
+    }
+  }
+}

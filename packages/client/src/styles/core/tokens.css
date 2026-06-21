@@ -1,5 +1,15 @@
 :root {
-  --radius: 0.625rem;
+  --border-radius-xs: 4px;
+  --border-radius-sm: 6px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 10px;
+  --border-radius-xl: 14px;
+  --border-radius-max: 999px;
+  --border-radius-none: 0;
+  --border-radius-circle: 50%;
+}
+
+:root {
   --background: #070A0D;
   --foreground: #EAF2F6;
   --card: #101820;

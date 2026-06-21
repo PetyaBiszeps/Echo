@@ -24,7 +24,7 @@ async function backToHome() {
 
     <main>
       <h1 class="flex items-center gap-2 text-4xl font-semibold">
-        <i class="echo-dot" />
+        <i class="inline-block size-2 rounded-full bg-destructive animate-[blink_1.8s_ease-in-out_infinite]" />
         <span>404</span>
       </h1>
 

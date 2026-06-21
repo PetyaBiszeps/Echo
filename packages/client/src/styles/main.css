@@ -7,4 +7,12 @@
 @import "@/styles/core/tailwind.css";
 @import "@/styles/core/keyframes.css";
 
-@import "@/styles/components/echo.css";
+@import "@/styles/layouts/app.css";
+@import "@/styles/layouts/auth.css";
+
+@import "@/styles/views/app.css";
+@import "@/styles/views/auth.css";
+@import "@/styles/views/error.css";
+
+@import "@/styles/components/bar.css";
+@import "@/styles/components/card.css";

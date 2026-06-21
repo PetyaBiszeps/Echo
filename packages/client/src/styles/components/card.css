@@ -1,0 +1,26 @@
+@layer components {
+  .echo-card {
+    border: 2px solid var(--border);
+    padding: 2.5rem;
+    position: relative;
+    background: var(--card);
+    border-radius: var(--border-radius-lg);
+    backdrop-filter: blur(16px) saturate(140%);
+
+    &::before, &::after {
+      content: '';
+
+      inset: -2px;
+      border: 2px solid var(--primary);
+      z-index: -1;
+      position: absolute;
+      animation: echo 3.6s ease-out infinite;
+      border-radius: var(--border-radius-lg);
+    }
+
+    &::after {
+      opacity: 0.35;
+      animation-delay: 1.8s;
+    }
+  }
+}
