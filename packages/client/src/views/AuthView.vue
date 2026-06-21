@@ -7,7 +7,7 @@
 </script>
 
 <template>
-  <section class="echo-auth-card">
+  <section class="w-fit p-6 bg-surface-auth-card border border-border rounded-3xl">
     <header class="text-center">
       <div class="echo-mark mx-auto size-14 rounded-2xl">
         <span />

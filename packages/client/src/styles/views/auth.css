@@ -1,12 +1,4 @@
 @layer components {
-  .echo-auth-card {
-    width: fit-content;
-    border: 1px solid var(--border);
-    padding: 24px;
-    background: var(--surface-auth-card);
-    border-radius: 24px;
-  }
-
   .echo-mark {
     flex: none;
     width: 2.25rem;
@@ -36,12 +28,6 @@
       border-radius: var(--border-radius-max);
     }
   }
-
-
-
-
-
-
 
   .echo-auth-field {
     display: flex;
