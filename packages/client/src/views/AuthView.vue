@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import useAuth from '@/composables/useAuth.ts'
-import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { Eye, User, Lock } from '@lucide/vue'
 import {
-  Eye,
-  User,
-  Lock
-} from '@lucide/vue'
+  Button
+} from '@/components/ui/button'
 
 // Init
 const {
