@@ -36,50 +36,56 @@ const getOfetchPayload = (err: unknown): unknown => {
   return error.data ?? error.response?._data ?? error.response?.data ?? null
 }
 
-const parseErrorPayload = (error: unknown): string | null => {
-  if (!error || typeof error !== 'object') {
-    return null
+const unwrapErrorPayload = (error: unknown): unknown => {
+  if (typeof error !== 'object' || error === null) {
+    return error
   }
 
   const response = error as {
+    data?: unknown
+  }
+
+  if (response.data && typeof response.data === 'object') {
+    return response.data
+  }
+
+  return error
+}
+
+const formatErrorItem = (item: unknown): string => {
+  if (typeof item === 'string') {
+    return item
+  }
+
+  if (hasMessage(item) && typeof item.message === 'string') {
+    return item.message
+  }
+
+  return shownMessage(item)
+}
+
+const parseErrorPayload = (error: unknown): string | null => {
+  const payload = unwrapErrorPayload(error)
+
+  if (!payload || typeof payload !== 'object') {
+    return null
+  }
+
+  const response = payload as {
     message?: unknown
     details?: unknown[]
     errors?: unknown[]
   }
 
-  if (typeof response.message === 'string') {
-    return response.message
-  }
-
   if (Array.isArray(response.details) && response.details.length) {
-    return response.details.map(item => {
-      if (typeof item === 'string') {
-        return item
-      }
-
-      if (hasMessage(item) && typeof item.message === 'string') {
-        return item.message
-      }
-
-      return shownMessage(item)
-    }).join(', ')
+    return response.details.map(formatErrorItem).join(', ')
   }
 
   if (Array.isArray(response.errors) && response.errors.length) {
-    return response.errors.map(item => {
-      if (typeof item === 'string') {
-        return item
-      }
-
-      if (hasMessage(item) && typeof item.message === 'string') {
-        return item.message
-      }
-
-      return shownMessage(item)
-    }).join(', ')
+    return response.errors.map(formatErrorItem).join(', ')
   }
 
-  if (hasMessage(response) && typeof response.message === 'string') {
+  if (typeof response.message === 'string') {
     return response.message
   }
 

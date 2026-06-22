@@ -23,7 +23,7 @@ const {
     <section
       v-if="state.mode === 'login'"
       key="login"
-      class="w-fit p-6 bg-surface-auth-card border border-border rounded-3xl"
+      class="w-full max-w-115 p-6 bg-surface-auth-card border border-border rounded-3xl"
     >
       <header class="text-center">
         <div class="echo-mark mx-auto size-14 rounded-2xl">
@@ -100,7 +100,8 @@ const {
 
           <p
             v-if="auth.errorMessage"
-            class="text-xs font-semibold text-destructive"
+            class="max-w-full truncate text-xs font-semibold text-destructive"
+            :title="auth.errorMessage"
           >
             {{ auth.errorMessage }}
           </p>
@@ -257,7 +258,8 @@ const {
 
           <p
             v-if="auth.errorMessage"
-            class="text-xs font-semibold text-destructive"
+            class="max-w-full truncate text-xs font-semibold text-destructive"
+            :title="auth.errorMessage"
           >
             {{ auth.errorMessage }}
           </p>

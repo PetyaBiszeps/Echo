@@ -65,7 +65,7 @@ export default () => {
         password: state.login.password
       })
       await router.push('/')
-    } finally {
+    } catch {} finally {
       state.isSubmitting = false
     }
   }
@@ -82,7 +82,7 @@ export default () => {
         password: state.register.password
       })
       await router.push('/')
-    } finally {
+    } catch {} finally {
       state.isSubmitting = false
     }
   }
