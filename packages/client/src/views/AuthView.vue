@@ -23,7 +23,7 @@ const {
     <section
       v-if="state.mode === 'login'"
       key="login"
-      class="w-full max-w-115 p-6 bg-surface-auth-card border border-border rounded-3xl"
+      class="w-full min-w-0 max-w-115 p-6 bg-surface-auth-card border border-border rounded-3xl"
     >
       <header class="text-center">
         <div class="echo-mark mx-auto size-14 rounded-2xl">
@@ -99,9 +99,8 @@ const {
           </div>
 
           <p
-            v-if="auth.errorMessage"
-            class="max-w-full truncate text-xs font-semibold text-destructive"
-            :title="auth.errorMessage"
+            class="max-w-full truncate min-h-4 text-xs font-semibold text-destructive"
+            :title="auth.errorMessage || undefined"
           >
             {{ auth.errorMessage }}
           </p>
@@ -134,7 +133,7 @@ const {
     <section
       v-else
       key="register"
-      class="w-80 p-6 bg-popover border border-border rounded-3xl"
+      class="w-full min-w-0 max-w-80 p-6 bg-popover border border-border rounded-3xl"
     >
       <header>
         <div class="flex items-center gap-3">
@@ -257,9 +256,8 @@ const {
           </div>
 
           <p
-            v-if="auth.errorMessage"
-            class="max-w-full truncate text-xs font-semibold text-destructive"
-            :title="auth.errorMessage"
+            class="max-w-full truncate min-h-4 text-xs font-semibold text-destructive"
+            :title="auth.errorMessage || undefined"
           >
             {{ auth.errorMessage }}
           </p>
