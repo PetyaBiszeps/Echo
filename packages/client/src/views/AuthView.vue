@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { ref } from 'vue'
+import { reactive } from 'vue'
 import {
   Eye,
   User,
@@ -10,7 +10,9 @@ import {
 } from '@lucide/vue'
 
 // Constants
-const authMode = ref<'login' | 'register'>('login')
+const state = reactive({
+  mode: 'login' as 'login' | 'register'
+})
 </script>
 
 <template>
@@ -19,7 +21,7 @@ const authMode = ref<'login' | 'register'>('login')
     mode="out-in"
   >
     <section
-      v-if="authMode === 'login'"
+      v-if="state.mode === 'login'"
       key="login"
       class="w-fit p-6 bg-surface-auth-card border border-border rounded-3xl"
     >
@@ -102,7 +104,7 @@ const authMode = ref<'login' | 'register'>('login')
         <button
           class="text-primary text-sm font-bold no-underline hover:underline underline-offset-4 cursor-pointer"
           type="button"
-          @click="authMode = 'register'"
+          @click="state.mode = 'register'"
         >
           Create an account
         </button>
@@ -237,7 +239,7 @@ const authMode = ref<'login' | 'register'>('login')
         <button
           class="text-primary text-sm font-bold no-underline hover:underline underline-offset-4 cursor-pointer"
           type="button"
-          @click="authMode = 'login'"
+          @click="state.mode = 'login'"
         >
           Already have an account?
         </button>
