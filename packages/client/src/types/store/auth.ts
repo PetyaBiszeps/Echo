@@ -18,3 +18,8 @@ export interface IAuthRegister {
   username: string
   password: string
 }
+
+export interface IAuthResponse {
+  user: IAuthUser
+  access_token: string
+}

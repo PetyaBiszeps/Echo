@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import useAuth from '@/composables/useAuth.ts'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { reactive } from 'vue'
 import {
   Eye,
   User,
   Lock
 } from '@lucide/vue'
 
-// Constants
-const state = reactive({
-  mode: 'login' as 'login' | 'register'
-})
+// Init
+const {
+  auth, state,
+  registerPasswordError, hasRegisterPasswordError, registerConfirmInputClass,
+  handleRegister, handleLogin, setMode
+} = useAuth()
 </script>
 
 <template>
@@ -40,7 +42,10 @@ const state = reactive({
       </header>
 
       <main>
-        <form class="mt-8 space-y-6">
+        <form
+          class="mt-8 space-y-6"
+          @submit.prevent="handleLogin"
+        >
           <div class="space-y-2">
             <Label
               for="username"
@@ -53,6 +58,8 @@ const state = reactive({
               <User class="size-4 shrink-0 stroke-current" />
 
               <Input
+                v-model="state.login.username"
+
                 id="username"
                 name="username"
                 autocomplete="username"
@@ -74,6 +81,8 @@ const state = reactive({
               <Lock class="size-4 shrink-0 stroke-current" />
 
               <Input
+                v-model="state.login.password"
+
                 id="password"
                 name="password"
                 type="password"
@@ -91,8 +100,16 @@ const state = reactive({
             </div>
           </div>
 
+          <p
+            v-if="auth.errorMessage"
+            class="text-xs font-semibold text-destructive"
+          >
+            {{ auth.errorMessage }}
+          </p>
+
           <Button
-            type="button"
+            type="submit"
+            :disabled="state.isSubmitting"
             class="w-full h-11 rounded-xl text-sm font-extrabold"
           >
             Sign in
@@ -104,7 +121,7 @@ const state = reactive({
         <button
           class="text-primary text-sm font-bold no-underline hover:underline underline-offset-4 cursor-pointer"
           type="button"
-          @click="state.mode = 'register'"
+          @click="setMode('register')"
         >
           Create an account
         </button>
@@ -139,7 +156,10 @@ const state = reactive({
       </header>
 
       <main>
-        <form class="mt-5 space-y-3">
+        <form
+          class="mt-5 space-y-3"
+          @submit.prevent="handleRegister"
+        >
           <div class="space-y-2">
             <Label
               for="register-username"
@@ -152,6 +172,8 @@ const state = reactive({
               <User class="size-4 shrink-0 stroke-current" />
 
               <Input
+                v-model="state.register.username"
+
                 id="register-username"
                 name="username"
                 autocomplete="username"
@@ -173,6 +195,8 @@ const state = reactive({
               <Lock class="size-4 shrink-0 stroke-current" />
 
               <Input
+                v-model="state.register.password"
+
                 id="register-password"
                 name="password"
                 type="password"
@@ -193,24 +217,28 @@ const state = reactive({
           <div class="space-y-2">
             <Label
               for="register-confirm-password"
-              class="text-xs font-bold text-destructive"
+              class="text-xs font-bold"
+              :class="hasRegisterPasswordError ? 'text-destructive' : 'text-muted-foreground'"
             >
               Confirm password
             </Label>
 
             <div
               class="echo-input"
-              aria-invalid="true"
+              :aria-invalid="hasRegisterPasswordError"
             >
               <Lock class="size-4 shrink-0 stroke-current text-muted-foreground" />
 
               <Input
+                v-model="state.register.confirmPassword"
+
                 id="register-confirm-password"
                 name="confirmPassword"
                 type="password"
                 autocomplete="new-password"
                 placeholder="pass"
-                class="h-full border-0 bg-transparent px-0 font-normal text-destructive shadow-none placeholder:text-destructive placeholder:font-normal focus-visible:border-0 focus-visible:ring-0"
+                class="h-full border-0 bg-transparent px-0 font-normal shadow-none placeholder:font-normal focus-visible:border-0 focus-visible:ring-0"
+                :class="registerConfirmInputClass"
               />
 
               <button
@@ -221,13 +249,24 @@ const state = reactive({
               </button>
             </div>
 
-            <p class="text-xs font-semibold text-destructive">
-              Password must be at least 8 characters.
+            <p
+              v-if="registerPasswordError"
+              class="text-xs font-semibold text-destructive"
+            >
+              {{ registerPasswordError }}
             </p>
           </div>
 
+          <p
+            v-if="auth.errorMessage"
+            class="text-xs font-semibold text-destructive"
+          >
+            {{ auth.errorMessage }}
+          </p>
+
           <Button
-            type="button"
+            type="submit"
+            :disabled="state.isSubmitting || hasRegisterPasswordError"
             class="w-full h-11 rounded-xl text-sm font-extrabold"
           >
             Create account
@@ -239,7 +278,7 @@ const state = reactive({
         <button
           class="text-primary text-sm font-bold no-underline hover:underline underline-offset-4 cursor-pointer"
           type="button"
-          @click="state.mode = 'login'"
+          @click="setMode('login')"
         >
           Already have an account?
         </button>

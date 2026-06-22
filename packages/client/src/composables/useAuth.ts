@@ -1,0 +1,93 @@
+import useAuthStore from '@/store/auth.ts'
+import { useRouter } from 'vue-router'
+import {
+  reactive,
+  computed
+} from 'vue'
+
+export default () => {
+  const router = useRouter()
+  const auth = useAuthStore()
+
+  const state = reactive({
+    mode: 'login' as 'login' | 'register',
+    login: {
+      username: '',
+      password: ''
+    },
+    register: {
+      username: '',
+      password: '',
+      confirmPassword: ''
+    },
+    isSubmitting: false
+  })
+  const isRegister = computed(() => state.mode === 'register')
+
+  const registerPasswordError = computed(() => {
+    if (!isRegister.value) {
+      return null
+    }
+
+    if (state.register.password.length > 0 && state.register.password.length < 8) {
+      return 'Password must be at least 8 characters.'
+    }
+
+    if (state.register.confirmPassword.length > 0 && state.register.password !== state.register.confirmPassword) {
+      return 'Passwords do not match.'
+    }
+    return null
+  })
+
+  const registerConfirmInputClass = computed(() => {
+    return hasRegisterPasswordError.value
+      ? 'text-destructive placeholder:text-destructive'
+      : 'text-muted-foreground placeholder:text-muted-foreground'
+  })
+  const hasRegisterPasswordError = computed(() => Boolean(registerPasswordError.value))
+
+  async function handleLogin() {
+    if (state.isSubmitting) {
+      return
+    }
+    state.isSubmitting = true
+
+    try {
+      await auth.login({
+        username: state.login.username,
+        password: state.login.password
+      })
+      await router.push('/')
+    } finally {
+      state.isSubmitting = false
+    }
+  }
+
+  async function handleRegister() {
+    if (state.isSubmitting || registerPasswordError.value) {
+      return
+    }
+    state.isSubmitting = true
+
+    try {
+      await auth.register({
+        username: state.register.username,
+        password: state.register.password
+      })
+      await router.push('/')
+    } finally {
+      state.isSubmitting = false
+    }
+  }
+
+  function setMode(mode: 'login' | 'register') {
+    state.mode = mode
+    auth.errorMessage = null
+  }
+
+  return {
+    auth, state,
+    registerPasswordError, hasRegisterPasswordError, registerConfirmInputClass,
+    handleRegister, handleLogin, setMode
+  }
+}
