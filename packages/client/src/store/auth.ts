@@ -1,4 +1,4 @@
-import getErrorMessage from '@/utils/getErrorMessage.ts'
+import getAuthUtils from '@/utils/auth/getAuthUtils.ts'
 import useAPI from '@/composables/useAPI.ts'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
@@ -17,58 +17,43 @@ const useAuthStore = defineStore('auth', () => {
   const token = ref<IAuthTokens | null>(null)
   const errorMessage = ref<string | null>(null)
 
-  const isAuthenticated = computed(() => {
-    return Boolean(token.value) && Boolean(user.value)
+  const utils = getAuthUtils({
+    user: user,
+    token: token,
+    errorMessage: errorMessage
   })
+  const isAuthenticated = computed(() => Boolean(token.value) && Boolean(user.value))
 
   async function register(data: IAuthRegister) {
-    try {
-      errorMessage.value = null
+    errorMessage.value = null
 
-      const result = await http.post<IAuthResponse>('/auth/register', {
-        body: {
-          username: data.username,
-          password: data.password
-        }
-      })
-      user.value = result.user
-      token.value = {
-        accessToken: result.access_token
+    const [res, err] = await utils.getTryCatch(http.post<IAuthResponse>('/auth/register', {
+      body: {
+        username: data.username,
+        password: data.password
       }
-    } catch (err: unknown) {
-      const message = getErrorMessage(err)
+    }))
 
-      errorMessage.value = message
-
-      throw new Error(message, {
-        cause: err
-      })
+    if (!res || err) {
+      return utils.setAuthError(err)
     }
+    utils.setAuthState(res)
   }
 
   async function login(data: IAuthLogin) {
-    try {
-      errorMessage.value = null
+    errorMessage.value = null
 
-      const result = await http.post<IAuthResponse>('/auth/login', {
-        body: {
-          username: data.username,
-          password: data.password
-        }
-      })
-      user.value = result.user
-      token.value = {
-        accessToken: result.access_token
+    const [res, err] = await utils.getTryCatch(http.post<IAuthResponse>('/auth/login', {
+      body: {
+        username: data.username,
+        password: data.password
       }
-    } catch (err: unknown) {
-      const message = getErrorMessage(err)
+    }))
 
-      errorMessage.value = message
-
-      throw new Error(message, {
-        cause: err
-      })
+    if (!res || err) {
+      return utils.setAuthError(err)
     }
+    utils.setAuthState(res)
   }
 
   function logout() {

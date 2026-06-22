@@ -1,3 +1,7 @@
+import type {
+  Ref
+} from 'vue'
+
 export interface IAuthUser {
   id: string
   username: string
@@ -22,4 +26,10 @@ export interface IAuthRegister {
 export interface IAuthResponse {
   user: IAuthUser
   access_token: string
+}
+
+export interface IAuthConfig {
+  user: Ref<IAuthUser | null>
+  token: Ref<IAuthTokens | null>
+  errorMessage: Ref<string | null>
 }
