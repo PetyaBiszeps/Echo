@@ -1,3 +1,4 @@
+import useAuthStore from '@/store/auth.ts'
 import {
   createRouter,
   createWebHistory
@@ -43,8 +44,25 @@ const router = createRouter({
 })
 
 // Guard
-// router.beforeEach((to, _from, next) => {
-//
-// })
+router.beforeEach((to) => {
+  const auth = useAuthStore()
+
+  if (to.meta.public) {
+    return true
+  }
+
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
+    return {
+      name: 'auth'
+    }
+  }
+
+  if (to.meta.guest && auth.isAuthenticated) {
+    return {
+      name: 'app'
+    }
+  }
+  return true
+})
 
 export default router
