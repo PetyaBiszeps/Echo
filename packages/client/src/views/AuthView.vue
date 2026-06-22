@@ -13,7 +13,7 @@ import {
 const {
   auth, state,
   registerPasswordError, hasRegisterPasswordError, registerConfirmInputClass,
-  handleRegister, handleLogin, setMode
+  setMode, handleRegister, handleLogin
 } = useAuth()
 </script>
 

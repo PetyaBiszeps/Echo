@@ -25,26 +25,33 @@ export default () => {
   const isRegister = computed(() => state.mode === 'register')
 
   const registerPasswordError = computed(() => {
+    const { password, confirmPassword } = state.register
+
     if (!isRegister.value) {
       return null
     }
 
-    if (state.register.password.length > 0 && state.register.password.length < 8) {
+    if (password.length > 0 && password.length < 8) {
       return 'Password must be at least 8 characters.'
     }
 
-    if (state.register.confirmPassword.length > 0 && state.register.password !== state.register.confirmPassword) {
+    if (confirmPassword.length > 0 && password !== confirmPassword) {
       return 'Passwords do not match.'
     }
     return null
   })
+  const hasRegisterPasswordError = computed(() => Boolean(registerPasswordError.value))
 
   const registerConfirmInputClass = computed(() => {
     return hasRegisterPasswordError.value
       ? 'text-destructive placeholder:text-destructive'
       : 'text-muted-foreground placeholder:text-muted-foreground'
   })
-  const hasRegisterPasswordError = computed(() => Boolean(registerPasswordError.value))
+
+  function setMode(mode: 'login' | 'register') {
+    state.mode = mode
+    auth.errorMessage = null
+  }
 
   async function handleLogin() {
     if (state.isSubmitting) {
@@ -80,14 +87,9 @@ export default () => {
     }
   }
 
-  function setMode(mode: 'login' | 'register') {
-    state.mode = mode
-    auth.errorMessage = null
-  }
-
   return {
     auth, state,
     registerPasswordError, hasRegisterPasswordError, registerConfirmInputClass,
-    handleRegister, handleLogin, setMode
+    setMode, handleRegister, handleLogin
   }
 }
