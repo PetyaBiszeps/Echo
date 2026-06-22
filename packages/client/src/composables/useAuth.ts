@@ -40,13 +40,6 @@ export default () => {
     }
     return null
   })
-  const hasRegisterPasswordError = computed(() => Boolean(registerPasswordError.value))
-
-  const registerConfirmInputClass = computed(() => {
-    return hasRegisterPasswordError.value
-      ? 'text-destructive placeholder:text-destructive'
-      : 'text-muted-foreground placeholder:text-muted-foreground'
-  })
 
   function setMode(mode: 'login' | 'register') {
     state.mode = mode
@@ -89,7 +82,7 @@ export default () => {
 
   return {
     auth, state,
-    registerPasswordError, hasRegisterPasswordError, registerConfirmInputClass,
+    registerPasswordError,
     setMode, handleRegister, handleLogin
   }
 }

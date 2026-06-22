@@ -10,7 +10,7 @@ import {
 // Init
 const {
   auth, state,
-  registerPasswordError, hasRegisterPasswordError, registerConfirmInputClass,
+  registerPasswordError,
   setMode, handleRegister, handleLogin
 } = useAuth()
 </script>
@@ -22,7 +22,6 @@ const {
   >
     <section
       v-if="state.mode === 'login'"
-      key="login"
       class="w-full min-w-0 max-w-115 p-6 bg-surface-auth-card border border-border rounded-3xl"
     >
       <header class="text-center">
@@ -132,7 +131,6 @@ const {
 
     <section
       v-else
-      key="register"
       class="w-full min-w-0 max-w-80 p-6 bg-popover border border-border rounded-3xl"
     >
       <header>
@@ -216,15 +214,11 @@ const {
             <Label
               for="register-confirm-password"
               class="text-xs font-bold"
-              :class="hasRegisterPasswordError ? 'text-destructive' : 'text-muted-foreground'"
             >
               Confirm password
             </Label>
 
-            <div
-              class="echo-input"
-              :aria-invalid="hasRegisterPasswordError"
-            >
+            <div class="echo-input">
               <Lock class="size-4 shrink-0 stroke-current text-muted-foreground" />
 
               <Input
@@ -236,7 +230,6 @@ const {
                 autocomplete="new-password"
                 placeholder="pass"
                 class="h-full border-0 bg-transparent px-0 font-normal shadow-none placeholder:font-normal focus-visible:border-0 focus-visible:ring-0"
-                :class="registerConfirmInputClass"
               />
 
               <button
@@ -264,7 +257,7 @@ const {
 
           <Button
             type="submit"
-            :disabled="state.isSubmitting || hasRegisterPasswordError"
+            :disabled="state.isSubmitting"
             class="w-full h-11 rounded-xl text-sm font-extrabold"
           >
             Create account
