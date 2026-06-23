@@ -180,10 +180,15 @@ function clearSearchTimer() {
       </SheetHeader>
 
       <div class="flex min-h-0 flex-1 flex-col gap-4 px-5 py-5">
-        <label class="flex flex-col gap-2">
+        <label
+          for="new-chat-user-search"
+          class="flex flex-col gap-2"
+        >
           <span class="text-xs font-bold text-sidebar-foreground/70">Username</span>
           <Input
             v-model="query"
+            id="new-chat-user-search"
+            name="userSearch"
             type="search"
             autocomplete="off"
             placeholder="Search users"

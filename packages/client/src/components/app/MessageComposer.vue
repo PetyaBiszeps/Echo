@@ -122,6 +122,8 @@ function clearIdleTimer() {
 
       <textarea
         v-model="content"
+        id="message-content"
+        name="message"
         rows="1"
         :disabled="disabled || isSending"
         aria-label="Message input"

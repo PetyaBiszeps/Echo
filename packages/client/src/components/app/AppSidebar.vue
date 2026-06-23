@@ -145,10 +145,15 @@ function formatSidebarTime(value: string) {
         </Button>
       </div>
 
-      <label class="flex h-11 items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-accent px-3 text-sidebar-foreground/60 focus-within:ring-2 focus-within:ring-sidebar-ring/60">
+      <label
+        for="sidebar-chat-search"
+        class="flex h-11 items-center gap-3 rounded-lg border border-sidebar-border bg-sidebar-accent px-3 text-sidebar-foreground/60 focus-within:ring-2 focus-within:ring-sidebar-ring/60"
+      >
         <Search class="size-4 shrink-0" />
         <span class="sr-only">Search chats</span>
         <Input
+          id="sidebar-chat-search"
+          name="chatSearch"
           placeholder="Search testing"
           class="h-full border-0 bg-transparent px-0 py-0 text-xs font-medium text-sidebar-foreground shadow-none placeholder:text-sidebar-foreground/50 focus-visible:ring-0 focus-visible:border-0"
         />
