@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import useAuthStore from '@/store/auth.ts'
 import useChatStore from '@/store/chats.ts'
+import useUserSearch from '@/composables/useUserSearch.ts'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -14,7 +15,10 @@ import NewChatDialog from '@/components/app/NewChatDialog.vue'
 import { MessageCircle, Plus, Search } from '@lucide/vue'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import type { IChat } from '@echo/shared'
+import type {
+  IChat,
+  IUser
+} from '@echo/shared'
 
 defineProps<{
   mobileStatic?: boolean
@@ -25,8 +29,32 @@ const chatStore = useChatStore()
 const route = useRoute()
 const router = useRouter()
 const isNewChatOpen = ref(false)
+const searchQuery = ref('')
+const creatingUsername = ref<string | null>(null)
+const openUserChatError = ref<string | null>(null)
 
 const selectedChatId = computed(() => getRouteChatId(route.params.chatId))
+const {
+  normalizedQuery,
+  canSearch,
+  results: userSearchResults,
+  isSearching: isSearchingUsers,
+  searchError: userSearchError,
+  resetUserSearch
+} = useUserSearch(searchQuery)
+const hasSearchQuery = computed(() => normalizedQuery.value.length > 0)
+const filteredChats = computed(() => {
+  if (!hasSearchQuery.value) {
+    return chatStore.chats
+  }
+
+  const query = normalizedQuery.value.toLowerCase()
+
+  return chatStore.chats.filter(chat => getChatSearchText(chat).includes(query))
+})
+const visibleUserResults = computed(() => userSearchResults.value.filter((user) => {
+  return !isCurrentUser(user) && !findExistingDirectChat(user)
+}))
 
 onMounted(() => {
   void chatStore.fetchChats()
@@ -54,6 +82,8 @@ async function selectChat(chat: IChat) {
       chatId: chat.id
     }
   })
+
+  clearSearch()
 }
 
 async function openCreatedChat(chat: IChat) {
@@ -61,10 +91,72 @@ async function openCreatedChat(chat: IChat) {
   isNewChatOpen.value = false
 }
 
+async function openUserChat(user: IUser) {
+  if (creatingUsername.value) {
+    return
+  }
+
+  const existingChat = findExistingDirectChat(user)
+
+  if (existingChat) {
+    await selectChat(existingChat)
+    return
+  }
+
+  openUserChatError.value = null
+  chatStore.clearCreateDirectChatError()
+  creatingUsername.value = user.username
+
+  const chat = await chatStore.createDirectChat(user.username)
+
+  creatingUsername.value = null
+
+  if (!chat) {
+    openUserChatError.value = chatStore.createDirectChatError || 'Unable to start chat. Please try again.'
+    return
+  }
+
+  await selectChat(chat)
+}
+
 function getChatLastMessage(chat: IChat) {
   return chat.latestMessage?.content
     || chat.lastMessage?.content
     || 'No messages yet'
+}
+
+function getChatSearchText(chat: IChat) {
+  return [
+    getChatTitle(chat),
+    chat.participants.map(participant => participant.username).join(' '),
+    chat.latestMessage?.content,
+    chat.lastMessage?.content
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+}
+
+function findExistingDirectChat(user: IUser) {
+  const normalizedUsername = user.username.toLowerCase()
+
+  return chatStore.chats.find(chat => chat.participants.length <= 2 && chat.participants.some(participant => {
+    return participant.id === user.id || participant.username.toLowerCase() === normalizedUsername
+  })) ?? null
+}
+
+function isCurrentUser(user: IUser) {
+  return user.id === auth.user?.id || user.username === auth.user?.username
+}
+
+function getUserInitials(user: IUser) {
+  return user.username.slice(0, 2).toUpperCase()
+}
+
+function clearSearch() {
+  resetUserSearch(true)
+  openUserChatError.value = null
+  chatStore.clearCreateDirectChatError()
 }
 
 function getChatTime(chat: IChat) {
@@ -157,9 +249,10 @@ function formatSidebarTime(value: string) {
         <Search class="size-4 shrink-0" />
         <span class="sr-only">Search chats</span>
         <Input
+          v-model="searchQuery"
           id="sidebar-chat-search"
           name="chatSearch"
-          placeholder="Search testing"
+          placeholder="Search chats or users"
           class="h-full border-0 bg-transparent px-0 py-0 text-xs font-medium text-sidebar-foreground shadow-none placeholder:text-sidebar-foreground/50 focus-visible:ring-0 focus-visible:border-0"
         />
       </label>
@@ -167,7 +260,7 @@ function formatSidebarTime(value: string) {
 
     <SidebarContent class="px-5 py-3">
       <ul class="flex flex-col gap-1.5">
-        <template v-if="chatStore.isLoadingChats">
+        <template v-if="chatStore.isLoadingChats && !hasSearchQuery">
           <li
             v-for="item in 4"
             :key="item"
@@ -184,7 +277,7 @@ function formatSidebarTime(value: string) {
         </template>
 
         <li
-          v-else-if="chatStore.chatListError"
+          v-else-if="chatStore.chatListError && !hasSearchQuery"
           class="rounded-xl border border-sidebar-border bg-sidebar-accent px-3 py-4"
         >
           <p class="text-xs font-medium leading-5 text-sidebar-foreground/70">
@@ -203,15 +296,146 @@ function formatSidebarTime(value: string) {
         </li>
 
         <li
-          v-else-if="!chatStore.hasChats"
+          v-else-if="!chatStore.hasChats && !hasSearchQuery"
           class="rounded-xl border border-sidebar-border bg-sidebar-accent px-3 py-4 text-xs font-medium leading-5 text-sidebar-foreground/70"
         >
           No chats yet.
         </li>
 
+        <template v-else-if="hasSearchQuery">
+          <li>
+            <section class="flex flex-col gap-2">
+              <h2 class="px-3 text-[10px] font-extrabold uppercase tracking-[0.18em] text-sidebar-foreground/45">
+                Chats
+              </h2>
+
+              <ul
+                v-if="filteredChats.length > 0"
+                class="flex flex-col gap-1.5"
+              >
+                <li
+                  v-for="chat in filteredChats"
+                  :key="chat.id"
+                >
+                  <AppSidebarChatItem
+                    :title="getChatTitle(chat)"
+                    :last-message="getChatLastMessage(chat)"
+                    :time="getChatTime(chat)"
+                    :unread-count="chat.unreadCount"
+                    :active="selectedChatId === chat.id"
+                    @click="selectChat(chat)"
+                  />
+                </li>
+              </ul>
+
+              <p
+                v-else
+                class="rounded-xl border border-sidebar-border bg-sidebar-accent px-3 py-4 text-xs font-medium leading-5 text-sidebar-foreground/70"
+              >
+                No matching chats.
+              </p>
+            </section>
+          </li>
+
+          <li>
+            <section class="mt-4 flex flex-col gap-2">
+              <h2 class="px-3 text-[10px] font-extrabold uppercase tracking-[0.18em] text-sidebar-foreground/45">
+                Users
+              </h2>
+
+              <p
+                v-if="!canSearch"
+                class="rounded-xl border border-sidebar-border bg-sidebar-accent px-3 py-4 text-xs font-medium leading-5 text-sidebar-foreground/70"
+              >
+                Type at least 2 characters to search users.
+              </p>
+
+              <div
+                v-else-if="isSearchingUsers"
+                class="flex flex-col gap-1.5"
+                aria-live="polite"
+              >
+                <div
+                  v-for="item in 3"
+                  :key="item"
+                  class="flex h-16 items-center gap-3 rounded-xl px-3"
+                  aria-hidden="true"
+                >
+                  <span class="size-10 shrink-0 animate-pulse rounded-full bg-sidebar-accent" />
+
+                  <span class="flex min-w-0 flex-1 flex-col gap-2">
+                    <span class="h-3 w-2/3 animate-pulse rounded-full bg-sidebar-accent" />
+                    <span class="h-2.5 w-1/2 animate-pulse rounded-full bg-sidebar-accent/80" />
+                  </span>
+                </div>
+              </div>
+
+              <p
+                v-else-if="userSearchError"
+                class="rounded-xl border border-destructive/25 bg-destructive/10 px-3 py-3 text-xs font-medium leading-5 text-destructive"
+              >
+                {{ userSearchError }}
+              </p>
+
+              <template v-else>
+                <p
+                  v-if="openUserChatError"
+                  class="rounded-xl border border-destructive/25 bg-destructive/10 px-3 py-3 text-xs font-medium leading-5 text-destructive"
+                >
+                  {{ openUserChatError }}
+                </p>
+
+                <ul
+                  v-if="visibleUserResults.length > 0"
+                  class="flex flex-col gap-1.5"
+                >
+                  <li
+                    v-for="user in visibleUserResults"
+                    :key="user.id"
+                  >
+                    <button
+                      type="button"
+                      class="flex h-16 w-full min-w-0 items-center gap-3 rounded-xl px-3 text-left transition-colors hover:bg-sidebar-accent/80 focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                      :disabled="Boolean(creatingUsername)"
+                      @click="openUserChat(user)"
+                    >
+                      <span class="grid size-10 shrink-0 place-items-center rounded-full border border-sidebar-primary/35 bg-sidebar-primary/15 text-xs font-bold text-sidebar-primary">
+                        {{ getUserInitials(user) }}
+                      </span>
+
+                      <span class="min-w-0 flex-1">
+                        <span class="block truncate text-sm font-bold text-sidebar-foreground">
+                          {{ user.username }}
+                        </span>
+                        <span class="block truncate text-xs font-medium text-sidebar-foreground/55">
+                          Start direct chat
+                        </span>
+                      </span>
+
+                      <span
+                        v-if="creatingUsername === user.username"
+                        class="shrink-0 text-xs font-bold text-sidebar-primary"
+                      >
+                        Opening...
+                      </span>
+                    </button>
+                  </li>
+                </ul>
+
+                <p
+                  v-else
+                  class="rounded-xl border border-sidebar-border bg-sidebar-accent px-3 py-4 text-xs font-medium leading-5 text-sidebar-foreground/70"
+                >
+                  No new users found.
+                </p>
+              </template>
+            </section>
+          </li>
+        </template>
+
         <template v-else>
           <li
-            v-for="chat in chatStore.chats"
+            v-for="chat in filteredChats"
             :key="chat.id"
           >
             <AppSidebarChatItem

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import useAuthStore from '@/store/auth.ts'
 import useChatStore from '@/store/chats.ts'
-import useAPI from '@/composables/useAPI.ts'
+import useUserSearch from '@/composables/useUserSearch.ts'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -13,7 +12,6 @@ import {
 } from '@/components/ui/sheet'
 import {
   computed,
-  onUnmounted,
   ref,
   watch
 } from 'vue'
@@ -21,11 +19,6 @@ import type {
   IChat,
   IUser
 } from '@echo/shared'
-
-type UserSearchResponse = {
-  success: true
-  data: IUser[]
-}
 
 const props = defineProps<{
   open: boolean
@@ -36,97 +29,30 @@ const emit = defineEmits<{
   'chat-created': [chat: IChat]
 }>()
 
-const http = useAPI()
-const auth = useAuthStore()
 const chatStore = useChatStore()
 
 const query = ref('')
-const results = ref<IUser[]>([])
-const isSearching = ref(false)
-const searchError = ref<string | null>(null)
 const creatingUsername = ref<string | null>(null)
-const normalizedQuery = computed(() => query.value.trim())
-const canSearch = computed(() => normalizedQuery.value.length >= 2)
 const isOpen = computed({
   get: () => props.open,
   set: (value: boolean) => {
     emit('update:open', value)
   }
 })
-
-let searchTimer: ReturnType<typeof setTimeout> | null = null
-let searchRequestId = 0
+const {
+  normalizedQuery,
+  canSearch,
+  results,
+  isSearching,
+  searchError,
+  resetUserSearch
+} = useUserSearch(query)
 
 watch(() => props.open, (open) => {
   if (!open) {
     resetState()
   }
 })
-
-watch(normalizedQuery, (value) => {
-  clearSearchTimer()
-  searchError.value = null
-  searchRequestId += 1
-
-  if (!value) {
-    results.value = []
-    isSearching.value = false
-    return
-  }
-
-  if (value.length < 2) {
-    results.value = []
-    isSearching.value = false
-    return
-  }
-
-  const requestId = searchRequestId
-
-  searchTimer = setTimeout(() => {
-    void searchUsers(value, requestId)
-  }, 250)
-})
-
-onUnmounted(() => {
-  clearSearchTimer()
-})
-
-async function searchUsers(value: string, requestId: number) {
-  const accessToken = auth.token?.accessToken
-
-  if (!accessToken) {
-    results.value = []
-    searchError.value = 'Sign in again to search users.'
-    return
-  }
-
-  isSearching.value = true
-
-  try {
-    const response = await http.get<UserSearchResponse>('/users/search', {
-      query: {
-        q: value
-      },
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
-
-    if (requestId === searchRequestId) {
-      results.value = response.data
-      searchError.value = null
-    }
-  } catch {
-    if (requestId === searchRequestId) {
-      results.value = []
-      searchError.value = 'Unable to search users. Please try again.'
-    }
-  } finally {
-    if (requestId === searchRequestId) {
-      isSearching.value = false
-    }
-  }
-}
 
 async function startChat(user: IUser) {
   if (creatingUsername.value) {
@@ -146,23 +72,9 @@ async function startChat(user: IUser) {
 }
 
 function resetState() {
-  clearSearchTimer()
-  searchRequestId += 1
-  query.value = ''
-  results.value = []
-  isSearching.value = false
-  searchError.value = null
+  resetUserSearch(true)
   creatingUsername.value = null
   chatStore.clearCreateDirectChatError()
-}
-
-function clearSearchTimer() {
-  if (!searchTimer) {
-    return
-  }
-
-  clearTimeout(searchTimer)
-  searchTimer = null
 }
 </script>
 
