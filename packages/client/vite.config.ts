@@ -8,6 +8,19 @@ import {
 
 export default defineConfig({
   plugins: [vue(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      onwarn(warning, warn) {
+        const source = `${warning.id ?? ''} ${warning.message}`
+
+        if (warning.code === 'INVALID_ANNOTATION' && source.includes('@vueuse/core')) {
+          return
+        }
+
+        warn(warning)
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

@@ -1,13 +1,7 @@
-<template>
-  <section>
-    <header>
-      <h1 />
-    </header>
+<script setup lang="ts">
+import ChatSpace from '@/components/app/ChatSpace.vue'
+</script>
 
-    <main>
-      <ul>
-        <li />
-      </ul>
-    </main>
-  </section>
+<template>
+  <ChatSpace />
 </template>
