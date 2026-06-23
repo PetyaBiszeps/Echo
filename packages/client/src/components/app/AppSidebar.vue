@@ -16,6 +16,10 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IChat } from '@echo/shared'
 
+defineProps<{
+  mobileStatic?: boolean
+}>()
+
 const auth = useAuthStore()
 const chatStore = useChatStore()
 const route = useRoute()
@@ -113,7 +117,8 @@ function formatSidebarTime(value: string) {
 <template>
   <Sidebar
     collapsible="offcanvas"
-    class="z-30 border-r border-sidebar-border"
+    :mobile-static="mobileStatic"
+    class="z-30 border-r border-sidebar-border max-md:border-r-0"
   >
     <SidebarHeader class="gap-4 p-5 pb-3">
       <div class="flex items-center justify-between gap-3">

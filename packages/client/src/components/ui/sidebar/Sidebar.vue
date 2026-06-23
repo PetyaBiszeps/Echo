@@ -26,6 +26,14 @@ const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
     <slot />
   </div>
 
+  <div
+    v-else-if="isMobile && mobileStatic"
+    :class="cn('flex h-full min-h-0 w-full min-w-0 flex-col bg-sidebar text-sidebar-foreground', props.class)"
+    v-bind="$attrs"
+  >
+    <slot />
+  </div>
+
   <Sheet
     v-else-if="isMobile"
     :open="openMobile"

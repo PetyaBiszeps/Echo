@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import useAuthStore from '@/store/auth.ts'
-import { MoreHorizontal, Phone, Video } from '@lucide/vue'
+import { ChevronLeft, MoreHorizontal, Phone, Video } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import type { IChat } from '@echo/shared'
 
 const props = defineProps<{
@@ -11,6 +12,7 @@ const props = defineProps<{
 }>()
 
 const auth = useAuthStore()
+const router = useRouter()
 
 const title = computed(() => props.chat?.name
   || props.chat?.title
@@ -45,12 +47,29 @@ function formatStatusTime(value: string) {
     minute: '2-digit'
   }).format(date)
 }
+
+function goBackToChats() {
+  void router.push({
+    name: 'chats'
+  })
+}
 </script>
 
 <template>
-  <header class="flex h-21 shrink-0 items-center justify-between border-b border-border/70 px-7">
-    <div class="flex min-w-0 items-center gap-3">
-      <div class="grid size-11 shrink-0 place-items-center rounded-full border border-primary/30 bg-primary/12 text-xs font-bold text-primary">
+  <header class="flex h-18 shrink-0 items-center justify-between gap-2 border-b border-border/70 px-3 md:h-21 md:px-7">
+    <div class="flex min-w-0 flex-1 items-center gap-2 md:gap-3">
+      <Button
+        type="button"
+        variant="secondary"
+        size="icon-sm"
+        class="shrink-0 rounded-xl md:hidden"
+        aria-label="Back to chats"
+        @click="goBackToChats"
+      >
+        <ChevronLeft class="size-4" />
+      </Button>
+
+      <div class="grid size-10 shrink-0 place-items-center rounded-full border border-primary/30 bg-primary/12 text-xs font-bold text-primary md:size-11">
         {{ title.slice(0, 2).toUpperCase() }}
       </div>
 
@@ -70,7 +89,7 @@ function formatStatusTime(value: string) {
       </div>
     </div>
 
-    <div class="flex items-center gap-2">
+    <div class="flex shrink-0 items-center gap-2">
       <Button
         type="button"
         variant="secondary"

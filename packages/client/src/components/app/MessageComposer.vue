@@ -104,9 +104,9 @@ function clearIdleTimer() {
 </script>
 
 <template>
-  <footer class="shrink-0 px-7 pb-6">
+  <footer class="shrink-0 px-3 pb-3 md:px-7 md:pb-6">
     <form
-      class="flex min-h-16 items-center gap-3 rounded-2xl border border-primary/45 bg-card/80 px-3 py-2 shadow-[0_0_42px_color-mix(in_srgb,var(--primary)_8%,transparent)]"
+      class="flex min-h-16 items-center gap-2 rounded-2xl border border-primary/45 bg-card/80 px-3 py-2 shadow-[0_0_42px_color-mix(in_srgb,var(--primary)_8%,transparent)] md:gap-3"
       @submit.prevent="handleSubmit"
     >
       <Button
@@ -128,7 +128,7 @@ function clearIdleTimer() {
         :disabled="disabled || isSending"
         aria-label="Message input"
         placeholder="Type a message"
-        class="min-h-10 flex-1 resize-none bg-transparent py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-60"
+        class="min-h-10 min-w-0 flex-1 resize-none bg-transparent py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:opacity-60"
         @keydown.enter.exact.prevent="handleSubmit"
       />
 

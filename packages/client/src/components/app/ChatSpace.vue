@@ -104,7 +104,7 @@ async function sendMessage(content: string) {
 
     <div
       v-else
-      class="relative z-10 flex h-full min-h-0 w-full flex-col overflow-hidden"
+      class="relative z-10 flex h-full min-h-0 w-full min-w-0 flex-col overflow-hidden"
     >
       <ChatHeader
         :chat="selectedChat"
@@ -113,13 +113,13 @@ async function sendMessage(content: string) {
 
       <main
         v-if="isLoadingMessages"
-        class="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-11 py-7"
+        class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-3 py-4 md:gap-5 md:px-11 md:py-7"
       >
         <div
           v-for="item in 4"
           :key="item"
           :class="[
-            'h-15 max-w-[min(34rem,78%)] animate-pulse rounded-2xl bg-card/80',
+            'h-15 max-w-[min(34rem,86%)] animate-pulse rounded-2xl bg-card/80 md:max-w-[min(34rem,78%)]',
             item % 2 === 0 ? 'ml-auto w-2/5' : 'mr-auto w-3/5',
           ]"
           aria-hidden="true"
@@ -128,7 +128,7 @@ async function sendMessage(content: string) {
 
       <main
         v-else-if="messageError"
-        class="grid min-h-0 flex-1 place-items-center overflow-hidden px-7 py-7"
+        class="grid min-h-0 flex-1 place-items-center overflow-hidden px-3 py-4 md:px-7 md:py-7"
       >
         <div class="max-w-sm rounded-2xl border border-border/70 bg-card/80 px-5 py-4 text-center shadow-sm">
           <p class="text-sm font-bold text-card-foreground">
@@ -152,7 +152,7 @@ async function sendMessage(content: string) {
 
       <p
         v-if="sendError"
-        class="shrink-0 px-7 pb-2 text-xs font-medium text-destructive"
+        class="shrink-0 px-3 pb-2 text-xs font-medium text-destructive md:px-7"
       >
         {{ sendError }}
       </p>

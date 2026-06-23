@@ -38,7 +38,7 @@ function formatMessageTime(message: IMessage) {
 <template>
   <main
     ref="scrollContainer"
-    class="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-11 py-7"
+    class="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-3 py-4 md:gap-5 md:px-11 md:py-7"
   >
     <div
       v-if="messages.length === 0"
@@ -58,13 +58,13 @@ function formatMessageTime(message: IMessage) {
         v-for="message in messages"
         :key="message.id"
         :class="[
-          'flex max-w-[min(34rem,78%)] flex-col gap-1 rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm',
+          'flex max-w-[min(34rem,86%)] flex-col gap-1 rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm md:max-w-[min(34rem,78%)]',
           isMine(message)
             ? 'ml-auto bg-primary text-primary-foreground'
             : 'mr-auto bg-card text-card-foreground border border-border/70',
         ]"
       >
-        <span>{{ message.content }}</span>
+        <span class="min-w-0 whitespace-pre-wrap break-words">{{ message.content }}</span>
 
         <span
           :class="[
