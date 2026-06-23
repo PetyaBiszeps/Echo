@@ -1,4 +1,15 @@
 -- CreateTable
+CREATE TABLE "users" (
+    "id" TEXT NOT NULL,
+    "username" VARCHAR(50) NOT NULL,
+    "password" TEXT NOT NULL,
+    "createdAt" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "lastSeenAt" TIMESTAMPTZ,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "chats" (
     "id" TEXT NOT NULL,
     "title" TEXT,
@@ -31,10 +42,16 @@ CREATE TABLE "messages" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "chat_members_chatId_userId_key" ON "chat_members"("chatId", "userId");
+CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
+
+-- CreateIndex
+CREATE INDEX "users_username_idx" ON "users"("username");
 
 -- CreateIndex
 CREATE INDEX "chat_members_userId_idx" ON "chat_members"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "chat_members_chatId_userId_key" ON "chat_members"("chatId", "userId");
 
 -- CreateIndex
 CREATE INDEX "messages_chatId_createdAt_idx" ON "messages"("chatId", "createdAt");
