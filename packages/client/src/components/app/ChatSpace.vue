@@ -30,6 +30,9 @@ const isSendingMessage = computed(() => selectedChatId.value
 const sendError = computed(() => selectedChatId.value
   ? chatStore.sendErrorsByChatId[selectedChatId.value] ?? null
   : null)
+const messagePagination = computed(() => selectedChatId.value
+  ? chatStore.messagePaginationByChatId[selectedChatId.value]
+  : null)
 const typingUserIds = computed(() => selectedChatId.value
   ? chatStore.getTypingUserIds(selectedChatId.value, auth.user?.id)
   : [])
@@ -92,6 +95,14 @@ async function sendMessage(content: string) {
     composerClearKey.value += 1
   }
 }
+
+function loadOlderMessages() {
+  if (!selectedChatId.value) {
+    return
+  }
+
+  void chatStore.fetchOlderMessages(selectedChatId.value)
+}
 </script>
 
 <template>
@@ -148,6 +159,10 @@ async function sendMessage(content: string) {
       <MessageList
         v-else
         :messages="selectedMessages"
+        :has-older-messages="messagePagination?.hasMore ?? false"
+        :is-loading-older="messagePagination?.isLoadingOlder ?? false"
+        :older-error="messagePagination?.olderError ?? null"
+        @load-older="loadOlderMessages"
       />
 
       <p

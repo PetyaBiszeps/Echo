@@ -26,3 +26,9 @@ export interface IMessage {
   createdAt?: string
   timestamp: string
 }
+
+export interface IMessagePage {
+  messages: IMessage[]
+  nextCursor: string | null
+  hasMore: boolean
+}

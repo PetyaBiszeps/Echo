@@ -4,11 +4,15 @@ import {
   emitChatUpdated,
   emitMessageNew
 } from '@/modules/chat/chat.socket.ts'
+import { BadRequestException } from '@/lib/exceptions'
 import type {
   Request,
   Response,
   NextFunction
 } from 'express'
+
+const DEFAULT_MESSAGES_LIMIT = 30
+const MAX_MESSAGES_LIMIT = 50
 
 const service = new ChatService()
 
@@ -61,11 +65,11 @@ export async function GetChatMessagesController(req: Request, res: Response, nex
     }
 
     const chatId = getChatId(req)
-    const messages = await service.getMessages(userId, chatId)
+    const page = await service.getMessages(userId, chatId, getMessagePageQuery(req))
 
     return res.status(200).json({
       success: true,
-      data: messages
+      data: page
     })
   } catch (err) {
     return next(err)
@@ -137,4 +141,54 @@ function getChatId(req: Request) {
   const chatId = req.params.chatId
 
   return Array.isArray(chatId) ? chatId[0] : chatId
+}
+
+function getMessagePageQuery(req: Request) {
+  const limit = getMessagesLimit(req.query.limit)
+  const before = getMessagesBeforeCursor(req.query.before)
+
+  return {
+    limit,
+    before
+  }
+}
+
+function getMessagesLimit(value: unknown) {
+  const rawValue = Array.isArray(value)
+    ? value[0]
+    : value
+
+  if (rawValue === undefined) {
+    return DEFAULT_MESSAGES_LIMIT
+  }
+
+  const limit = Number(rawValue)
+
+  if (!Number.isInteger(limit) || limit <= 0) {
+    throw new BadRequestException('Message limit must be a positive integer')
+  }
+
+  return Math.min(limit, MAX_MESSAGES_LIMIT)
+}
+
+function getMessagesBeforeCursor(value: unknown) {
+  const rawValue = Array.isArray(value)
+    ? value[0]
+    : value
+
+  if (rawValue === undefined || rawValue === null || rawValue === '') {
+    return null
+  }
+
+  if (typeof rawValue !== 'string') {
+    throw new BadRequestException('Message cursor must be an ISO date string')
+  }
+
+  const date = new Date(rawValue)
+
+  if (Number.isNaN(date.getTime())) {
+    throw new BadRequestException('Message cursor must be an ISO date string')
+  }
+
+  return date
 }

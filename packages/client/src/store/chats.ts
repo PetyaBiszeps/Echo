@@ -4,6 +4,7 @@ import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import type {
   IChat,
+  IMessagePage,
   IMessage
 } from '@echo/shared'
 
@@ -19,7 +20,7 @@ type CreateChatResponse = {
 
 type ChatMessagesResponse = {
   success: true
-  data: IMessage[]
+  data: IMessage[] | IMessagePage
 }
 
 type SendMessageResponse = {
@@ -50,6 +51,14 @@ type UserPresenceInput = {
   lastSeenAt?: string | null
 }
 
+type MessagePaginationState = {
+  nextCursor: string | null
+  hasMore: boolean
+  isLoadingOlder: boolean
+  olderError: string | null
+}
+
+const MESSAGE_PAGE_SIZE = 30
 const TYPING_STALE_MS = 4000
 
 const useChatStore = defineStore('chats', () => {
@@ -63,6 +72,7 @@ const useChatStore = defineStore('chats', () => {
   const loadedMessagesByChatId = ref<Record<string, boolean>>({})
   const loadingMessagesByChatId = ref<Record<string, boolean>>({})
   const messageErrorsByChatId = ref<Record<string, string | null>>({})
+  const messagePaginationByChatId = ref<Record<string, MessagePaginationState>>({})
   const sendingByChatId = ref<Record<string, boolean>>({})
   const sendErrorsByChatId = ref<Record<string, string | null>>({})
   const markingReadByChatId = ref<Record<string, boolean>>({})
@@ -127,15 +137,25 @@ const useChatStore = defineStore('chats', () => {
 
     try {
       const response = await http.get<ChatMessagesResponse>(`/chats/${chatId}/messages`, {
+        query: {
+          limit: MESSAGE_PAGE_SIZE
+        },
         headers: {
           Authorization: `Bearer ${accessToken}`
         }
       })
+      const page = getMessagePage(response.data)
 
       messagesByChatId.value = {
         ...messagesByChatId.value,
-        [chatId]: response.data
+        [chatId]: page.messages
       }
+      setMessagePagination(chatId, {
+        nextCursor: page.nextCursor,
+        hasMore: page.hasMore,
+        isLoadingOlder: false,
+        olderError: null
+      })
       loadedMessagesByChatId.value = {
         ...loadedMessagesByChatId.value,
         [chatId]: true
@@ -152,6 +172,59 @@ const useChatStore = defineStore('chats', () => {
         ...loadingMessagesByChatId.value,
         [chatId]: false
       }
+    }
+  }
+
+  async function fetchOlderMessages(chatId: string) {
+    const pagination = getMessagePagination(chatId)
+
+    if (!pagination.hasMore || !pagination.nextCursor || pagination.isLoadingOlder) {
+      return false
+    }
+
+    const accessToken = auth.token?.accessToken
+
+    if (!accessToken) {
+      setMessagePagination(chatId, {
+        ...pagination,
+        olderError: 'Sign in again to load older messages.'
+      })
+      return false
+    }
+
+    setMessagePagination(chatId, {
+      ...pagination,
+      isLoadingOlder: true,
+      olderError: null
+    })
+
+    try {
+      const response = await http.get<ChatMessagesResponse>(`/chats/${chatId}/messages`, {
+        query: {
+          before: pagination.nextCursor,
+          limit: MESSAGE_PAGE_SIZE
+        },
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      const page = getMessagePage(response.data)
+
+      prependMessages(chatId, page.messages)
+      setMessagePagination(chatId, {
+        nextCursor: page.nextCursor,
+        hasMore: page.hasMore,
+        isLoadingOlder: false,
+        olderError: null
+      })
+      return true
+    } catch {
+      setMessagePagination(chatId, {
+        ...pagination,
+        isLoadingOlder: false,
+        olderError: 'Unable to load older messages. Please try again.'
+      })
+      return false
     }
   }
 
@@ -335,6 +408,22 @@ const useChatStore = defineStore('chats', () => {
     messagesByChatId.value = {
       ...messagesByChatId.value,
       [chatId]: [...messages, message]
+    }
+    return true
+  }
+
+  function prependMessages(chatId: string, messages: IMessage[]) {
+    const existingMessages = messagesByChatId.value[chatId] ?? []
+    const existingMessageIds = new Set(existingMessages.map(message => message.id))
+    const newMessages = messages.filter(message => !existingMessageIds.has(message.id))
+
+    if (newMessages.length === 0) {
+      return false
+    }
+
+    messagesByChatId.value = {
+      ...messagesByChatId.value,
+      [chatId]: [...newMessages, ...existingMessages]
     }
     return true
   }
@@ -523,13 +612,42 @@ const useChatStore = defineStore('chats', () => {
     return `${chatId}:${userId}`
   }
 
+  function getMessagePagination(chatId: string): MessagePaginationState {
+    return messagePaginationByChatId.value[chatId] ?? {
+      nextCursor: null,
+      hasMore: false,
+      isLoadingOlder: false,
+      olderError: null
+    }
+  }
+
+  function setMessagePagination(chatId: string, pagination: MessagePaginationState) {
+    messagePaginationByChatId.value = {
+      ...messagePaginationByChatId.value,
+      [chatId]: pagination
+    }
+  }
+
+  function getMessagePage(data: IMessage[] | IMessagePage): IMessagePage {
+    if (Array.isArray(data)) {
+      return {
+        messages: data,
+        nextCursor: null,
+        hasMore: false
+      }
+    }
+
+    return data
+  }
+
   return {
     chats, isLoadingChats, chatListError, hasChats,
     messagesByChatId, loadingMessagesByChatId, messageErrorsByChatId,
+    messagePaginationByChatId,
     sendingByChatId, sendErrorsByChatId,
     isCreatingDirectChat, createDirectChatError,
     typingByChatId, presenceByUserId,
-    fetchChats, fetchMessages, sendMessage, markChatRead,
+    fetchChats, fetchMessages, fetchOlderMessages, sendMessage, markChatRead,
     createDirectChat, clearCreateDirectChatError,
     appendMessage, applyMessage, upsertChat,
     setUserTyping, clearTypingForChat, clearAllTyping, getTypingUserIds,

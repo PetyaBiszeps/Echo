@@ -5,16 +5,54 @@ import type { IMessage } from '@echo/shared'
 
 const props = defineProps<{
   messages: IMessage[]
+  hasOlderMessages?: boolean
+  isLoadingOlder?: boolean
+  olderError?: string | null
+}>()
+
+const emit = defineEmits<{
+  loadOlder: []
 }>()
 
 const auth = useAuthStore()
 const scrollContainer = ref<HTMLElement | null>(null)
+const pendingOlderScroll = ref<{
+  scrollHeight: number
+  scrollTop: number
+} | null>(null)
 
-watch(() => props.messages.length, async () => {
+watch(() => props.messages.map(message => message.id), async (messageIds, previousMessageIds) => {
   await nextTick()
-  scrollContainer.value?.scrollTo({
-    top: scrollContainer.value.scrollHeight
-  })
+  const container = scrollContainer.value
+
+  if (!container) {
+    return
+  }
+
+  if (pendingOlderScroll.value) {
+    container.scrollTop = pendingOlderScroll.value.scrollTop + container.scrollHeight - pendingOlderScroll.value.scrollHeight
+    pendingOlderScroll.value = null
+    return
+  }
+
+  const previousLastMessageId = previousMessageIds?.at(-1)
+  const nextLastMessageId = messageIds.at(-1)
+
+  if (!previousMessageIds || previousMessageIds.length === 0 || previousLastMessageId !== nextLastMessageId) {
+    container.scrollTo({
+      top: container.scrollHeight
+    })
+  }
+}, {
+  immediate: true
+})
+
+watch(() => props.isLoadingOlder, (isLoadingOlder, wasLoadingOlder) => {
+  if (wasLoadingOlder && !isLoadingOlder) {
+    window.setTimeout(() => {
+      pendingOlderScroll.value = null
+    })
+  }
 })
 
 function isMine(message: IMessage) {
@@ -32,6 +70,19 @@ function formatMessageTime(message: IMessage) {
     hour: '2-digit',
     minute: '2-digit'
   }).format(date)
+}
+
+function loadOlderMessages() {
+  const container = scrollContainer.value
+
+  if (container) {
+    pendingOlderScroll.value = {
+      scrollHeight: container.scrollHeight,
+      scrollTop: container.scrollTop
+    }
+  }
+
+  emit('loadOlder')
 }
 </script>
 
@@ -54,6 +105,27 @@ function formatMessageTime(message: IMessage) {
     </div>
 
     <template v-else>
+      <div
+        v-if="hasOlderMessages || olderError"
+        class="flex flex-col items-center gap-2"
+      >
+        <p
+          v-if="olderError"
+          class="max-w-sm text-center text-xs font-medium leading-5 text-destructive"
+        >
+          {{ olderError }}
+        </p>
+
+        <button
+          type="button"
+          class="rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-bold text-card-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+          :disabled="isLoadingOlder"
+          @click="loadOlderMessages"
+        >
+          {{ isLoadingOlder ? 'Loading older messages...' : olderError ? 'Try again' : 'Load older messages' }}
+        </button>
+      </div>
+
       <div
         v-for="message in messages"
         :key="message.id"

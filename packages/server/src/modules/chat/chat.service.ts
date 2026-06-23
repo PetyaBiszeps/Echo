@@ -5,6 +5,7 @@ import {
 } from '@/lib/exceptions'
 import type {
   IChat,
+  IMessagePage,
   IMessage,
   IUser
 } from '@echo/shared'
@@ -45,6 +46,11 @@ export interface IChatReadUpdate {
 export interface IUserLastSeen {
   userId: string
   lastSeenAt: string | null
+}
+
+export type MessagePageOptions = {
+  limit: number
+  before: Date | null
 }
 
 export class ChatService {
@@ -337,17 +343,28 @@ export class ChatService {
     }
   }
 
-  async getMessages(userId: string, chatId: string): Promise<IMessage[]> {
+  async getMessages(userId: string, chatId: string, options: MessagePageOptions): Promise<IMessagePage> {
     await this.assertMember(userId, chatId)
 
-    const messages = await prisma.message.findMany({
+    const requestedLimit = options.limit
+    const messagesDesc = await prisma.message.findMany({
       where: {
-        chatId
+        chatId,
+        ...(options.before
+          ? {
+            createdAt: {
+              lt: options.before
+            }
+          }
+          : {})
       },
       orderBy: {
-        createdAt: 'asc'
-      }
+        createdAt: 'desc'
+      },
+      take: requestedLimit + 1
     })
+    const hasMore = messagesDesc.length > requestedLimit
+    const pageMessages = messagesDesc.slice(0, requestedLimit).reverse()
     const members = await prisma.chatMember.findMany({
       where: {
         chatId
@@ -360,13 +377,21 @@ export class ChatService {
     const peer = members.length === 2
       ? members.find(member => member.userId !== userId)
       : null
-
-    return messages.map(message => this.toMessage(
+    const messages = pageMessages.map(message => this.toMessage(
       message,
       message.senderId === userId
         ? Boolean(peer?.lastReadAt && peer.lastReadAt >= message.createdAt)
         : undefined
     ))
+    const oldestMessage = messages[0]
+
+    return {
+      messages,
+      nextCursor: hasMore && oldestMessage
+        ? oldestMessage.createdAt ?? oldestMessage.timestamp
+        : null,
+      hasMore
+    }
   }
 
   async createMessage(userId: string, chatId: string, content: unknown): Promise<IMessage> {
