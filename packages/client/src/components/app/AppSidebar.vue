@@ -63,8 +63,12 @@ onMounted(() => {
 function getChatTitle(chat: IChat) {
   return chat.name
     || chat.title
-    || chat.participants.find(participant => participant.id !== auth.user?.id)?.username
+    || chatStore.getDirectChatPeer(chat)?.username
     || 'Untitled chat'
+}
+
+function isDirectChatPeerOnline(chat: IChat) {
+  return chatStore.getDirectChatPeerPresence(chat)?.isOnline ?? false
 }
 
 function getRouteChatId(value: unknown) {
@@ -323,6 +327,7 @@ function formatSidebarTime(value: string) {
                     :time="getChatTime(chat)"
                     :unread-count="chat.unreadCount"
                     :active="selectedChatId === chat.id"
+                    :is-online="isDirectChatPeerOnline(chat)"
                     @click="selectChat(chat)"
                   />
                 </li>
@@ -444,6 +449,7 @@ function formatSidebarTime(value: string) {
               :time="getChatTime(chat)"
               :unread-count="chat.unreadCount"
               :active="selectedChatId === chat.id"
+              :is-online="isDirectChatPeerOnline(chat)"
               @click="selectChat(chat)"
             />
           </li>

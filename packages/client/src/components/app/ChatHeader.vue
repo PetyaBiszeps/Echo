@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import useAuthStore from '@/store/auth.ts'
+import useChatStore from '@/store/chats.ts'
+import { formatLastSeen } from '@/utils/date/formatLastSeen.ts'
 import { ChevronLeft, MoreHorizontal, Phone, Video } from '@lucide/vue'
 import { Button } from '@/components/ui/button'
 import { computed } from 'vue'
@@ -12,6 +14,7 @@ const props = defineProps<{
 }>()
 
 const auth = useAuthStore()
+const chatStore = useChatStore()
 const router = useRouter()
 
 const title = computed(() => props.chat?.name
@@ -24,29 +27,20 @@ const status = computed(() => {
     return props.typingLabel
   }
 
-  const peer = props.chat?.participants.find(participant => participant.id !== auth.user?.id)
+  const presence = chatStore.getDirectChatPeerPresence(props.chat)
 
-  if (!peer?.lastSeenAt) {
+  if (!presence) {
     return 'Conversation'
   }
 
-  return `Last seen ${formatStatusTime(peer.lastSeenAt)}`
-})
-
-function formatStatusTime(value: string) {
-  const date = new Date(value)
-
-  if (Number.isNaN(date.getTime())) {
-    return 'recently'
+  if (presence.isOnline) {
+    return 'Online'
   }
 
-  return new Intl.DateTimeFormat(undefined, {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  }).format(date)
-}
+  return presence.lastSeenAt
+    ? `Last seen ${formatLastSeen(presence.lastSeenAt)}`
+    : 'Offline'
+})
 
 function goBackToChats() {
   void router.push({

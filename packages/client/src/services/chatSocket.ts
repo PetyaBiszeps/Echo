@@ -9,6 +9,8 @@ type ChatSocketHandlers = {
   onMessageNew: (message: IMessage) => void
   onChatUpdated: (chat: IChat) => void
   onTypingUpdate: (payload: TypingUpdatePayload) => void
+  onPresenceUpdate: (payload: PresenceUpdatePayload) => void
+  onDisconnect?: () => void
 }
 
 type TypingUpdatePayload = {
@@ -17,10 +19,17 @@ type TypingUpdatePayload = {
   isTyping: boolean
 }
 
+type PresenceUpdatePayload = {
+  userId: string
+  isOnline: boolean
+  lastSeenAt?: string | null
+}
+
 type ServerToClientEvents = {
   'message:new': (payload: unknown) => void
   'chat:updated': (payload: unknown) => void
   'typing:update': (payload: unknown) => void
+  'presence:update': (payload: unknown) => void
 }
 
 type ClientToServerEvents = {
@@ -88,6 +97,20 @@ export function connectChatSocket(token: string, handlers: ChatSocketHandlers) {
     }
   })
 
+  socket.off('presence:update')
+  socket.on('presence:update', (payload) => {
+    const presenceUpdate = getPresenceUpdatePayload(payload)
+
+    if (presenceUpdate) {
+      handlers.onPresenceUpdate(presenceUpdate)
+    }
+  })
+
+  socket.off('disconnect')
+  socket.on('disconnect', () => {
+    handlers.onDisconnect?.()
+  })
+
   if (!socket.connected) {
     socket.connect()
   }
@@ -104,6 +127,8 @@ export function disconnectChatSocket() {
   socket.off('message:new')
   socket.off('chat:updated')
   socket.off('typing:update')
+  socket.off('presence:update')
+  socket.off('disconnect')
   socket.disconnect()
   socket = null
   socketToken = ''
@@ -202,6 +227,26 @@ function getTypingUpdatePayload(payload: unknown) {
     chatId: data.chatId,
     userId: data.userId,
     isTyping: data.isTyping
+  }
+}
+
+function getPresenceUpdatePayload(payload: unknown) {
+  if (!payload || typeof payload !== 'object') {
+    return null
+  }
+
+  const data = payload as Partial<PresenceUpdatePayload>
+
+  if (typeof data.userId !== 'string'
+    || typeof data.isOnline !== 'boolean'
+    || (data.lastSeenAt !== undefined && data.lastSeenAt !== null && typeof data.lastSeenAt !== 'string')) {
+    return null
+  }
+
+  return {
+    userId: data.userId,
+    isOnline: data.isOnline,
+    lastSeenAt: data.lastSeenAt
   }
 }
 

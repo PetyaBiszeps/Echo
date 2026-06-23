@@ -40,6 +40,16 @@ type MarkChatReadOptions = {
   force?: boolean
 }
 
+type UserPresence = {
+  isOnline: boolean
+  lastSeenAt: string | null
+}
+
+type UserPresenceInput = {
+  isOnline: boolean
+  lastSeenAt?: string | null
+}
+
 const TYPING_STALE_MS = 4000
 
 const useChatStore = defineStore('chats', () => {
@@ -59,6 +69,7 @@ const useChatStore = defineStore('chats', () => {
   const isCreatingDirectChat = ref(false)
   const createDirectChatError = ref<string | null>(null)
   const typingByChatId = ref<Record<string, Record<string, boolean>>>({})
+  const presenceByUserId = ref<Record<string, UserPresence>>({})
   const typingTimers = new Map<string, ReturnType<typeof setTimeout>>()
 
   const hasChats = computed(() => chats.value.length > 0)
@@ -400,6 +411,53 @@ const useChatStore = defineStore('chats', () => {
     typingByChatId.value = {}
   }
 
+  function setUserPresence(userId: string, presence: UserPresenceInput) {
+    const normalizedUserId = userId.trim()
+
+    if (!normalizedUserId) {
+      return
+    }
+
+    const existingPresence = presenceByUserId.value[normalizedUserId]
+
+    presenceByUserId.value = {
+      ...presenceByUserId.value,
+      [normalizedUserId]: {
+        isOnline: presence.isOnline,
+        lastSeenAt: presence.lastSeenAt ?? existingPresence?.lastSeenAt ?? null
+      }
+    }
+  }
+
+  function clearPresence() {
+    presenceByUserId.value = {}
+  }
+
+  function getDirectChatPeer(chat: IChat | null | undefined) {
+    const currentUserId = auth.user?.id
+
+    if (!chat || !currentUserId || chat.participants.length > 2) {
+      return null
+    }
+
+    return chat.participants.find(participant => participant.id !== currentUserId) ?? null
+  }
+
+  function getDirectChatPeerPresence(chat: IChat | null | undefined) {
+    const peer = getDirectChatPeer(chat)
+
+    if (!peer) {
+      return null
+    }
+
+    const presence = presenceByUserId.value[peer.id]
+
+    return {
+      isOnline: presence?.isOnline ?? false,
+      lastSeenAt: presence?.lastSeenAt ?? peer.lastSeenAt ?? null
+    }
+  }
+
   function getTypingUserIds(chatId: string, excludeUserId?: string | null) {
     const normalizedChatId = chatId.trim()
 
@@ -470,11 +528,12 @@ const useChatStore = defineStore('chats', () => {
     messagesByChatId, loadingMessagesByChatId, messageErrorsByChatId,
     sendingByChatId, sendErrorsByChatId,
     isCreatingDirectChat, createDirectChatError,
-    typingByChatId,
+    typingByChatId, presenceByUserId,
     fetchChats, fetchMessages, sendMessage, markChatRead,
     createDirectChat, clearCreateDirectChatError,
     appendMessage, applyMessage, upsertChat,
-    setUserTyping, clearTypingForChat, clearAllTyping, getTypingUserIds
+    setUserTyping, clearTypingForChat, clearAllTyping, getTypingUserIds,
+    setUserPresence, clearPresence, getDirectChatPeer, getDirectChatPeerPresence
   }
 })
 

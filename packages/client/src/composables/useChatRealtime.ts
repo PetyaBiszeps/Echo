@@ -23,6 +23,7 @@ export default function useChatRealtime() {
     if (!token) {
       disconnectChatSocket()
       chatStore.clearAllTyping()
+      chatStore.clearPresence()
       return
     }
 
@@ -48,6 +49,20 @@ export default function useChatRealtime() {
         }
 
         chatStore.setUserTyping(payload.chatId, payload.userId, payload.isTyping)
+      },
+      onPresenceUpdate: (payload) => {
+        if (payload.userId === auth.user?.id) {
+          return
+        }
+
+        chatStore.setUserPresence(payload.userId, {
+          isOnline: payload.isOnline,
+          lastSeenAt: payload.lastSeenAt
+        })
+      },
+      onDisconnect: () => {
+        chatStore.clearAllTyping()
+        chatStore.clearPresence()
       }
     })
   }, {
@@ -58,6 +73,7 @@ export default function useChatRealtime() {
     stop()
     disconnectChatSocket()
     chatStore.clearAllTyping()
+    chatStore.clearPresence()
   })
 }
 

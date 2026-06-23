@@ -8,6 +8,7 @@ const props = defineProps<{
   time: string
   unreadCount?: number
   active?: boolean
+  isOnline?: boolean
 }>()
 
 defineEmits<{
@@ -34,8 +35,16 @@ const initials = computed(() => props.title
     )"
     @click="$emit('click', $event)"
   >
-    <span class="grid size-11 shrink-0 place-items-center rounded-full border border-sidebar-primary/35 bg-sidebar-primary/15 text-xs font-bold text-sidebar-primary">
-      {{ initials }}
+    <span class="relative shrink-0">
+      <span class="grid size-11 place-items-center rounded-full border border-sidebar-primary/35 bg-sidebar-primary/15 text-xs font-bold text-sidebar-primary">
+        {{ initials }}
+      </span>
+
+      <span
+        v-if="isOnline"
+        class="absolute right-0 bottom-0 size-3 rounded-full border-2 border-sidebar bg-green-500 group-data-[active=true]:border-sidebar-accent"
+        aria-label="Online"
+      />
     </span>
 
     <span class="flex min-w-0 flex-1 flex-col gap-1">
