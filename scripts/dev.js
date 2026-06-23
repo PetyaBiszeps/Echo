@@ -3,14 +3,17 @@ import { spawn } from 'node:child_process'
 // Constants
 const shouldRunStudio = process.argv.includes('--studio')
 const commands = [{
-  name: 'docker',
-  cmd: 'docker compose -f docker-compose.dev.yml up -d'
+  name: 'postgres',
+  cmd: 'docker compose -f docker-compose.dev.yml up -d',
+  persistent: false
 }, {
   name: 'client',
-  cmd: 'pnpm --filter @echo/client dev'
+  cmd: 'pnpm --filter @echo/client dev',
+  persistent: true
 }, {
   name: 'server',
-  cmd: 'pnpm --filter @echo/server dev'
+  cmd: 'pnpm --filter @echo/server dev',
+  persistent: true
 }, ...(shouldRunStudio ? [{
   name: 'prisma',
   cmd: 'pnpm --filter @echo/server exec prisma studio',
@@ -35,11 +38,11 @@ commands.forEach(({ name, cmd, persistent }) => {
     process.stdout.write(`[${name}] ${data}`)
   })
 
-  child.stderr.on('data', data => {
-    process.stderr.write(`[${name} ERROR] ${data}`)
+  child.stderr.on('data', (data) => {
+    process.stderr.write(`[${name}] ${data}`)
   })
 
-  child.on('close', code => {
+  child.on('close', (code) => {
     console.log(`[${name}] exited with code ${code}`)
 
     if (persistent && code !== 0) {
@@ -56,5 +59,8 @@ process.on('SIGINT', () => {
       child.kill('SIGINT')
     }
   })
-  process.exit()
+
+  setTimeout(() => {
+    process.exit()
+  }, 1000)
 })
