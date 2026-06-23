@@ -481,19 +481,6 @@ const useChatStore = defineStore('chats', () => {
     }, TYPING_STALE_MS))
   }
 
-  function clearTypingForChat(chatId: string) {
-    const normalizedChatId = chatId.trim()
-
-    if (!normalizedChatId) {
-      return
-    }
-
-    Object.keys(typingByChatId.value[normalizedChatId] ?? {}).forEach(userId => {
-      clearTypingTimer(normalizedChatId, userId)
-    })
-    typingByChatId.value = removeTypingChat(normalizedChatId)
-  }
-
   function clearAllTyping() {
     typingTimers.forEach(timer => clearTimeout(timer))
     typingTimers.clear()
@@ -649,8 +636,8 @@ const useChatStore = defineStore('chats', () => {
     typingByChatId, presenceByUserId,
     fetchChats, fetchMessages, fetchOlderMessages, sendMessage, markChatRead,
     createDirectChat, clearCreateDirectChatError,
-    appendMessage, applyMessage, upsertChat,
-    setUserTyping, clearTypingForChat, clearAllTyping, getTypingUserIds,
+    applyMessage, upsertChat,
+    setUserTyping, clearAllTyping, getTypingUserIds,
     setUserPresence, clearPresence, getDirectChatPeer, getDirectChatPeerPresence
   }
 })
